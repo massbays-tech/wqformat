@@ -37,8 +37,6 @@ sites_to_wqdashboard <- function(df, in_format, datum="WGS84",
 
   # TO DO: projection (to WGS84) -- use sf::sf_project()?
 
-  # TO DO: states to abbr? States to full name?
-
   return(df)
 }
 
@@ -82,19 +80,19 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
 
   # Update variables ----
   if ("Parameter" %in% colnames(df)) {
-    param <- find_var_names(RENAMETHISVAR, in_format, "WQX")
+    param <- find_var_names(varnames_parameters, in_format, "WQX")
     df <- rename_all_var(df, "Parameter", param$old_names, param$new_names)
   }
 
   if ("Result_Unit" %in% colnames(df)) {
-    unit_name <- find_var_names(RENAMETHISVAR, in_format, "WQX")
+    unit_name <- find_var_names(varnames_units, in_format, "WQX")
     df <- rename_all_var(df, "Unit_Name", unit_name$old_names, unit_name$new_names)
   }
 
-  if ("Qualifier" %in% colnames(df)) {
-    qual <- find_var_names(RENAMETHISVAR, in_format, "WQX")
-    df <- rename_all_var(df, "Qualifier", qual$old_names, qual$new_names)
-  }
+  # if ("Qualifier" %in% colnames(df)) {
+  #   qual <- find_var_names(varnames_qualifiers, in_format, "WQX")
+  #   df <- rename_all_var(df, "Qualifier", qual$old_names, qual$new_names)
+  # }
 
   if ("Date" %in% colnames(df)) {
     df <- format_date_col(df, "Date", date_format)

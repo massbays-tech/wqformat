@@ -1,6 +1,6 @@
 #' Find variable names
 #'
-#' @description Extracts list of old and new variable names from an dataframe. (reword this)
+#' @description Extracts list of old and new variable names from a dataframe. (reword this)
 #'
 #' @param df Dataframe with list of variables. (word better)
 #' @param input_format Input format.
@@ -39,9 +39,17 @@ find_var_names <- function(df, in_format, out_format){
   df <- df %>%
     dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
     dplyr::filter_at(out_format, dplyr::all_vars(!is.na(.)  & . != "")) %>%
-    dplyr::filter_at(in_format, dplyr::all_vars(!is.na(.) & . != ""))
-
-  # TO DO: add script to handle multiple vars per cell; remove rows where A == B
+    dplyr::filter_at(in_format, dplyr::all_vars(!is.na(.) & . != "")) %>%
+    # If out_format includes multiple vars, only keep first value
+    dplyr::mutate(
+      {{out_format}} := dplyr::if_else(
+        grepl("|", .data[[out_format]], fixed=TRUE),
+        stringr::str_split_i(.data[[out_format]], "\\|", 1),
+        .data[[out_format]]
+        ))
+  # If in_format includes multiple vars, split to multiple rows
+  df <- tidyr::separate_longer_delim(df, {{in_format}}, "|") %>%
+    dplyr::filter(.data[[in_format]] != .data[[out_format]])
 
   if (nrow(df) > 0) {
     old_names <- unlist(df[in_format])

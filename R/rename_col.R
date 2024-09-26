@@ -32,7 +32,6 @@ rename_col <- function(df, old_colnames, new_colnames){
 
   if (length(field_subs) > 0) {
     df <- dplyr::rename_with(df, ~ field_subs, names(field_subs))
-    message("\t", toString(length(field_subs)), " columns renamed")
   }
 
   return(df)

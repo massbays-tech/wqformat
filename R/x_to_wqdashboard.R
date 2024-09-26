@@ -12,6 +12,8 @@
 sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
                                  warn_missing_col = TRUE){
 
+  message("Reformatting data...")
+
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_sites,
@@ -24,7 +26,7 @@ sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
   if (drop_extra_col) {
     drop_col <- setdiff(colnames(df), var_names$keep_var)
     if (length(drop_col) > 0) {
-      message("Dropped ", toString(length(drop_col)), " columns")
+      message("\tDropped ", toString(length(drop_col)), " columns")
       df <- dplyr::select(df, !dplyr::any_of(drop_col))
     }
   }
@@ -32,7 +34,8 @@ sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
     mandatory_col <- c("Site_ID", "Site_Name", "Latitude", "Longitude")
     missing_col <- setdiff(mandatory_col, colnames(df))
     if (length(missing_col) > 0) {
-      warning("Missing columns: ", paste(missing_col, collapse = ", "))
+      warning("\tMissing columns: ", paste(missing_col, collapse = ", "),
+              call. = FALSE)
     }
   }
 
@@ -46,6 +49,8 @@ sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
           TRUE ~ State))
     }
   }
+
+  message("Done")
 
   return(df)
 }
@@ -65,6 +70,8 @@ sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
 results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
     drop_extra_col = FALSE, warn_missing_col = TRUE){
 
+  message("Reformatting data...")
+
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_results,
@@ -77,7 +84,7 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
   if (drop_extra_col) {
     drop_col <- setdiff(colnames(df), var_names$keep_var)
     if (length(drop_col) > 0) {
-      message("Dropped ", toString(length(drop_col)), " columns")
+      message("\tDropped ", toString(length(drop_col)), " columns")
       df <- dplyr::select(df, !dplyr::any_of(drop_col))
     }
   }
@@ -85,7 +92,8 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
     mandatory_col <- c("Site_ID", "Date", "Parameter", "Result", "Result_Unit")
     missing_col <- setdiff(mandatory_col, colnames(df))
     if (length(missing_col) > 0) {
-      warning("Missing columns: ", paste(missing_col, collapse = ", "))
+      warning("\tMissing columns: ", paste(missing_col, collapse = ", "),
+              call. = FALSE)
     }
   }
 
@@ -109,6 +117,8 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
   if ("Date" %in% colnames(df)) {
     df <- format_date(df, "Date", date_format)
   }
+
+  message("Done")
 
   return(df)
 }

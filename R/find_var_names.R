@@ -3,8 +3,8 @@
 #' @description Extracts list of old and new variable names from a dataframe. (reword this)
 #'
 #' @param df Dataframe with list of variables. (word better)
-#' @param input_format Input format.
-#' @param output_format Output format.
+#' @param in_format Input format.
+#' @param out_format Output format.
 #'
 #' @returns List of name conversions + all new variable names. (word better)
 #'
@@ -14,7 +14,7 @@ find_var_names <- function(df, in_format, out_format){
   # Check if df is dataframe
   chk <- inherits(df, "data.frame")
   if(!chk) {
-    stop("df must be type dataframe.")
+    stop("df must be type dataframe")
   }
 
   # Check if dataframe includes in_format, out_format
@@ -32,7 +32,7 @@ find_var_names <- function(df, in_format, out_format){
   }
 
   # List new column names
-  keep_var <- df_colnames[[output_format]]
+  keep_var <- df[[out_format]]
   keep_var <- keep_var[!is.na(keep_var)]
 
   # Create matched list of old names, new names

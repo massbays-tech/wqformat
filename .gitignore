@@ -5,3 +5,5 @@
 .DS_Store
 .quarto
 data-raw/all_conversions.xlsx
+data-raw/test_data_masswater.csv
+data-raw/test_sites_masswater.csv

@@ -26,8 +26,8 @@ rename_col <- function(df, old_colnames, new_colnames){
 
   # Rename columns
   names(new_colnames) <- old_colnames
-  new_colnames <- field_subs[!is.na(new_colnames)]
-  new_colnames <- field_subs[!is.na(name(new_colnames))]
+  new_colnames <- new_colnames[!is.na(new_colnames)]
+  new_colnames <- new_colnames[!is.na(names(new_colnames))]
   field_subs <- new_colnames[intersect(colnames(df), names(new_colnames))]
 
   if (length(field_subs) > 0) {

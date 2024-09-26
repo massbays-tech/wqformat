@@ -8,7 +8,7 @@ test_that("rename_var works", {
 test_that("rename_all_var works", {
   df <- data.frame("species" = c("aardvark", "bittern", "chinchilla"),
                    "class" = c("mammal", "bird", "mammal"),
-                   "rank" = c(1, 2, 3))
+                   "numbers" = c(1, 2, 3))
   expect_error(
     rename_all_var(df, "genus", "chinchilla", "cat"),
     regexp = "col_name not in dataframe")
@@ -21,6 +21,6 @@ test_that("rename_all_var works", {
                             c("Mammalia", "Reptilia"))
   expect_equal(df_test$class, c("Mammalia", "bird", "Mammalia"))
 
-  df_test <- rename_all_var(df, "rank", c(1, 2), c(12, 23))
-  expect_equal(df_test$rank, c(12, 23, 3))
+  df_test <- rename_all_var(df, "numbers", c(1, 2), c(12, 23))
+  expect_equal(df_test$numbers, c(12, 23, 3))
 })

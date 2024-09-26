@@ -9,8 +9,8 @@
 #' @returns Updated dataframe.
 #'
 #' @noRd
-sites_to_wqdashboard <- function(df, in_format, datum="WGS84",
-    drop_extra_col = FALSE, warn_missing_col = TRUE){
+sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
+                                 warn_missing_col = TRUE){
 
   # Update columns ----
   var_names <- find_var_names(
@@ -29,13 +29,23 @@ sites_to_wqdashboard <- function(df, in_format, datum="WGS84",
     }
   }
   if (warn_missing_col) {
-    missing_col <- setdiff(var_names$keep_var, colnames(df))
+    mandatory_col <- c("Site_ID", "Site_Name", "Latitude", "Longitude")
+    missing_col <- setdiff(mandatory_col, colnames(df))
     if (length(missing_col) > 0) {
       warning("Missing columns: ", paste(missing_col, collapse = ", "))
     }
   }
 
-  # TO DO: projection (to WGS84) -- use sf::sf_project()?
+  # Update variables ----
+  if ("State" %in% colnames(df)) {
+    chk <- df$State %in% state.name
+    if (any(chk)) {
+      df <- df %>%
+        dplyr::mutate(State = dplyr::case_when(
+          State %in% state.name ~ state.abb[match(State, state.name)],
+          TRUE ~ State))
+    }
+  }
 
   return(df)
 }
@@ -72,7 +82,8 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
     }
   }
   if (warn_missing_col) {
-    missing_col <- setdiff(var_names$keep_var, colnames(df))
+    mandatory_col <- c("Site_ID", "Date", "Parameter", "Result", "Result_Unit")
+    missing_col <- setdiff(mandatory_col, colnames(df))
     if (length(missing_col) > 0) {
       warning("Missing columns: ", paste(missing_col, collapse = ", "))
     }
@@ -86,16 +97,17 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
 
   if ("Result_Unit" %in% colnames(df)) {
     unit_name <- find_var_names(varnames_units, in_format, "WQX")
-    df <- rename_all_var(df, "Unit_Name", unit_name$old_names, unit_name$new_names)
+    df <- rename_all_var(df, "Result_Unit", unit_name$old_names,
+                         unit_name$new_names)
   }
 
-  # if ("Qualifier" %in% colnames(df)) {
-  #   qual <- find_var_names(varnames_qualifiers, in_format, "WQX")
-  #   df <- rename_all_var(df, "Qualifier", qual$old_names, qual$new_names)
-  # }
+  if ("Qualifier" %in% colnames(df)) {
+    qual <- find_var_names(varnames_qualifiers, in_format, "WQX")
+    df <- rename_all_var(df, "Qualifier", qual$old_names, qual$new_names)
+  }
 
   if ("Date" %in% colnames(df)) {
-    df <- format_date_col(df, "Date", date_format)
+    df <- format_date(df, "Date", date_format)
   }
 
   return(df)

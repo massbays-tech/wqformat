@@ -7,9 +7,9 @@
 #' @param date_format Date format.
 #'
 #' @noRd
-format_date_col <- function(df, date_col, date_format) {
+format_date <- function(df, date_col, date_format="m/d/Y") {
 
-  df_temp <- dplyr::filter(df, {{date_col}} := !is.na())
+  df_temp <- dplyr::filter(df, !is.na(.data[[date_col]]))
   chk <- mapply(lubridate::is.Date, df_temp[[date_col]])
 
   if(all(chk)){
@@ -20,12 +20,14 @@ format_date_col <- function(df, date_col, date_format) {
 
   date_var <- c("OS", "Om", "Op", "a", "A", "b", "B", "d", "H", "I", "j", "q",
                 "m", "M", "p", "S", "U", "w", "W", "y", "Y", "z", "r", "R", "T")
-  chk <- gsub("[^a-zA-Z]", "", date_format)
-  chk <- gsub(paste(unlist(date_var), collapse = "|"), "", chk)
+  chk_var <- gsub("[^a-zA-Z]", "", date_format)
+  chk_var <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
 
-  if(chk != "") {
-    stop("date_format contains invalid variables: ", chk, call. = FALSE)
+  if(chk_var != "") {
+    stop("date_format contains invalid variables: ", chk_var, call. = FALSE)
   }
+
+  chk <- is.na(df[[date_col]])
 
   df <- df %>%
     dplyr::mutate(
@@ -35,9 +37,10 @@ format_date_col <- function(df, date_col, date_format) {
           date_format,
           quiet = TRUE)))
 
-  chk <- chk | !is.na(df$Date)
+  chk2 <- !is.na(df[[date_col]])
+  chk <- chk | chk2
 
-  if(all(!chk)) {
+  if(all(!chk2)) {
     stop('Date does not match format "', date_format, '"',
          call. = FALSE)
   } else if (any(!chk)) {

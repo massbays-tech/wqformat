@@ -1,4 +1,4 @@
-#' Format site data for WQX
+#' Format site data for MassWateR
 #'
 #' @description boop
 #'
@@ -43,7 +43,7 @@ sites_to_masswater <- function(df, in_format, drop_extra_col = TRUE,
   return(df)
 }
 
-#' Format result data for WQX
+#' Format result data for MassWateR
 #'
 #' @description boop
 #'
@@ -92,9 +92,15 @@ results_to_masswater <- function(df, in_format, date_format="m/d/Y",
     df <- rename_all_var(df, "Characteristic Name", param$old_names, param$new_names)
   }
 
+  unit_name <- find_var_names(varnames_units, in_format, "MassWateR")
+
   if ("Result Unit" %in% colnames(df)) {
-    unit_name <- find_var_names(varnames_units, in_format, "MassWateR")
     df <- rename_all_var(df, "Result Unit", unit_name$old_names,
+                         unit_name$new_names)
+  }
+
+  if ("Activity Depth/Height Unit" %in% colnames(df)) {
+    df <- rename_all_var(df, "Activity Depth/Height Unit", unit_name$old_names,
                          unit_name$new_names)
   }
 

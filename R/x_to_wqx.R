@@ -104,10 +104,21 @@ results_to_wqx <- function(df, in_format, date_format="m/d/Y",
     df <- rename_all_var(df, "Characteristic Name", param$old_names, param$new_names)
   }
 
+  unit_name <- find_var_names(varnames_units, in_format, "WQX")
+
   if ("Result Unit" %in% colnames(df)) {
-    unit_name <- find_var_names(varnames_units, in_format, "WQX")
     df <- rename_all_var(df, "Result Unit", unit_name$old_names,
                          unit_name$new_names)
+  }
+
+  if ("Activity Depth/Height Unit" %in% colnames(df)) {
+    df <- rename_all_var(df, "Activity Depth/Height Unit", unit_name$old_names,
+                         unit_name$new_names)
+  }
+
+  if ("Result Detection/Quantitation Limit Unit" %in% colnames(df)) {
+    df <- rename_all_var(df, "Result Detection/Quantitation Limit Unit",
+                         unit_name$old_names, unit_name$new_names)
   }
 
   if ("Result Measure Qualifier" %in% colnames(df)) {

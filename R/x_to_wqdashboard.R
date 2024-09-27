@@ -104,9 +104,15 @@ results_to_wqdashboard <- function(df, in_format, date_format="m/d/Y",
     df <- rename_all_var(df, "Parameter", param$old_names, param$new_names)
   }
 
+  unit_name <- find_var_names(varnames_units, in_format, "WQX")
+
   if ("Result_Unit" %in% colnames(df)) {
-    unit_name <- find_var_names(varnames_units, in_format, "WQX")
     df <- rename_all_var(df, "Result_Unit", unit_name$old_names,
+                         unit_name$new_names)
+  }
+
+  if ("Depth_Unit" %in% colnames(df)) {
+    df <- rename_all_var(df, "Depth_Unit", unit_name$old_names,
                          unit_name$new_names)
   }
 

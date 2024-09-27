@@ -44,9 +44,10 @@ sites_to_wqdashboard <- function(df, in_format, drop_extra_col = FALSE,
     chk <- df$State %in% state.name
     if (any(chk)) {
       df <- df %>%
-        dplyr::mutate(State = dplyr::case_when(
-          State %in% state.name ~ state.abb[match(State, state.name)],
-          TRUE ~ State))
+        dplyr::mutate(State = dplyr::if_else(
+          State %in% state.name,
+          state.abb[match(State, state.name)],
+          State))
     }
   }
 

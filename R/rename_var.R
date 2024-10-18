@@ -19,7 +19,6 @@ rename_var <- function(in_var, old_varname, new_varname) {
   return(in_var)
 }
 
-
 #' Rename all variables in column
 #'
 #' @description Updates variable names in column.

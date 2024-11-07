@@ -4,14 +4,20 @@
 "1,1,2-Trichloroethane",,,"1,1,2 Trichloroethane - 34511"
 "1,1-Dichloroethane",,,"1,1 Dichloroethane - 34496"
 "1,1-Dichloroethylene",,,"1,1 Dichloroethylene - 34501"
+"1,2-Dichlorobenzene-d4",,"1,2 Dichlorobenzene - 34536","1,2 Dichlorobenzene - 34536"
+"1,4-Dichlorobenzene-d4",,"1,4 Dichlorobenzene - 34571","1,4 Dichlorobenzene - 34571"
 "Algae, blue-green (phylum cyanophyta) density","Algae, blue-green (phylum cyanophyta) density|Cyanobacteria (lab)",,
 Alkalinity,,Alkalinity - 00410,Alkalinity - 00410
-Ammonia,Ammonia,,
+Ammonia,Ammonia,"Nitrogen, Ammonia Dissolved as N - 00608","Nitrogen, Ammonia Dissolved as N - 00608"
 Ammonium,Ammonium,,
+Benzene,,Benzene - 34030,Benzene - 34030
+Calcium,,"Calcium, Dissolved - 00915","Calcium, Dissolved - 00915"
 Chloride,Chloride,Chloride - 00940,Chloride - 00940
+Chloroform,,Chloroform - 32106,Chloroform - 32106
 Chlorophyll a,Chlorophyll a|Chl a,,
 Chlorophyll a (probe),Chlorophyll a (probe)|Chl a (probe),,
 "Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)","Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)|Cyanobacteria (probe)",,
+"Chlorophyll a, corrected for pheophytin",,"Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209","Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209"
 Conductivity,Conductivity,,
 Depth,Depth,"Depth to bottom from water surface at sampling location, meters - 82903","Depth to bottom from water surface at sampling location, meters - 82903"
 "Depth, Secchi disk depth","Depth, Secchi disk depth|Secchi Depth",Secchi Depth - 00069,Secchi Depth - 00069
@@ -19,19 +25,26 @@ Dissolved oxygen (DO),Dissolved oxygen (DO)|DO,Dissolved Oxygen - 00300,Dissolve
 Dissolved oxygen saturation,Dissolved oxygen saturation|DO saturation,,Dissolved Oxygen Percent Saturation - 00301
 Enterococcus,Enterococcus,Enterococci - 31639,Enterococci - 31639
 Escherichia coli,Escherichia coli|E.coli,E.coli - 31633,E.coli - 31633
+Ethylbenzene,,Ethylbenzene - 34371,Ethylbenzene - 34371
+Ethylene glycol,,"Ethylene Glycol, water, unfiltered, recoverable - 91075","Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075"
 Fecal Coliform,Fecal Coliform,Fecal Coliform - 74055,Fecal Coliform - 74055
 Flow,Flow,,Flow - 50050
 "Height, gage","Height, gage|Gage",,
+Magnesium,,Magnesium - 00927,Magnesium - 00927
 Metals,Metals,,
+Methylene Chloride,,Methylene Chloride - 34423,Methylene Chloride - 34423
 Microcystins,Microcystins,,
 Nitrate,Nitrate,,
-Nitrate + Nitrite,Nitrate + Nitrite,,
+Nitrate + Nitrite,Nitrate + Nitrite,"Nitrate + Nitrite, Dissolved - 00631","Nitrate + Nitrite, Dissolved - 00631"
 Nitrite,Nitrite,,
 Orthophosphate,Orthophosphate|Ortho P,,
 Particulate organic carbon,Particulate organic carbon|POC,,
 pH,pH,pH - 00400,pH - 00400
 Pheophytin a,Pheophytin a|Pheophytin,,
 "Phosphorus, Particulate Organic","Phosphorus, Particulate Organic|POP",,
+Phycocyanin,Phycocyanin,,
+Phycocyanin (probe),Phycocyanin (probe),,
+Propylene glycol,,"Propylene Glycol, water, unfiltered, recoverable - 91080","Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080"
 Salinity,Salinity,"Salinity, (ppt) - 00480","Salinity, (ppt) - 00480"
 Silicate,Silicate,,
 Specific conductance,Specific conductance|Sp Conductance,,
@@ -39,13 +52,19 @@ Sulfate,Sulfate,Sulfate as SO4 - 00945,Sulfate as SO4 - 00945
 Surfactants,Surfactants,,Surfactants - 38260
 "Temperature, air","Temperature, air|Air Temp",,
 "Temperature, water","Temperature, water|Water Temp",Temperature - 00011,Temperature - 00011
+Tetrachloroethylene,,Tetrachloroethylene - 34475,Tetrachloroethylene - 34475
+Toluene,,Toluene - 34010,Toluene - 34010
+Total Coliform,,Total coliform - 31502,Total Coliform - 31502
 Total dissolved solids,Total dissolved solids|TDS,"Solids, Total Dissolved (Electrical Conductivity) - 47004","Solids, Total Dissolved (Electrical Conductivity), mg/l - 47004"
 Total Kjeldahl nitrogen,Total Kjeldahl nitrogen|TKN,,
 "Total Nitrogen, mixed forms","Total Nitrogen, mixed forms|TN|PON|TDN","Nitrogen, Total (unfiltered) - 00600","Nitrogen, Total (unfiltered) - 00600"
 "Total Phosphorus, mixed forms","Total Phosphorus, mixed forms|TP|TDP","Phosphorus, Total - 00665","Phosphorus, Total - 00665"
 Total suspended solids,Total suspended solids|TSS,TSS - 00530,TSS - 00530
+Trichloroethylene,,Trichloroethylene - 39180,Trichloroethylene - 39180
 Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
-,,"1,2 Dichlorobenzene - 34536","1,2 Dichlorobenzene - 34536"
+,,Nitrate-Nitrite as N - 00630,Nitrate-Nitrite as N - 00630
+,,"Phosphorus, Dissolved - 00666","Phosphorus, Dissolved - 00666"
+,,"Sodium, Dissolved as NA - 00930","Sodium, Dissolved as NA - 00930"
 ,,,"1,2 Dichloroethane - 34531"
 ,,,"1,2 Dichloropropane - 34541"
 ,,,"1,2 Diphenylhydrazine - 34346"
@@ -53,7 +72,6 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,"1,2,4 Trichlorobenzene - 34551"
 ,,,"1,3 Dichlorobenzene - 34566"
 ,,,"1,3 Dichloropropene - 34699"
-,,"1,4 Dichlorobenzene - 34571","1,4 Dichlorobenzene - 34571"
 ,,,2 Chloronaphthalene - 34581
 ,,,2 Chlorophenol - 34586
 ,,,2 Nitrophenol - 34591
@@ -85,7 +103,6 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,Arsenic III (inorganic) - 01002
 ,,,Asbestos - 00948
 ,,,"Barium, Total - 01007"
-,,Benzene - 34030,Benzene - 34030
 ,,,Benzidine - 39120
 ,,,Benzo (a) Pyrene - 34247
 ,,,Benzo (ghi) Perylene - 34521
@@ -109,7 +126,6 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,"Cadmium, Sludge, Tot, Dry Wt. - 78476"
 ,,,"Cadmium, Total - 01027"
 ,,,Calcium - 00916
-,,"Calcium, Dissolved - 00915","Calcium, Dissolved - 00915"
 ,,,Carbon Tetrachloride - 32102
 ,,,Chlordane - 39350
 ,,,Chlorine Usage - 81400
@@ -118,11 +134,9 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,Chlorobenzene - 34301
 ,,,Chlorodibromomethane - 34306
 ,,,Chloroethane - 34311
-,,Chloroform - 32106,Chloroform - 32106
 ,,,Chlorophyll a (analog) - 32230
 ,,,Chlorophyll a (digital) - 32233
 ,,,"Chlorophyll a, periphyton, spectrophotometric method, corrected - 32223"
-,,"Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209","Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209"
 ,,,"Chromium, Dissolved and (III) - 01030"
 ,,,"Chromium, Dissolved Hexavalent - 01220"
 ,,,"Chromium, Sludge, Tot, Dry Wt. - 78473"
@@ -153,8 +167,6 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,Endosulfan Sulfate - 34351
 ,,,Endrin - 39390
 ,,,Endrin Aldehyde - 34366
-,,Ethylbenzene - 34371,Ethylbenzene - 34371
-,,"Ethylene Glycol, water, unfiltered, recoverable - 91075","Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075"
 ,,,Fecal Streptococci - 31679
 ,,,Fluoranthene - 34376
 ,,,Fluorene - 34381
@@ -183,13 +195,11 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,"Lead, Dissolved - 01049"
 ,,,"Lead, Sludge, Total, Dry Wt. - 78468"
 ,,,"Lead, Total - 01051"
-,,Magnesium - 00927,Magnesium - 00927
 ,,,Manganese - 01055
 ,,,"Mercury, Dissolved - 71890"
 ,,,"Mercury, Sludge, Tot, Dry Wt. - 78471"
 ,,,"Mercury, Total - 71900"
 ,,,Methyl Chloride - 34418
-,,Methylene Chloride - 34423,Methylene Chloride - 34423
 ,,,"Molybdenum, Total - 01062"
 ,,,MPN RESULT FECAL COLIFORM - SHEL3
 ,,,MPN RESULT TOTAL COLIFORM - SHEL4
@@ -197,11 +207,8 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,"Nickel, Dissolved - 01065"
 ,,,"Nickel, Sludge, Tot, Dry Wt. - 78469"
 ,,,"Nickel, Total - 01067"
-,,"Nitrate + Nitrite, Dissolved - 00631","Nitrate + Nitrite, Dissolved - 00631"
-,,Nitrate-Nitrite as N - 00630,Nitrate-Nitrite as N - 00630
 ,,,"Nitrite, Dissolved - 00613"
 ,,,Nitrobenzene - 34447
-,,"Nitrogen, Ammonia Dissolved as N - 00608","Nitrogen, Ammonia Dissolved as N - 00608"
 ,,,"Nitrogen, Nitrate Dissolved - 00618"
 ,,,"Nitrogen, Nitrate Total - 00620"
 ,,,"Nitrogen, Nitrate Total (as NO3) - 71850"
@@ -234,11 +241,9 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,Phenol - 34694
 ,,,"Phenols, Total - 34043"
 ,,,"Phosphate, Ortho (as PO4) - 00660"
-,,"Phosphorus, Dissolved - 00666","Phosphorus, Dissolved - 00666"
 ,,,"Potassium, Total (as K) - 00937"
 ,,,PRESUMPTIVE - SHEL5
 ,,,Production Rate - 00145
-,,"Propylene Glycol, water, unfiltered, recoverable - 91080","Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080"
 ,,,Pyrene - 34469
 ,,,Radioactivity-Rad To - 09501
 ,,,Selenium - 01147
@@ -249,24 +254,19 @@ Turbidity,Turbidity,Turbidity - 00076,Turbidity - 00070
 ,,,"Silver, Total - 01077"
 ,,,Sludge Production - 00165
 ,,,"Sludge Weight, wet tons - 70321"
-,,"Sodium, Dissolved as NA - 00930","Sodium, Dissolved as NA - 00930"
 ,,,"Sodium, Total - 00929"
 ,,,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095"
 ,,,Sulfide as S - 00745
 ,,,Sulfite as SO3 - 00740
 ,,,Temperature (Difference) - 00018
-,,Tetrachloroethylene - 34475,Tetrachloroethylene - 34475
 ,,,"Thallium, Total - 01059"
 ,,,"Tin, Total - 01102"
 ,,,"Titanium, Total - 01152"
-,,Toluene - 34010,Toluene - 34010
-,,Total coliform - 31502,Total Coliform - 31502
 ,,,Total Coliforms - 74056
 ,,,Total Organic Carbon - 00680
 ,,,Total Oxygen Demand (TOD) - 00343
 ,,,Total Recoverable Phenols - 32730
 ,,,Toxaphene - 39400
-,,Trichloroethylene - 39180,Trichloroethylene - 39180
 ,,,Trichlorofluoromethane - 34488
 ,,,TSS % Removal - 81011
 ,,,Vinyl Chloride - 39175

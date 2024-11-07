@@ -9,6 +9,6 @@ df <- readr::read_csv("data-raw/varnames_qualifiers.csv",
 df$temp_count <- apply(df, 1, function(x) length(unique(na.omit(x))))
 varnames_qualifiers <- df %>%
   dplyr::filter(temp_count > 1) %>%
-  select(!temp_count)
+  dplyr::select(!temp_count)
 
 usethis::use_data(varnames_qualifiers, overwrite = TRUE)

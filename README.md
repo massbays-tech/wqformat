@@ -1,22 +1,12 @@
----
-output: github_document
----
-
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
 
 # wqformat
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of wqformat is to provide simple R functions to convert common water quality formats to that required for [MassWateR](https://massbays-tech.github.io/MassWateR).
+The goal of wqformat is to provide simple R functions to convert common
+water quality formats to that required for
+[MassWateR](https://massbays-tech.github.io/MassWateR).
 
 ## Install and Load
 
@@ -35,6 +25,6 @@ library(wqformat)
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+``` r
 ## basic example code
 ```

@@ -1,14 +1,17 @@
 #' Find variable names
 #'
-#' @description Extracts list of old and new variable names from a dataframe. (reword this)
+#' @description Generates list of name substitutions from dataframe. Each
+#'   column must contain variables names for a given format, with equivalent
+#'   variables listed on the same row across each column.
 #'
-#' @param df Dataframe with list of variables. (word better)
-#' @param in_format Input format.
-#' @param out_format Output format.
+#' @param df Dataframe.
+#' @param in_format String. Name of column containing input variable names.
+#' @param out_format String. Name of column containing output variable names.
 #'
-#' @returns List of name conversions + all new variable names. (word better)
-#'
-#' @noRd
+#' @returns List. `old_names` and `new_names` contain paired lists of variable
+#'   names derived from `in_format` and `out_format` columns. Duplicate values
+#'   are not included in lists. `keep_var` contains list of all variables
+#'   listed in `in_format` column.
 find_var_names <- function(df, in_format, out_format){
 
   # Check if df is dataframe

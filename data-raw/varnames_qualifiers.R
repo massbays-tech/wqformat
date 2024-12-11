@@ -3,7 +3,8 @@ library(dplyr)
 
 df <- readr::read_csv("data-raw/varnames_qualifiers.csv",
                       show_col_types = FALSE) %>%
-  dplyr::select_if(function(x) !(all(is.na(x))))  # drop empty columns
+  dplyr::select_if(function(x) !(all(is.na(x)))) %>%  # drop empty columns
+  dplyr::select(!dplyr::any_of("Description"))
 
 # Drop rows with only 1 unique value
 df$temp_count <- apply(df, 1, function(x) length(unique(na.omit(x))))

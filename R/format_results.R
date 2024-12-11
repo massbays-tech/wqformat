@@ -17,6 +17,13 @@ format_results <- function(df, in_format, out_format,
 
   message("Reformatting data...")
 
+  # Preformat data ----
+  if (in_format == "ME_FOCB") {
+    df <- pivot_ME_FOCB(df)
+  # } else if (in_format == "MassWater") {
+  #
+  }
+
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_results,

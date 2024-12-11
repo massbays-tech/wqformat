@@ -5,3 +5,4 @@
 .DS_Store
 .quarto
 data-raw/all_conversions.xlsx
+data-raw/example_data_ME_FOCB_long-MSORLIEN.csv

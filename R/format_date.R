@@ -1,10 +1,11 @@
 #' Format date column
 #'
-#' @description Checks if "Date" column is date format, converts to date if not.
-#'
-#' @param df Dataframe.
-#' @param date_col Name of date column.
-#' @param date_format Date format.
+#' @description Checks if column is formatted as a date. If column is not
+#'   formatted as date, converts column to date type.
+#' @param df Input dataframe.
+#' @param date_col String. Name of date column.
+#' @param date_format String. Uses the same formatting as
+#'  `lubridate::parse_date_time`. Default value "m/d/Y".
 #'
 #' @noRd
 format_date <- function(df, date_col, date_format="m/d/Y") {

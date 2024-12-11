@@ -7,7 +7,7 @@ cfm,cfm,,,,
 cfs|ft3/sec,cfs,,cfs,,
 cfu/100mL|#col/100mL,cfu/100ml,CFU/100ml,,,
 cm,cm,,,,
-deg C,deg C,C|c,C,DEG C,DEG C
+deg C,deg C,C|c,C,DEG C,deg C|C|DEG C
 deg F,deg F,,F,,
 FNU,FNU,,,FNU,FNU
 ft,ft,,ft,,
@@ -15,32 +15,22 @@ g/kg,g/kg,,,,
 JTU,JTU,,,,
 L/min,l/min,,,,
 L/sec,l/sec,,,,
-m,m,m,m,M,M
-mg/L,mg/l,mg/l|mg/L,mg/l,MG/L,MG/L
+m,m,m,m,M,m|M
+mg/L,mg/l,mg/l|mg/L,mg/l,MG/L,mg/L|MG/L
 Mgd,mgd,,MGD,,
 MPN/100mL,MPN/100ml,MPN/100ml,MPN/100ml,,
 mS/cm,mS/cm,,,,
 None|nu,None|s.u.,S.U.,S.U.,STU,STU
-NTU|ATU|BU|FAU|FBU|FNMU|FNRU|FTU|NTMU|NTRU,NTU|ATU|BU|FAU|FBU|FNMU|FNRU|FTU|NTMU|NTRU,NTU,NTU,,
+NTU|ATU|BU|FAU|FBU|FNMU|FNRU|FTU|NTMU|NTRU,NTU|ATU|BU|FAU|FBU|FNMU|FNRU|FTU|NTMU|NTRU,NTU,NTU,NTU,NTU
 ppm,ppm,,,,
 ppt,ppt,ppt,ppt,,
 ppth,ppth,,,PPTH,PPTH
-PSS,PSS,,,,
-PSU,PSU,,,,
+PSS,PSS,,,PSS,PSS
+PSU,PSU,,,,psu
 S/m,S/m,,,,
-ug/L|mg/m3|ng/cm3,ug/l,ug/l,ug/l,UG/L,UG/L
-umol/L,umol/l,,,,
+ug/L|mg/m3|ng/cm3,ug/l,ug/l,ug/l,UG/L,ug/L|UG/L
+umol/L,umol/l,,,UMOL/L,UMOL/L
 uS/cm|umho/cm,uS/cm,,uS/cm at 25 degrees C|umhos/cm,,
-,,CFU/100,,,
-,,MPN/100,,,
-,,MPN/101,,,
-,,MPN/102,,,
-,,MPN/103,,,
-,,MPN/104,,,
-,,MPN/105,,,
-,,MPN/106,,,
-,,MPN/107,,,
-,,MPN/108,,,
 PCU|CU|HU,,,CU,,
 gal/day,,,GPD,,
 gal/min,,,GPM,,
@@ -51,7 +41,19 @@ ng/L,,,ng/l,,
 ,,,PT-CO,,
 mi2,,,Sq Mi,,
 beaufort,,,,BFT,BFT
-Deg,,,,DEG_TRUE,DEG_TRUE
+Deg,,,,DEG TRUE|DEG_TRUE,DEG TRUE|DEG_TRUE
+hours,,,,H,H
+umol/m2/s,,,,UMOL/M2/SEC,UMOL/M2/SEC
+,,CFU/100,,,
+,,MPN/100,,,
+,,MPN/101,,,
+,,MPN/102,,,
+,,MPN/103,,,
+,,MPN/104,,,
+,,MPN/105,,,
+,,MPN/106,,,
+,,MPN/107,,,
+,,MPN/108,,,
 #/100gal,,,,,
 #/100L,,,,,
 #/10L,,,,,
@@ -195,7 +197,6 @@ gpm/ft,,,,,
 grains,,,,,
 Granules,,,,,
 ha,,,,,
-hours,,,,,
 hp,,,,,
 hPa,,,,,
 Imp gal,,,,,
@@ -467,7 +468,6 @@ um3/mL,,,,,
 umol,,,,,
 umol/g,,,,,
 umol/kg,,,,,
-umol/m2/s,,,,,
 umol/mol,,,,,
 umol/S/m2,,,,,
 units/cm,,,,,

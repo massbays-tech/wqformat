@@ -1,14 +1,15 @@
 #' Rename variable
 #'
-#' @description Updates variable name. Helper function for `rename_all_var`.
+#' @description Converts value from old variable to new variable name. If no
+#'   match found, leaves old variable name. Helper function for `rename_all_var`.
 #'
-#' @param in_var Variable to update.
-#' @param old_varname List of old variable names.
-#' @param new_varname List of new variable names.
+#' @param in_var String. Variable to update.
+#' @param old_varname List. Old variable names; must be same length and in
+#'   same order as `new_varname`.
+#' @param new_varname List. New variable names; must be same length and in
+#'   same order as `old_varname`.
 #'
-#' @return New variable name.
-#'
-#' @noRd
+#' @return String. Updated variable name.
 rename_var <- function(in_var, old_varname, new_varname) {
   names(new_varname) <- old_varname
 
@@ -21,16 +22,17 @@ rename_var <- function(in_var, old_varname, new_varname) {
 
 #' Rename all variables in column
 #'
-#' @description Updates variable names in column.
+#' @description Converts values in column from old variable names to new
+#'   new variable names. If no match found, leaves old variable name.
 #'
 #' @param df Input dataframe.
-#' @param col_name Column name.
-#' @param old_varname List of old variable names.
-#' @param new_varname List of new variable names.
+#' @param col_name String. Column name.
+#' @param old_varname List. Old variable names; must be same length and in
+#'   same order as `new_varname`.
+#' @param new_varname List. New variable names; must be same length and in
+#'   same order as `old_varname`.
 #'
 #' @return Updated dataframe.
-#'
-#' @noRd
 rename_all_var <- function(df, col_name, old_varname, new_varname) {
 
   # Check inputs

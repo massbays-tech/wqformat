@@ -1,14 +1,15 @@
 #' Rename columns
 #'
-#' @description Renames columns to match output format.
+#' @description Rename columns from `old_colnames` to `new_colnames`. If no
+#'   match found, leaves old column name.
 #'
-#' @param df Input dataframe.
-#' @param old_colnames Old column names.
-#' @param new_colnames New column names.
+#' @param df Dataframe.
+#' @param old_colnames List. Old column names; must be same length and in
+#'   same order as `new_colnames`.
+#' @param new_colnames List. New column names; must be same length and in
+#'   same order as `old_colnames`.
 #'
 #' @returns Updated dataframe.
-#'
-#' @noRd
 rename_col <- function(df, old_colnames, new_colnames){
 
   # Check inputs

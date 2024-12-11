@@ -3,9 +3,9 @@
 #' @description Converts all state names in column to abbreviations.
 #'
 #' @param df Dataframe.
-#' @param state_col Name of state column.
+#' @param state_col String. Name of state column.
 #'
-#' @noRd
+#' @returns Updated dataframe.
 state_to_abb <- function(df, state_col) {
   df <- df %>%
     dplyr::mutate(
@@ -23,9 +23,9 @@ state_to_abb <- function(df, state_col) {
 #' @description Converts all state abbreviations in column to full names.
 #'
 #' @param df Dataframe.
-#' @param state_col Name of state column.
+#' @param state_col String. Name of state column.
 #'
-#' @noRd
+#' @returns Updated dataframe.
 state_to_name <- function(df, state_col) {
   df <- df %>%
     dplyr::mutate(

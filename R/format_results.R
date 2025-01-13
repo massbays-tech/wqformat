@@ -19,16 +19,23 @@ format_results <- function(df, in_format, out_format,
 
   # Preformat data ----
   if (in_format == "ME_FOCB") {
-    df <- pivot_ME_FOCB(df)
+    df <- prep_ME_FOCB(df)
   # } else if (in_format == "MassWater") {
   #
+  }
+
+  if (out_format == "ME_DEP") {
+    multiple_out_var <- TRUE
+  } else {
+    multiple_out_var <- FALSE
   }
 
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_results,
     in_format = in_format,
-    out_format = out_format)
+    out_format = out_format,
+    multiple_out_var = multiple_out_var)
   df <- rename_col(
     df = df,
     old_colnames = var_names$old_names,
@@ -49,7 +56,7 @@ format_results <- function(df, in_format, out_format,
   }
 
   # Update variables ----
-  col_sub <- find_var_names(colnames_results, in_format, out_format)
+  col_sub <- find_var_names(colnames_results, "WQX", out_format)
 
   # Format dates
   for (date_col in c("Activity Start Date", "Analysis Start Date")) {
@@ -84,7 +91,7 @@ format_results <- function(df, in_format, out_format,
   # Rename units
   unit_name <- find_var_names(varnames_units, in_format, out_format)
   for (unit_col in c("Result Unit", "Activity Depth/Height Unit",
-      "Result Detection/Quantitation Limit Unit")) {
+                     "Result Detection/Quantitation Limit Unit")) {
     col_name <- rename_var(
       in_var = unit_col,
       old_varname = col_sub$old_names,

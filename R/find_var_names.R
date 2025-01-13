@@ -1,18 +1,25 @@
 #' Find variable names
 #'
-#' @description Generates list of name substitutions from dataframe. Each
-#'   column must contain variables names for a given format, with equivalent
-#'   variables listed on the same row across each column.
+#' @description Generates list of name substitutions from dataframe. Each column
+#'    lists the variables for a given format, and each row lists equivalent
+#'    variables. (UNCLEAR WORDING, REWRITE)
+#'
+#'    Alternate variables can be listed in a cell with the delimiter "|".
+#'    Alternate variables in `in_format` will be included in output. Alternate
+#'    variables in `out_format` will only be included if `multiple_out_var` is TRUE.
 #'
 #' @param df Dataframe.
 #' @param in_format String. Name of column containing input variable names.
 #' @param out_format String. Name of column containing output variable names.
+#' @param multiple_out_var Boolean. If TRUE, output will include alternate column
+#'    names listed in `out_format`. If FALSE, alternate column names listed in
+#'    `out_format` will be ignored. Default value is FALSE.
 #'
 #' @returns List. `old_names` and `new_names` contain paired lists of variable
 #'   names derived from `in_format` and `out_format` columns. Duplicate values
 #'   are not included in lists. `keep_var` contains list of all variables
 #'   listed in `in_format` column.
-find_var_names <- function(df, in_format, out_format){
+find_var_names <- function(df, in_format, out_format, multiple_out_var = FALSE){
 
   # Check if df is dataframe
   chk <- inherits(df, "data.frame")
@@ -34,31 +41,43 @@ find_var_names <- function(df, in_format, out_format){
          paste(colnames(df), collapse=", "))
   }
 
-  # List new column names
-  keep_var <- df[[out_format]]
-  keep_var <- keep_var[!is.na(keep_var)]
-
-  # Create matched list of old names, new names
+  # Create matched list of old names, new names; drop rows where out_format is NA
+  # Convert all columns to character to prevent errors from numeric variables
   df <- df %>%
     dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
     dplyr::filter_at(out_format, dplyr::all_vars(!is.na(.)  & . != "")) %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+
+  # If out_format includes alternate variables, split or drop
+  if (multiple_out_var) {
+    df <- tidyr::separate_longer_delim(df, {{out_format}}, "|")
+  } else if (!is.numeric(df[[out_format]])) {
+    df <- df %>%
+      dplyr::mutate(
+        {{out_format}} := dplyr::if_else(
+          grepl("|", .data[[out_format]], fixed=TRUE),
+          stringr::str_split_i(.data[[out_format]], "\\|", 1),
+          .data[[out_format]]
+        )
+      )
+  }
+
+  # Set keep_var to all out_format columns
+  keep_var <- df[[out_format]]
+
+  # Tidy data
+  df <- df %>%
+    # Drop rows where in_format is NA
     dplyr::filter_at(in_format, dplyr::all_vars(!is.na(.) & . != "")) %>%
-    # If out_format includes multiple vars, only keep first value
-    dplyr::mutate(
-      {{out_format}} := dplyr::if_else(
-        grepl("|", .data[[out_format]], fixed=TRUE),
-        stringr::str_split_i(.data[[out_format]], "\\|", 1),
-        .data[[out_format]]
-        ))
-  # If in_format includes multiple vars, split to multiple rows
-  df <- tidyr::separate_longer_delim(df, {{in_format}}, "|") %>%
+    # If in_format includes alternate vars, split to multiple rows
+    tidyr::separate_longer_delim({{in_format}}, "|") %>%
+    # Drop rows where in_format == out_format
     dplyr::filter(.data[[in_format]] != .data[[out_format]])
 
+  # Save var
   if (nrow(df) > 0) {
-    old_names <- unlist(df[in_format])
-    names(old_names) <- NULL
-    new_names <- unlist(df[out_format])
-    names(new_names) <- NULL
+    old_names <- df[[in_format]]
+    new_names <- df[[out_format]]
   } else {
     old_names <- NA
     new_names <- NA

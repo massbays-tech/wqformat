@@ -28,9 +28,6 @@ prep_ME_FOCB <- function(df){
       names_to = "Parameter",
       values_to = "Result",
       values_drop_na = TRUE
-    ) %>%
-    dplyr::mutate(
-      Parameter = gsub(".", " ", Parameter, fixed = TRUE)
     )
 
   # Update parameters, units

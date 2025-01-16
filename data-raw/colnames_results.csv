@@ -1,76 +1,74 @@
 ﻿WQX,MassWateR,WQdashboard,RI_WW,RI_DEM,ME_DEP,ME_FOCB
-Project ID,Project ID,,,,PROJECT/SITE,
-Monitoring Location ID,Monitoring Location ID,Site_ID,WW ID,Station Name,SAMPLE_POINT_NAME,SiteID|Site ID|Sample ID
+Project ID,16||Project ID,,,,01||PROJECT/SITE,
+Monitoring Location ID,01||Monitoring Location ID,Site_ID,WW ID,01||Station Name,02||SAMPLE_POINT_NAME,SiteID|Site ID|Sample ID
 Activity ID (CHILD-subset),,,,,,
 Activity ID User Supplied (PARENTs),,,,,,
-Activity Type,Activity Type,Activity_Type,Sample Type,Sample Type,SAMPLE_TYPE,
-Activity Media Name,,,Sample Media,Sample Media,,
-Activity Start Date,Activity Start Date,Date,Date of Sample,Date,SAMPLE_DATE,Sample Date|Date
-Activity Start Time,Activity Start Time,,Time,Time,SAMPLE_TIME,Time
+Activity Type,02||Activity Type,Activity_Type,Sample Type,04||Sample Type,09||SAMPLE_TYPE,
+Activity Media Name,,,Sample Media,05||Sample Media,,
+Activity Start Date,03||Activity Start Date,Date,Date of Sample,02||Date,06||SAMPLE_DATE,Sample Date|Date
+Activity Start Time,04||Activity Start Time,,Time,03||Time,07||SAMPLE_TIME,Time
 Activity Start Time Zone,,,,,,
-Activity Depth/Height Measure,Activity Depth/Height Measure,Depth,Depth,Depth,SAMPLE_DEPTH,Sample Depth|Sample Depth m
-Activity Depth/Height Unit,Activity Depth/Height Unit,Depth_Unit,,,SAMPLE_DEPTH_UNIT,Sample Depth Unit
-,Activity Relative Depth Name,Depth_Category,,,,
-Sample Collection Method ID,Sample Collection Method ID,,,,,
+Activity Depth/Height Measure,05||Activity Depth/Height Measure,Depth,Depth,06||Depth,08||SAMPLE_DEPTH,Sample Depth|Sample Depth m
+Activity Depth/Height Unit,06||Activity Depth/Height Unit,Depth_Unit,,,20||SAMPLE_DEPTH_UNIT,Sample Depth Unit
+,07||Activity Relative Depth Name,Depth_Category,,,,
+Sample Collection Method ID,15||Sample Collection Method ID,,,,21||SAMPLE_COLLECTION_METHOD,
 Sample Collection Method Context,,,,,,
 Sample Collection Equipment Name,,,,,,
 Sample Collection Equipment Comment,,,,,,
-Characteristic Name,Characteristic Name,Parameter,Parameter,Parameter,PARAMETER_NAME,Parameter
+Characteristic Name,08||Characteristic Name,Parameter,Parameter,07||Parameter,11||PARAMETER_NAME,Parameter
 Characteristic Name User Supplied,,,,,,
 Method Speciation,,,,,,
 Result Detection Condition,,,,,,
-Result Value,Result Value,Result,Concentration,Concentration,CONCENTRATION,Result
-Result Unit,Result Unit,Result_Unit,Unit,Unit,PARAMETER_UNITS,Unit
-Result Measure Qualifier,Result Measure Qualifier,Qualifier,Qualifier Code,Qualifier Code,LAB_QUALIFIER|PARAMETER_QUALIFIER|VALIDATION_QUALIFIER,
+Result Value,09||Result Value,Result,Concentration,08||Concentration,12||CONCENTRATION,Result
+Result Unit,10||Result Unit,Result_Unit,Unit,09||Unit,15||PARAMETER_UNITS,Unit
+Result Measure Qualifier,13||Result Measure Qualifier,Qualifier,Qualifier Code,10||Qualifier Code,13||LAB_QUALIFIER,Qualifier
 Result Sample Fraction,,,,,,
 Result Status ID,,,,,,
 ResultTemperatureBasis,,,,,,
 Statistical Base Code,,,,,,
 ResultTimeBasis,,,,,,
 Result Value Type,,,,,,
-Result Analytical Method ID,,,Analytical Method Number,Analytical Method Number,,
+Result Analytical Method ID,,,Analytical Method Number,16||Analytical Method Number,,
 Result Analytical Method Context,,,,,,
 Analysis Start Date,,,,,ANALYSIS_DATE,Analysis Date
 Result Detection/Quantitation Limit Type,,,,,,
-Result Detection/Quantitation Limit Measure,Quantitation Limit,Detection_Limit,Detection Limit,Detection Limit,,
-Result Detection/Quantitation Limit Unit,,Detection_Limit_Unit,Detection Limit Unit,Detection Limit Unit,,
-Result Comment,Result Comment,,Comments,Comments,,
-,QC Reference Value,,,,,
-,Result Attribute,,,,,
-,Local Record ID,,,,,
-,,,Quantitation Level,,,
-,,,Quantitation Level Unit,,,
-,,,Lab Name,,,
-,,,Sediment Particle Size,,,
-,,,Particle Size Unit,,,
-,,,Fish Sample Type,,,
-,,,Fish Taxa,,,
+Result Detection/Quantitation Limit Measure,11||Quantitation Limit,Detection_Limit,Detection Limit,11|Detection Limit,MDL,MDL
+Result Detection/Quantitation Limit Unit,,Detection_Limit_Unit,Detection Limit Unit,12||Detection Limit Unit,,
+Result Comment,18||Result Comment,,Comments,21||Comments,,
+,12||QC Reference Value,,,,,
+,14||Result Attribute,,,,,
+,17||Local Record ID,,,,,
+,,,Quantitation Level,13||Quantitation Level,,
+,,,Quantitation Level Unit,14||Quantitation Level Unit,,
+,,,Lab Name,15||Lab Name,,
+,,,Sediment Particle Size,17||Sediment Particle Size,,
+,,,Particle Size Unit,18||Particle Size Unit,,
+,,,Fish Sample Type,19||Fish Sample Type,,
+,,,Fish Taxa,20||Fish Taxa,,
 ,,,Monitoring location,,,
 ,,,Watershed,,,
 ,,,Watershed Code,,,
-,,,MONITOR 1,,SAMPLED_BY,
+,,,MONITOR 1,,25||SAMPLED_BY,
 ,,,MONITOR 2,,,
-,,,,,LAB_SAMPLE_ID,
-,,,,,SAMPLE_ID,
-,,,,,ANALYSIS_LAB,
-,,,,,QC_TYPE,
-,,,,,REPORTING_LIMIT,
-,,,,,TEST,
-,,,,,METER_ID,
-,,,,,RESULT_TYPE_CODE,
-,,,,,LAB_COMMENT,
-,,,,,SAMPLE_COLLECTION_METHOD,
-,,,,,SAMPLE_LOCATION,
-,,,,,TREATMENT_STATUS,
-,,,,,PARAMETER_FILTERED,
-,,,,,SAMPLE_COMMENTS,
+,,,,,03||LAB_SAMPLE_ID,
+,,,,,04||SAMPLE_ID,
+,,,,,05||ANALYSIS_LAB,Lab
+,,,,,10||QC_TYPE,
+,,,,,14||REPORTING_LIMIT,RL
+,,,,,16||TEST,
+,,,,,17||METER_ID,
+,,,,,18||RESULT_TYPE_CODE,
+,,,,,19||LAB_COMMENT,
+,,,,,22||SAMPLE_LOCATION,
+,,,,,23||TREATMENT_STATUS,
+,,,,,24||PARAMETER_FILTERED,
+,,,,,27||SAMPLE_COMMENTS,
 ,,,,,ANALYSIS_TIME,
-,,,,,MDL,MDL
 ,,,,,PREP_DATE,
 ,,,,,SAMPLE_DELIVERY_GROUP,
 ,,,,,VALIDATION_LEVEL,
 ,,,,,VALIDATION_COMMENT,
 ,,,,,VALIDATION_COMMENT_TYPE,
-,,,,,,Lab
-,,,,,,RL
 ,,,,,,Method
+,,,,,28||PARAMETER_QUALIFIER,
+,,,,,VALIDATION_QUALIFIER,

@@ -46,20 +46,17 @@ rename_col <- function(df, old_colnames, new_colnames){
       target_col <- df_temp$old_name
 
       # Add new column, set to first non-NA value from old columns
-      df <- df %>%
-        tidyr::unite({{val}}, dplyr::all_of(target_col), sep="|") %>%
-        dplyr::mutate({{val}} := gsub("NA\\|", "", .data[[val]])) %>%
-        dplyr::mutate(
-          {{val}} := dplyr::case_when(
-            grepl("|", .data[[val]], fixed=TRUE) ~
-              stringr::str_split_i(.data[[val]], "\\|", 1),
-            .data[[val]] == "NA" ~ NA,
-            TRUE ~ .data[[val]]
-          )
-        )
+      df <- concat_columns(df, target_col, val)
 
-      # Update df_colnames with temp column conversion
+      # Drop redundant conversions from df_colnames
       df_colnames <- dplyr::filter(df_colnames, new_name != val)
+
+      # Check if old columns needed for further conversions, else drop
+      chk <- target_col %in% df_colnames$old_name
+      if (any(!chk)) {
+        drop_col <- target_col[which(!chk)]
+        df <- dplyr::select(df, !dplyr::any_of(drop_col))
+      }
     }
   }
 
@@ -98,4 +95,39 @@ rename_col <- function(df, old_colnames, new_colnames){
   df <- dplyr::rename_with(df, ~ field_subs, names(field_subs))
 
   return(df)
+}
+
+#' Concatenate Columns
+#'
+#' @description Combines values from multiple columns and saves the first
+#'  non-NA value to the output column.
+#'
+#' @param df Dataframe.
+#' @param in_fields List. Dataframe columns to combine.
+#' @param out_field String. Name of column to transfer values to.
+#'
+#' @returns Updated dataframe.
+concat_columns <- function(dat, in_fields, out_field) {
+  if (!out_field %in% colnames(dat)) {
+    dat[[out_field]] <- NA
+  }
+
+  dat <- dat %>%
+    tidyr::unite(
+      {{out_field}},
+      dplyr::any_of(in_fields),
+      sep="|",
+      remove = FALSE
+    ) %>%
+    dplyr::mutate({{out_field}} := gsub("NA\\|", "", .data[[out_field]])) %>%
+    dplyr::mutate(
+      {{out_field}} := dplyr::case_when(
+        grepl("|", .data[[out_field]], fixed=TRUE) ~
+          stringr::str_split_i(.data[[out_field]], "\\|", 1),
+        .data[[out_field]] == "NA" ~ NA,
+        TRUE ~ .data[[out_field]]
+      )
+    )
+
+  return(dat)
 }

@@ -3,16 +3,16 @@
 #' @description boop
 #'
 #' @param df Input dataframe.
-#' @param in_format boop
-#' @param out_format boop
-#' @param drop_extra_col boop boop
-#' @param warn_missing_col boop boop
+#' @param in_format String. Name of input format. (word better)
+#' @param out_format String. Name of desired output format. (word better)
+#' @param date_format String. Date format, uses lubridate. (word better)
+#' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
+#'    converted to `out_format`. Default value TRUE.
 #'
 #' @returns Updated dataframe.
 #'
 #' @noRd
-format_sites <- function(df, in_format, out_format, drop_extra_col = FALSE,
-    warn_missing_col = TRUE) {
+format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   message("Reformatting data...")
 
@@ -25,19 +25,32 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = FALSE,
     df = df,
     old_colnames = var_names$old_names,
     new_colnames = var_names$new_names)
-  if (drop_extra_col) {
-    drop_col <- setdiff(colnames(df), var_names$keep_var)
-    if (length(drop_col) > 0) {
-      message("\tDropped ", toString(length(drop_col)), " columns")
-      df <- dplyr::select(df, !dplyr::any_of(drop_col))
-    }
+
+  # Add missing columns
+  missing_col <- setdiff(var_names$keep_var, colnames(df))
+  if (length(missing_col) > 0) {
+    df[missing_col] <- NA
+    message(
+      "\tAdded ", toString(length(missing_col)), " new columns: ",
+      paste(missing_col, collapse = ", ")
+    )
   }
-  if (warn_missing_col) {
-    missing_col <- setdiff(var_names$keep_var, colnames(df))
-    if (length(missing_col) > 0) {
-      warning("\tMissing columns: ", paste(missing_col, collapse = ", "),
-              call. = FALSE)
-    }
+
+  # Sort columns, drop surplus if drop_extra_col is TRUE
+  keep_col <- var_names$keep_var
+  drop_col <- setdiff(colnames(df), keep_col)
+  if (length(drop_col) == 0) {
+    df <- dplyr::select(dplyr::all_of(keep_col))
+  } else if (drop_extra_col) {
+    df <- dplyr::select(dplyr::all_of(keep_col))
+    message("\tDropped ", toString(length(drop_col)), " columns")
+  } else {
+    df <- dplyr::select(dplyr::all_of(c(keep_col, drop_col)))
+    warning(
+      "\tUnable to rename ", toString(length(drop_col)), " columns: ",
+      paste(drop_col, collapse = ", "),
+      call. = FALSE
+    )
   }
 
   # Update variables ----

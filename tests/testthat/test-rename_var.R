@@ -3,6 +3,16 @@ test_that("rename_var works", {
     rename_var("cat", c("cat","dog"), c("kitten", "puppy")),
     "kitten")
   expect_equal(rename_var(1, c(1,2), c(11, 22)), 11)
+
+  # Test for multiple out values
+  in_list <- c("cat", "dog", "cat")
+  out_list <- c("kitten", "puppy", "kitty")
+
+  expect_equal(rename_var("cat", in_list, out_list), "kitten")
+  expect_equal(
+    rename_var("cat", in_list, out_list, allow_multiple=TRUE),
+    c("kitten", "kitty")
+  )
 })
 
 test_that("rename_all_var works", {

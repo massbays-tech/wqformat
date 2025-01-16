@@ -3,56 +3,67 @@
 #' @description boop
 #'
 #' @param df Input dataframe.
-#' @param in_format boop
-#' @param out_format boop
-#' @param date_format boop
-#' @param drop_extra_col boop boop
-#' @param warn_missing_col boop boop
+#' @param in_format String. Name of input format. (word better)
+#' @param out_format String. Name of desired output format. (word better)
+#' @param date_format String. Date format, uses lubridate. (word better)
+#' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
+#'    converted to `out_format`. Default value TRUE.
 #'
 #' @returns Updated dataframe.
 #'
 #' @noRd
 format_results <- function(df, in_format, out_format,
-    date_format="m/d/Y", drop_extra_col = FALSE, warn_missing_col = TRUE){
+    date_format="m/d/Y", drop_extra_col = TRUE){
 
   message("Reformatting data...")
 
   # Preformat data ----
-  if (in_format == "ME_FOCB") {
-    df <- prep_ME_FOCB(df)
-  # } else if (in_format == "MassWater") {
-  #
-  }
-
-  if (out_format == "ME_DEP") {
-    multiple_out_var <- TRUE
-  } else {
-    multiple_out_var <- FALSE
+  if (in_format == "MassWateR") {
+    df <- prep_MassWateR(df)
+  } else if (in_format == "ME_DEP") {
+    df <- concat_columns(df,
+      in_fields = c('LAB_QUALIFIER', 'PARAMETER_QUALIFIER',
+                    'VALIDATION_QUALIFIER'),
+      out_field = 'LAB_QUALIFIER')
+  } else if (in_format == "ME_FOCB") {
+    df <- prep_ME_FOCB(df, date_format)
   }
 
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_results,
     in_format = in_format,
-    out_format = out_format,
-    multiple_out_var = multiple_out_var)
+    out_format = out_format)
   df <- rename_col(
     df = df,
     old_colnames = var_names$old_names,
     new_colnames = var_names$new_names)
-  if (drop_extra_col) {
-    drop_col <- setdiff(colnames(df), var_names$keep_var)
-    if (length(drop_col) > 0) {
-      message("\tDropped ", toString(length(drop_col)), " columns")
-      df <- dplyr::select(df, !dplyr::any_of(drop_col))
-    }
+
+  # Add missing columns
+  missing_col <- setdiff(var_names$keep_var, colnames(df))
+  if (length(missing_col) > 0) {
+    df[missing_col] <- NA
+    message(
+      "\tAdded ", toString(length(missing_col)), " new columns: ",
+      paste(missing_col, collapse = ", ")
+    )
   }
-  if (warn_missing_col) {
-    missing_col <- setdiff(var_names$keep_var, colnames(df))
-    if (length(missing_col) > 0) {
-      warning("\tMissing columns: ", paste(missing_col, collapse = ", "),
-              call. = FALSE)
-    }
+
+  # Sort columns, drop surplus if drop_extra_col is TRUE
+  keep_col <- var_names$keep_var
+  drop_col <- setdiff(colnames(df), keep_col)
+  if (length(drop_col) == 0) {
+    df <- dplyr::select(dplyr::all_of(keep_col))
+  } else if (drop_extra_col) {
+    df <- dplyr::select(dplyr::all_of(keep_col))
+    message("\tDropped ", toString(length(drop_col)), " columns")
+  } else {
+    df <- dplyr::select(dplyr::all_of(c(keep_col, drop_col)))
+    warning(
+      "\tUnable to rename ", toString(length(drop_col)), " columns: ",
+      paste(drop_col, collapse = ", "),
+      call. = FALSE
+    )
   }
 
   # Update variables ----
@@ -106,9 +117,24 @@ format_results <- function(df, in_format, out_format,
     in_var = "Result Measure Qualifier",
     old_varname = col_sub$old_names,
     new_varname = col_sub$new_names)
-  if (col_name %in% colnames(df)) {
+  if (out_format != "MassWater" & col_name %in% colnames(df)) {
     qual <- find_var_names(varnames_qualifiers, in_format, out_format)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
+  }
+
+  # Rename activity type
+  col_name <- rename_var(
+    in_var = "Activity Type",
+    old_varname = col_sub$old_names,
+    new_varname = col_sub$new_names)
+  if (col_name %in% colnames(df)) {
+    atype <- find_var_names(varnames_activity, in_format, out_format)
+    df <- rename_all_var(df, col_name, atype$old_names, atype$new_names)
+  }
+
+  # Custom format changes -----
+  if (out_format == "MassWateR") {
+    df <- to_MassWateR(df, in_format)
   }
 
   message("Done")

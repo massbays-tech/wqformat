@@ -8,7 +8,7 @@ test_that("prep_ME_FOCB works", {
     "Wind Speed" = c(3, 3, 2),
     "Wind Direction" = c(120, 150, 180),
     "Water Depth" = c(10.7, 3.2, NA),
-    "Secchi Depth" = c(1.9, 1.8, NA),
+    "Secchi Depth" = c(1.9, "BSV", NA),
     check.names = FALSE
   )
 
@@ -31,7 +31,7 @@ test_that("prep_ME_FOCB works", {
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Lab" = c("UMWL", "UMWL", "UMWL"),
-    "Analysis Date" = c("07/06/23", "07/06/23", "07/07/23"),
+    "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
     "Parameter" = c("TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
       "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
       "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"),
@@ -48,7 +48,7 @@ test_that("prep_ME_FOCB works", {
   df_wide1_b <- data.frame(
     "SiteID" = c("BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18",
       "EEB18", "EEB18", "EEB18","HR2", "HR2", "HR2"),
-    "Date" = c("05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
+    "Sample Date" = c("05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
       "05/23/23","05/23/23", "05/23/23","05/23/23", "05/23/23","05/24/23",
       "05/24/23","05/24/23"),
     "Time" = c("12:32","12:32","12:32","12:32","12:32","12:45","12:45","12:45",
@@ -57,9 +57,11 @@ test_that("prep_ME_FOCB works", {
       "Water Depth", "Secchi Depth", "Cloud Cover", "Wind Speed",
       "Wind Direction", "Water Depth", "Secchi Depth","Cloud Cover",
       "Wind Speed", "Wind Direction"),
-    "Result" = c(50, 3, 120, 10.7, 1.9, 50, 3, 150, 3.2, 1.8, 50, 2, 180),
+    "Result" = c('50', '3', '120', '10.7', '1.9', '50', '3', '150', '3.2',
+      'BSV', '50', '2', '180'),
     "Unit" = c("%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m",
       "m","%", "BFT", "DEG TRUE"),
+    "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
     check.names = FALSE
   )
 
@@ -67,7 +69,7 @@ test_that("prep_ME_FOCB works", {
     "SiteID" = c("BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02",
       "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2",
       "HR2", "HR2", "HR2", "HR2", "HR2", "HR2"),
-    "Date" = c("05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
+    "Sample Date" = c("05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
       "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
       "05/23/23", "05/23/23", "05/23/23", "05/24/23", "05/24/23","05/24/23",
       "05/24/23","05/24/23", "05/24/23","05/24/23"),
@@ -87,11 +89,31 @@ test_that("prep_ME_FOCB works", {
     "Unit" = c("deg C", "psu", "mg/L", "%", "STU", "ug/L", "FNU", "deg C",
       "psu", "mg/L", "%", "STU", "ug/L", "FNU", "deg C", "psu", "mg/L", "%",
       "STU", "ug/L", "FNU"),
+    "Qualifier" = c(NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA,
+      NA, NA, NA, NA, NA, "J", NA),
     check.names = FALSE
   )
 
-  df_long2 <- df_long %>%
-    dplyr::mutate("Sample Depth Unit" = "m")
+  df_long2 <- data.frame(
+    "Site ID" = c("BMR02", "EEB18", "HR2"),
+    "Sample Date" = c(lubridate::ymd("20230523"), lubridate::ymd("20230523"),
+      lubridate::ymd("20230524")),
+    "Lab" = c("UMWL", "UMWL", "UMWL"),
+    "Analysis Date" = c(lubridate::ymd("20230706"), lubridate::ymd("20230706"),
+      lubridate::ymd("20230607")),
+    "Parameter" = c("TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
+                    "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
+                    "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"),
+    "Result" = c(0.22, 0.18, 0.28),
+    "Unit" = c("MG/L", "MG/L", "MG/L"),
+    "RL" = c(0.1, 0.1, 0.1),
+    "MDL" = c(0.73, 0.73, 0.73),
+    "Method" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
+    "Sample Depth m" = c(0.2, 0.2, 0.2),
+    "Sample Depth Unit" = c('m', 'm', 'm'),
+    'Qualifier' = c('J', 'J', NA),
+    check.names = FALSE
+  )
 
   # Test
   expect_equal(prep_ME_FOCB(df_wide1), df_wide1_b)

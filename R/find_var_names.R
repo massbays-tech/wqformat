@@ -11,15 +11,12 @@
 #' @param df Dataframe.
 #' @param in_format String. Name of column containing input variable names.
 #' @param out_format String. Name of column containing output variable names.
-#' @param multiple_out_var Boolean. If TRUE, output will include alternate column
-#'    names listed in `out_format`. If FALSE, alternate column names listed in
-#'    `out_format` will be ignored. Default value is FALSE.
 #'
 #' @returns List. `old_names` and `new_names` contain paired lists of variable
 #'   names derived from `in_format` and `out_format` columns. Duplicate values
 #'   are not included in lists. `keep_var` contains list of all variables
 #'   listed in `in_format` column.
-find_var_names <- function(df, in_format, out_format, multiple_out_var = FALSE){
+find_var_names <- function(df, in_format, out_format){
 
   # Check if df is dataframe
   chk <- inherits(df, "data.frame")
@@ -48,21 +45,35 @@ find_var_names <- function(df, in_format, out_format, multiple_out_var = FALSE){
     dplyr::filter_at(out_format, dplyr::all_vars(!is.na(.)  & . != "")) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
-  # If out_format includes alternate variables, split or drop
-  if (multiple_out_var) {
-    df <- tidyr::separate_longer_delim(df, {{out_format}}, "|")
-  } else if (!is.numeric(df[[out_format]])) {
-    df <- df %>%
-      dplyr::mutate(
-        {{out_format}} := dplyr::if_else(
-          grepl("|", .data[[out_format]], fixed=TRUE),
-          stringr::str_split_i(.data[[out_format]], "\\|", 1),
-          .data[[out_format]]
-        )
+  # Sort data by out_format; drop ##|| from start of vars if present
+  df <- df %>%
+    dplyr::arrange(.data[[out_format]]) %>%
+    dplyr::mutate(
+      {{in_format}} := dplyr::if_else(
+        grepl("||", .data[[in_format]], fixed=TRUE),
+        substring(.data[[in_format]], 5),
+        .data[[in_format]]
       )
-  }
+    ) %>%
+    dplyr::mutate(
+      {{out_format}} := dplyr::if_else(
+        grepl("||", .data[[out_format]], fixed=TRUE),
+        substring(.data[[out_format]], 5),
+        .data[[out_format]]
+      )
+    )
 
-  # Set keep_var to all out_format columns
+  # Remove alternate out_format variables
+  df <- df %>%
+    dplyr::mutate(
+      {{out_format}} := dplyr::if_else(
+        grepl("|", .data[[out_format]], fixed=TRUE),
+        stringr::str_split_i(.data[[out_format]], "\\|", 1),
+        .data[[out_format]]
+      )
+    )
+
+  # Set keep_var
   keep_var <- df[[out_format]]
 
   # Tidy data

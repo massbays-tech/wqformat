@@ -8,16 +8,21 @@
 #' @returns Updated dataframe.
 prep_ME_FOCB <- function(df, date_format = 'm/d/y'){
 
-  # Add column for sample depth units
+  # Add columns
   if ("Sample Depth m" %in% colnames(df)) {
     df <- dplyr::mutate(df, "Sample Depth Unit" = "m")
   }
+
+  df <- df %>%
+    dplyr::mutate(Project = "FRIENDS OF CASCO BAY ALL SITES") %>%
+    dplyr::mutate(`Sampled By` = "FRIENDS OF CASCO BAY")
 
   # Check if table is long, else make long
   if (!"Parameter" %in% colnames(df)) {
     # Pivot table longer, update parameter & unit names
     keep_col <- c("SiteID", "Site ID", "Sample ID", "Date", "Time",
-                  "Sample Depth", "Sample Depth m", "Sample Depth Unit")
+                  "Sample Depth", "Sample Depth m", "Sample Depth Unit",
+                  "Project", "Sampled By")
 
     # Set table to numeric before pivot to avoid errors from "BSV" score
     df <- df %>%

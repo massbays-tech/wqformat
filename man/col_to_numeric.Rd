@@ -4,10 +4,10 @@
 \alias{col_to_numeric}
 \title{Column to Numeric}
 \usage{
-col_to_numeric(dat, field)
+col_to_numeric(df, field)
 }
 \arguments{
-\item{dat}{Dataframe.}
+\item{df}{Dataframe.}
 
 \item{field}{String. Name of column to convert to numeric.}
 }

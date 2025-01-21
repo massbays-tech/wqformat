@@ -69,8 +69,8 @@ test_that("prep_ME_FOCB works", {
       "Water Depth", "Secchi Depth", "Cloud Cover", "Wind Speed",
       "Wind Direction", "Water Depth", "Secchi Depth","Cloud Cover",
       "Wind Speed", "Wind Direction"),
-    "Result" = c('50', '3', '120', '10.7', '1.9', '50', '3', '150', '3.2',
-      'BSV', '50', '2', '180'),
+    "Result" = c("50", "3", "120", "10.7", "1.9", "50", "3", "150", "3.2",
+      "BSV", "50", "2", "180"),
     "Unit" = c("%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m",
       "m","%", "BFT", "DEG TRUE"),
     "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
@@ -141,12 +141,12 @@ test_that("prep_ME_FOCB works", {
     "MDL" = c(0.73, 0.73, 0.73),
     "Method" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
     "Sample Depth m" = c(0.2, 0.2, 0.2),
-    "Sample Depth Unit" = c('m', 'm', 'm'),
+    "Sample Depth Unit" = c("m", "m", "m"),
     "Project" = c("FRIENDS OF CASCO BAY ALL SITES",
       "FRIENDS OF CASCO BAY ALL SITES", "FRIENDS OF CASCO BAY ALL SITES"),
     "Sampled By" = c("FRIENDS OF CASCO BAY", "FRIENDS OF CASCO BAY",
       "FRIENDS OF CASCO BAY"),
-    'Qualifier' = c('J', 'J', NA),
+    "Qualifier" = c("J", "J", NA),
     check.names = FALSE
   )
 

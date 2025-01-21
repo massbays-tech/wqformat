@@ -4,10 +4,10 @@
 \alias{to_MassWateR}
 \title{To MassWateR}
 \usage{
-to_MassWateR(dat, in_format)
+to_MassWateR(df, in_format)
 }
 \arguments{
-\item{dat}{Dataframe.}
+\item{df}{Dataframe.}
 }
 \value{
 Updated dataframe.

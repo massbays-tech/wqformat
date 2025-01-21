@@ -4,10 +4,10 @@
 \alias{prep_MassWateR}
 \title{Prep MassWateR}
 \usage{
-prep_MassWateR(dat)
+prep_MassWateR(df)
 }
 \arguments{
-\item{dat}{Dataframe.}
+\item{df}{Dataframe.}
 }
 \value{
 Updated dataframe.

@@ -6,30 +6,30 @@
 #'    `Result Measure Qualifier`.
 #'  * Data in `QC Reference Value` is copied to its own row.
 #'
-#' @param dat Dataframe.
+#' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
-prep_MassWateR <- function(dat){
+prep_MassWateR <- function(df){
   # Prep data
-  dat$`Result Value` <- as.character(dat$`Result Value`)
-  dat$`QC Reference Value` <- as.character(dat$`QC Reference Value`)
+  df$`Result Value` <- as.character(df$`Result Value`)
+  df$`QC Reference Value` <- as.character(df$`QC Reference Value`)
 
   # Transfer QC Reference Value to own row
-  qc_duplicate <- c('Quality Control Sample-Lab Duplicate',
-                    'Quality Control-Meter Lab Duplicate')
+  qc_duplicate <- c("Quality Control Sample-Lab Duplicate",
+                    "Quality Control-Meter Lab Duplicate")
 
-  dat <- dat %>%
+  df <- df %>%
     dplyr::mutate(
       `QC Reference Value` = dplyr::if_else(
         `Activity Type` %in% qc_duplicate & !is.na(`QC Reference Value`),
-        paste0('NA|', `QC Reference Value`),
+        paste0("NA|", `QC Reference Value`),
         `QC Reference Value`
       )
     ) %>%
-    tidyr::separate_longer_delim(`QC Reference Value`, '|') %>%
+    tidyr::separate_longer_delim(`QC Reference Value`, "|") %>%
     dplyr::mutate(
       `QC Reference Value` = dplyr::if_else(
-        `QC Reference Value` == 'NA',
+        `QC Reference Value` == "NA",
         NA,
         `QC Reference Value`
       )
@@ -50,27 +50,27 @@ prep_MassWateR <- function(dat){
     )
 
   # Update qualifiers, result value
-  dat <- dat %>%
+  df <- df %>%
     dplyr::mutate(
       `Result Measure Qualifier` = dplyr::if_else(
-        `Result Value` %in% c('BDL', 'AQL'),
+        `Result Value` %in% c("BDL", "AQL"),
         `Result Value`,
         `Result Measure Qualifier`
       )
     ) %>%
     dplyr::mutate(
       `Result Value` = dplyr::if_else(
-        `Result Value` %in% c('BDL', 'AQL'),
+        `Result Value` %in% c("BDL", "AQL"),
         NA,
         `Result Value`
       )
     )
 
   # Reset columns to numeric
-  dat <- col_to_numeric(dat, 'Result Value')
-  dat <- col_to_numeric(dat, 'QC Reference Value')
+  df <- col_to_numeric(df, "Result Value")
+  df <- col_to_numeric(df, "QC Reference Value")
 
-  return(dat)
+  return(df)
 }
 
 #' To MassWateR
@@ -81,74 +81,74 @@ prep_MassWateR <- function(dat){
 #'  * Sets `Result Measure Qualifier` to Q or NA
 #'  * Transfers duplicate values to `QC Reference Value`
 #'
-#' @param dat Dataframe.
+#' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
-to_MassWateR <- function(dat, in_format){
+to_MassWateR <- function(df, in_format){
   # Prep data
-  dat$`Result Value` <- as.character(dat$`Result Value`)
-  dat$`QC Reference Value` <- as.character(dat$`QC Reference Value`)
+  df$`Result Value` <- as.character(df$`Result Value`)
+  df$`QC Reference Value` <- as.character(df$`QC Reference Value`)
 
-  dat_colnames <- colnames(dat)
+  df_colnames <- colnames(df)
 
   # Update qualifiers, result value
-  qual <- find_var_names(varnames_qualifiers, in_format, 'Flag')
-  dat <- rename_all_var(dat, 'Result Measure Qualifier', qual$old_names, qual$new_names)
+  qual <- find_var_names(varnames_qualifiers, in_format, "Flag")
+  df <- rename_all_var(df, "Result Measure Qualifier", qual$old_names, qual$new_names)
 
-  dat <- dat %>%
+  df <- df %>%
     dplyr::mutate(
       `Result Value` = dplyr::case_when(
-        `Result Measure Qualifier` == 'Non-Detect' ~ 'BDL',
-        `Result Measure Qualifier` == 'Over-Detect' ~ 'AQL',
+        `Result Measure Qualifier` == "Non-Detect" ~ "BDL",
+        `Result Measure Qualifier` == "Over-Detect" ~ "AQL",
         TRUE ~ `Result Value`
       )
     ) %>%
     dplyr::mutate(
       `Result Measure Qualifier` = dplyr::if_else(
-        `Result Measure Qualifier` %in% c('Not Reviewed', 'Suspect'),
-        'Q',
+        `Result Measure Qualifier` %in% c("Not Reviewed", "Suspect"),
+        "Q",
         NA
       )
     )
 
   # Transfer QC duplicates to QC Reference Value
-  qc_duplicate <- c('Quality Control Sample-Lab Duplicate',
-                    'Quality Control-Meter Lab Duplicate')
-  group_col <- setdiff(dat_colnames, 'Result Value')
+  qc_duplicate <- c("Quality Control Sample-Lab Duplicate",
+                    "Quality Control-Meter Lab Duplicate")
+  group_col <- setdiff(df_colnames, "Result Value")
 
-  chk <- dat[['Activity Type']] %in% qc_duplicate &
-    is.na(dat[['QC Reference Value']])
-  dat1 <- dat[which(chk),]  # data to group
-  dat2 <- dat[which(!chk),]  # data to leave as-is
+  chk <- df[["Activity Type"]] %in% qc_duplicate &
+    is.na(df[["QC Reference Value"]])
+  df1 <- df[which(chk),]  # data to group
+  df2 <- df[which(!chk),]  # data to leave as-is
 
-  dat1 <- dat1 %>%
+  df1 <- df1 %>%
     dplyr::group_by_at(group_col) %>%
     dplyr::summarize(
-      `Result Value` = stringr::str_c(`Result Value`, collapse = '|'),
-      .groups = 'drop'
+      `Result Value` = stringr::str_c(`Result Value`, collapse = "|"),
+      .groups = "drop"
     ) %>%
     dplyr::mutate(
       `QC Reference Value` = dplyr::if_else(
-        stringr::str_count(`Result Value`, '\\|') == 1,
-        stringr::str_split_i(`Result Value`, '\\|', 2),
+        stringr::str_count(`Result Value`, "\\|") == 1,
+        stringr::str_split_i(`Result Value`, "\\|", 2),
         `QC Reference Value`
       )
     ) %>%
     dplyr::mutate(
       `Result Value` = dplyr::if_else(
-        stringr::str_count(`Result Value`, '\\|') == 1,
-        stringr::str_split_i(`Result Value`, '\\|', 1),
+        stringr::str_count(`Result Value`, "\\|") == 1,
+        stringr::str_split_i(`Result Value`, "\\|", 1),
         `Result Value`
       )
     ) %>%
-    tidyr::separate_longer_delim(`Result Value`, '|')
+    tidyr::separate_longer_delim(`Result Value`, "|")
 
-  dat <- rbind(dat1, dat2)
-  dat <- as.data.frame(dat) %>%
+  df <- rbind(df1, df2)
+  df <- as.data.frame(df) %>%
     dplyr::arrange(`Activity Start Date`, `Activity Start Time`) %>%  # Sort data by Date, Time
-    dplyr::select(dplyr::all_of(dat_colnames))  # Reorder columns, else 'Result Value' sent to end
-  dat <- col_to_numeric(dat, 'Result Value')
-  dat <- col_to_numeric(dat, 'QC Reference Value')
+    dplyr::select(dplyr::all_of(df_colnames))  # Reorder columns, else "Result Value" sent to end
+  df <- col_to_numeric(df, "Result Value")
+  df <- col_to_numeric(df, "QC Reference Value")
 
-  return(dat)
+  return(df)
 }

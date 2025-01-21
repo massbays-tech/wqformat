@@ -1,6 +1,6 @@
 test_that("format_results works for Maine data formats", {
   # Input formats - test data from ME_FOCB in 3 formats
-  dat_wide1 <- data.frame(
+  df_wide1 <- data.frame(
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
@@ -12,7 +12,7 @@ test_that("format_results works for Maine data formats", {
     check.names = FALSE
   )
 
-  dat_wide2 <- data.frame(
+  df_wide2 <- data.frame(
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
@@ -27,7 +27,7 @@ test_that("format_results works for Maine data formats", {
     check.names = FALSE
   )
 
-  dat_long <- data.frame(
+  df_long <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Lab" = c("UMWL", "UMWL", "UMWL"),
@@ -60,7 +60,7 @@ test_that("format_results works for Maine data formats", {
     "VALIDATION_COMMENT_TYPE"
   )
 
-  dat_wide1_DEP <- data.frame(
+  df_wide1_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18","HR2", "HR2", "HR2"
@@ -89,14 +89,14 @@ test_that("format_results works for Maine data formats", {
     ),
     check.names = FALSE
   )
-  dat_wide1_DEP[["SAMPLE_DATE"]] <- as.Date(dat_wide1_DEP[["SAMPLE_DATE"]])
-  dat_wide1_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_wide1_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
-  missing_col <- setdiff(dep_col_order, colnames(dat_wide1_DEP))
-  dat_wide1_DEP[missing_col] <- NA
-  dat_wide1_DEP <- dat_wide1_DEP[,dep_col_order]
+  df_wide1_DEP[["SAMPLE_DATE"]] <- as.Date(df_wide1_DEP[["SAMPLE_DATE"]])
+  df_wide1_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_wide1_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  missing_col <- setdiff(dep_col_order, colnames(df_wide1_DEP))
+  df_wide1_DEP[missing_col] <- NA
+  df_wide1_DEP <- df_wide1_DEP[,dep_col_order]
 
-  dat_wide2_DEP <- data.frame(
+  df_wide2_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18",
       "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
@@ -138,15 +138,15 @@ test_that("format_results works for Maine data formats", {
     ),
     check.names = FALSE
   )
-  dat_wide2_DEP[["SAMPLE_DATE"]] <- as.Date(dat_wide2_DEP[["SAMPLE_DATE"]])
-  dat_wide2_DEP["SAMPLE_DEPTH_UNIT"] <- "M"
-  dat_wide2_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_wide2_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
-  missing_col <- setdiff(dep_col_order, colnames(dat_wide2_DEP))
-  dat_wide2_DEP[missing_col] <- NA
-  dat_wide2_DEP <- dat_wide2_DEP[,dep_col_order]
+  df_wide2_DEP[["SAMPLE_DATE"]] <- as.Date(df_wide2_DEP[["SAMPLE_DATE"]])
+  df_wide2_DEP["SAMPLE_DEPTH_UNIT"] <- "M"
+  df_wide2_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_wide2_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  missing_col <- setdiff(dep_col_order, colnames(df_wide2_DEP))
+  df_wide2_DEP[missing_col] <- NA
+  df_wide2_DEP <- df_wide2_DEP[,dep_col_order]
 
-  dat_long_DEP <- data.frame(
+  df_long_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
     "SAMPLE_DATE" = c("2023-05-23", "2023-05-23", "2023-05-24"),
     "ANALYSIS_LAB" = c("UMWL", "UMWL", "UMWL"),
@@ -162,43 +162,43 @@ test_that("format_results works for Maine data formats", {
     "LAB_QUALIFIER" = c("J", "J", NA),
     check.names = FALSE
   )
-  dat_long_DEP[["SAMPLE_DATE"]] <- as.Date(dat_long_DEP[["SAMPLE_DATE"]])
-  dat_long_DEP[["ANALYSIS_DATE"]] <- as.Date(dat_long_DEP[["ANALYSIS_DATE"]])
-  dat_long_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_long_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
-  missing_col <- setdiff(dep_col_order, colnames(dat_long_DEP))
-  dat_long_DEP[missing_col] <- NA
-  dat_long_DEP <- dat_long_DEP[,dep_col_order]
+  df_long_DEP[["SAMPLE_DATE"]] <- as.Date(df_long_DEP[["SAMPLE_DATE"]])
+  df_long_DEP[["ANALYSIS_DATE"]] <- as.Date(df_long_DEP[["ANALYSIS_DATE"]])
+  df_long_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_long_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  missing_col <- setdiff(dep_col_order, colnames(df_long_DEP))
+  df_long_DEP[missing_col] <- NA
+  df_long_DEP <- df_long_DEP[,dep_col_order]
 
   # test ME_FOCB to ME_DEP
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide1, "ME_FOCB", "ME_DEP", date_format="m/d/y",
+        df_wide1, "ME_FOCB", "ME_DEP", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_wide1_DEP
+    df_wide1_DEP
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide2, "ME_FOCB", "ME_DEP", date_format="m/d/y",
+        df_wide2, "ME_FOCB", "ME_DEP", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_wide2_DEP
+    df_wide2_DEP
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_long, "ME_FOCB", "ME_DEP", date_format="m/d/y",
+        df_long, "ME_FOCB", "ME_DEP", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_long_DEP
+    df_long_DEP
   )
 
   # Expected output - ME_FOCB to MassWateR
@@ -212,7 +212,7 @@ test_that("format_results works for Maine data formats", {
     "Result Comment"
   )
 
-  dat_wide1_mwr <- data.frame(
+  df_wide1_mwr <- data.frame(
     "Monitoring Location ID" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18","HR2", "HR2", "HR2"
@@ -242,15 +242,15 @@ test_that("format_results works for Maine data formats", {
     ),
     check.names = FALSE
   )
-  dat_wide1_mwr[["Activity Start Date"]] <- as.Date(dat_wide1_mwr[["Activity Start Date"]])
-  dat_wide1_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_wide1_mwr["Result Measure Qualifier"] <- NA_character_
-  dat_wide1_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(dat_wide1_mwr))
-  dat_wide1_mwr[missing_col] <- NA
-  dat_wide1_mwr <- dat_wide1_mwr[,mwr_col_order]
+  df_wide1_mwr[["Activity Start Date"]] <- as.Date(df_wide1_mwr[["Activity Start Date"]])
+  df_wide1_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_wide1_mwr["Result Measure Qualifier"] <- NA_character_
+  df_wide1_mwr[["QC Reference Value"]] <- NA_integer_
+  missing_col <- setdiff(mwr_col_order, colnames(df_wide1_mwr))
+  df_wide1_mwr[missing_col] <- NA
+  df_wide1_mwr <- df_wide1_mwr[,mwr_col_order]
 
-  dat_wide2_mwr <- data.frame(
+  df_wide2_mwr <- data.frame(
     "Monitoring Location ID" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18",
       "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
@@ -291,16 +291,16 @@ test_that("format_results works for Maine data formats", {
     ),
     check.names = FALSE
   )
-  dat_wide2_mwr[["Activity Start Date"]] <- as.Date(dat_wide2_mwr[["Activity Start Date"]])
-  dat_wide2_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_wide2_mwr["Activity Depth/Height Unit"] <- "m"
-  dat_wide2_mwr["Result Measure Qualifier"] <- NA_character_
-  dat_wide2_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(dat_wide2_mwr))
-  dat_wide2_mwr[missing_col] <- NA
-  dat_wide2_mwr <- dat_wide2_mwr[,mwr_col_order]
+  df_wide2_mwr[["Activity Start Date"]] <- as.Date(df_wide2_mwr[["Activity Start Date"]])
+  df_wide2_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_wide2_mwr["Activity Depth/Height Unit"] <- "m"
+  df_wide2_mwr["Result Measure Qualifier"] <- NA_character_
+  df_wide2_mwr[["QC Reference Value"]] <- NA_integer_
+  missing_col <- setdiff(mwr_col_order, colnames(df_wide2_mwr))
+  df_wide2_mwr[missing_col] <- NA
+  df_wide2_mwr <- df_wide2_mwr[,mwr_col_order]
 
-  dat_long_mwr <- data.frame(
+  df_long_mwr <- data.frame(
     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
     "Characteristic Name" = c(
@@ -314,48 +314,48 @@ test_that("format_results works for Maine data formats", {
     "Quantitation Limit" = c(0.73, 0.73, 0.73),
     check.names = FALSE
   )
-  dat_long_mwr[["Activity Start Date"]] <- as.Date(dat_long_mwr[["Activity Start Date"]])
-  dat_long_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  dat_long_mwr["Result Measure Qualifier"] <- NA_character_
-  dat_long_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(dat_long_mwr))
-  dat_long_mwr[missing_col] <- NA
-  dat_long_mwr <- dat_long_mwr[,mwr_col_order]
+  df_long_mwr[["Activity Start Date"]] <- as.Date(df_long_mwr[["Activity Start Date"]])
+  df_long_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_long_mwr["Result Measure Qualifier"] <- NA_character_
+  df_long_mwr[["QC Reference Value"]] <- NA_integer_
+  missing_col <- setdiff(mwr_col_order, colnames(df_long_mwr))
+  df_long_mwr[missing_col] <- NA
+  df_long_mwr <- df_long_mwr[,mwr_col_order]
 
   # test ME_FOCB to MassWateR
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide1, "ME_FOCB", "MassWateR", date_format="m/d/y",
+        df_wide1, "ME_FOCB", "MassWateR", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_wide1_mwr
+    df_wide1_mwr
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide2, "ME_FOCB", "MassWateR", date_format="m/d/y",
+        df_wide2, "ME_FOCB", "MassWateR", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_wide2_mwr
+    df_wide2_mwr
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_long, "ME_FOCB", "MassWateR", date_format="m/d/y",
+        df_long, "ME_FOCB", "MassWateR", date_format="m/d/y",
         show_messages = FALSE
       )
     ),
-    dat_long_mwr
+    df_long_mwr
   )
 
   # test ME_DEP to MassWateR
-  dat_wide1_DEP_mwr <- dat_wide1_mwr
-  dat_wide1_DEP_mwr["Characteristic Name"] <- c(
+  df_wide1_DEP_mwr <- df_wide1_mwr
+  df_wide1_DEP_mwr["Characteristic Name"] <- c(
     "CLOUD COVER", "WSPD", "WDIR", "Depth", "Depth, Secchi disk depth",
     "CLOUD COVER", "WSPD", "WDIR", "Depth", "Depth, Secchi disk depth",
     "CLOUD COVER", "WSPD", "WDIR"
@@ -364,27 +364,27 @@ test_that("format_results works for Maine data formats", {
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide1_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
+        df_wide1_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
       )
     ),
-    dat_wide1_DEP_mwr
+    df_wide1_DEP_mwr
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_wide2_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
+        df_wide2_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
       )
     ),
-    dat_wide2_mwr
+    df_wide2_mwr
   )
 
   expect_equal(
     suppressWarnings(
       format_results(
-        dat_long_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
+        df_long_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
       )
     ),
-    dat_long_mwr
+    df_long_mwr
   )
 })

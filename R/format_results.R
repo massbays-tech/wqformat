@@ -27,9 +27,9 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
     df <- prep_MassWateR(df)
   } else if (in_format == "ME_DEP") {
     df <- concat_columns(df,
-      in_fields = c('LAB_QUALIFIER', 'PARAMETER_QUALIFIER',
-                    'VALIDATION_QUALIFIER'),
-      out_field = 'LAB_QUALIFIER')
+      in_fields = c("LAB_QUALIFIER", "PARAMETER_QUALIFIER",
+                    "VALIDATION_QUALIFIER"),
+      out_field = "LAB_QUALIFIER")
   } else if (in_format == "ME_FOCB") {
     df <- prep_ME_FOCB(df, date_format)
   }

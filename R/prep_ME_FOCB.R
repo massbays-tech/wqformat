@@ -6,7 +6,7 @@
 #' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
-prep_ME_FOCB <- function(df, date_format = 'm/d/y'){
+prep_ME_FOCB <- function(df, date_format = "m/d/y"){
 
   # Add columns
   if ("Sample Depth m" %in% colnames(df)) {
@@ -80,13 +80,13 @@ prep_ME_FOCB <- function(df, date_format = 'm/d/y'){
 
     df <- df %>%
       dplyr::rename(
-        c(Sample_Date = 'Sample Date',
+        c(Sample_Date = "Sample Date",
           Analysis_Date = "Analysis Date")
       ) %>%
       dplyr::mutate(temp_gap = as.numeric(Analysis_Date - Sample_Date)) %>%
       dplyr::rename(
-        c('Sample Date' = Sample_Date,
-          'Analysis Date' = Analysis_Date)
+        c("Sample Date" = Sample_Date,
+          "Analysis Date" = Analysis_Date)
       )
   } else {
     df$temp_gap <- 0

@@ -107,21 +107,21 @@ rename_col <- function(df, old_colnames, new_colnames){
 #' @param out_field String. Name of column to transfer values to.
 #'
 #' @returns Updated dataframe.
-concat_columns <- function(dat, in_fields, out_field) {
-  if (!out_field %in% colnames(dat)) {
-    dat[[out_field]] <- NA
+concat_columns <- function(df, in_fields, out_field) {
+  if (!out_field %in% colnames(df)) {
+    df[[out_field]] <- NA
   }
 
-  in_fields <- intersect(in_fields, colnames(dat))
+  in_fields <- intersect(in_fields, colnames(df))
 
   if (length(in_fields) == 0) {
-    return(dat)
+    return(df)
   } else if (length(in_fields) == 1) {
-    dat <- dplyr::mutate(dat, {{out_field}} := .data[[in_fields]])
-    return(dat)
+    df <- dplyr::mutate(df, {{out_field}} := .data[[in_fields]])
+    return(df)
   }
 
-  dat <- dat %>%
+  df <- df %>%
     tidyr::unite(
       {{out_field}},
       dplyr::any_of(in_fields),
@@ -138,5 +138,5 @@ concat_columns <- function(dat, in_fields, out_field) {
       )
     )
 
-  return(dat)
+  return(df)
 }

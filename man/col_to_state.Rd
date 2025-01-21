@@ -4,10 +4,10 @@
 \alias{col_to_state}
 \title{Format State Columns}
 \usage{
-col_to_state(dat, state_col, full_name = FALSE)
+col_to_state(df, state_col, full_name = FALSE)
 }
 \arguments{
-\item{dat}{Dataframe.}
+\item{df}{Dataframe.}
 
 \item{state_col}{String. Name of state column.}
 

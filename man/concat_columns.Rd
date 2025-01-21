@@ -4,14 +4,14 @@
 \alias{concat_columns}
 \title{Concatenate Columns}
 \usage{
-concat_columns(dat, in_fields, out_field)
+concat_columns(df, in_fields, out_field)
 }
 \arguments{
+\item{df}{Dataframe.}
+
 \item{in_fields}{List. Dataframe columns to combine.}
 
 \item{out_field}{String. Name of column to transfer values to.}
-
-\item{df}{Dataframe.}
 }
 \value{
 Updated dataframe.

@@ -1,114 +1,73 @@
-#' Column to Numeric
-#'
-#' @description Checks if column can be converted to numeric format. If TRUE,
-#'  updates column type.
-#'
-#' @param dat Dataframe.
-#' @param field String. Name of column to convert to numeric.
-#'
-#' @returns Updated dataframe.
-col_to_numeric <- function(dat, field){
-  if (is.numeric(dat[[field]])) {
-    return(dat)
-  }
+test_that("col_to_numeric works", {
+  df <- data.frame(
+    "col1" = c("1", "2", "4"),
+    "col2" = c("A", "5", "6")
+  )
 
-  typ <- dat[field]
-  chk <- !is.na(suppressWarnings(mapply(as.numeric, typ))) | is.na(typ)
+  df2 <- data.frame(
+    "col1" = c(1, 2, 4),
+    "col2" = c("A", "5", "6")
+  )
 
-  if(all(chk)){
-    dat <- dplyr::mutate(dat, {{field}} := as.numeric(.data[[field]]))
-  }
+  expect_equal(col_to_numeric(df, "col1"), df2)
+  expect_equal(col_to_numeric(df, "col2"), df)
+})
 
-  return(dat)
-}
+test_that("col_to_date works", {
+  df <- data.frame(
+    "good_date" = c(
+      as.Date("2022-03-01"), as.Date("2023-04-18"), as.Date("2004-06-12"),
+      as.Date("2024-09-26")
+    ),
+    "na_date" = c(as.Date("2022-03-01"), NA, NA, as.Date("2024-09-26")),
+    "mdy_date" = c("3/1/22", NA, "4/18/23", NA),
+    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA))
 
-#' Column to Date
-#'
-#' @description Checks if column is formatted as a date. If column is not
-#'   formatted as date, converts column to date type.
-#' @param dat Input dataframe.
-#' @param date_col String. Name of date column.
-#' @param date_format String. Uses the same formatting as
-#'  `lubridate::parse_date_time`. Default value "m/d/Y".
-#'
-#' @noRd
-col_to_date <- function(dat, date_col, date_format="m/d/Y") {
+  df_format <- data.frame(
+    "good_date" = c(
+      as.Date("2022-03-01"), as.Date("2023-04-18"), as.Date("2004-06-12"),
+      as.Date("2024-09-26")
+    ),
+    "na_date" = c(as.Date("2022-03-01"), NA, NA, as.Date("2024-09-26")),
+    "mdy_date" = c(as.Date("2022-03-01"), NA, as.Date("2023-04-18"), NA),
+    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA))
 
-  dat_temp <- dplyr::filter(dat, !is.na(.data[[date_col]]))
-  chk <- mapply(lubridate::is.Date, dat_temp[[date_col]])
+  # Check error messages
+  expect_error(
+    col_to_date(df, "mdy_date", "foobar"),
+    regexp = "date_format contains invalid variables: foo")
+  expect_error(
+    col_to_date(df, "mdy_date", "m/d/Y"),
+    regexp = 'Date does not match format "m/d/Y"')
+  expect_error(
+    col_to_date(df, "bad_date", "m/d/Y"),
+    regexp = "Date is improperly formatted in rows: 2, 3")
 
-  if(all(chk)){
-    return(dat)
-  } else if (is.null(date_format)) {
-    stop("Date format is missing", call. = FALSE)
-  }
+  # Check works
+  expect_equal(col_to_date(df, "good_date"), df)
+  expect_equal(col_to_date(df, "na_date"), df)
+  expect_equal(col_to_date(df, "mdy_date", "m/d/y"), df_format)
+})
 
-  date_var <- c("OS", "Om", "Op", "a", "A", "b", "B", "d", "H", "I", "j", "q",
-                "m", "M", "p", "S", "U", "w", "W", "y", "Y", "z", "r", "R", "T")
-  chk_var <- gsub("[^a-zA-Z]", "", date_format)
-  chk_var <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
+test_that("col_to_state works", {
+  df <- data.frame(
+    "State_abb" = c("RI", "MA"),
+    "State_name" = c("Rhode Island", "Massachusetts"),
+    "State_mix" = c("Rhode Island", "MA"),
+    "State_misspell" = c("RI", "foo")
+  )
 
-  if(chk_var != "") {
-    stop("date_format contains invalid variables: ", chk_var, call. = FALSE)
-  }
+  df <- col_to_state(df, "State_abb", full_name = TRUE)
+  df <- col_to_state(df, "State_name")
+  df <- col_to_state(df, "State_mix", full_name = TRUE)
+  df <- col_to_state(df, "State_misspell")
 
-  chk <- is.na(dat[[date_col]])
+  df2 <- data.frame(
+    "State_abb" = c("Rhode Island", "Massachusetts"),
+    "State_name" = c("RI", "MA"),
+    "State_mix" = c("Rhode Island", "Massachusetts"),
+    "State_misspell" = c("RI", "foo")
+  )
 
-  dat <- dat %>%
-    dplyr::mutate(
-      {{date_col}} := as.Date(
-        lubridate::parse_date_time(
-          as.character(.data[[date_col]]),
-          date_format,
-          quiet = TRUE)))
-
-  chk2 <- !is.na(dat[[date_col]])
-  chk <- chk | chk2
-
-  if(all(!chk2)) {
-    stop('Date does not match format "', date_format, '"',
-         call. = FALSE)
-  } else if (any(!chk)) {
-    rws <- which(!chk)
-    stop("Date is improperly formatted in rows: ",
-         paste(rws, collapse = ", "), call. = FALSE)
-  }
-
-  return(dat)
-}
-
-#' Format State Columns
-#'
-#' @description Updates all state names in column to either abbreviations or
-#'  full names.
-#'
-#' @param dat Dataframe.
-#' @param state_col String. Name of state column.
-#' @param full_name Boolean. If TRUE, updates `state_col` to include full state
-#'  names. If FALSE, updates `state_col` to include state abbreviations. Default
-#'  FALSE.
-#'
-#' @returns Updated dataframe.
-col_to_state <- function(dat, state_col, full_name = FALSE) {
-  if (full_name) {
-    dat <- dat %>%
-      dplyr::mutate(
-        {{state_col}} := dplyr::if_else(
-          .data[[state_col]] %in% state.abb,
-          state.name[match(.data[[state_col]], state.abb)],
-          .data[[state_col]]
-        )
-      )
-  } else {
-    dat <- dat %>%
-      dplyr::mutate(
-        {{state_col}} := dplyr::if_else(
-          .data[[state_col]] %in% state.name,
-          state.abb[match(.data[[state_col]], state.name)],
-          .data[[state_col]]
-        )
-      )
-  }
-
-  return(dat)
-}
+  expect_equal(df, df2)
+})

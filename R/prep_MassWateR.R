@@ -145,7 +145,7 @@ to_MassWateR <- function(dat, in_format){
 
   dat <- rbind(dat1, dat2)
   dat <- as.data.frame(dat) %>%
-    dplyr::arrange(`Activity Start Date`, `Activity Start Time`) %>%
+    dplyr::arrange(`Activity Start Date`, `Activity Start Time`) %>%  # Sort data by Date, Time
     dplyr::select(dplyr::all_of(dat_colnames))  # Reorder columns, else 'Result Value' sent to end
   dat <- col_to_numeric(dat, 'Result Value')
   dat <- col_to_numeric(dat, 'QC Reference Value')

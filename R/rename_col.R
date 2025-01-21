@@ -112,6 +112,15 @@ concat_columns <- function(dat, in_fields, out_field) {
     dat[[out_field]] <- NA
   }
 
+  in_fields <- intersect(in_fields, colnames(dat))
+
+  if (length(in_fields) == 0) {
+    return(dat)
+  } else if (length(in_fields) == 1) {
+    dat <- dplyr::mutate(dat, {{out_field}} := .data[[in_fields]])
+    return(dat)
+  }
+
   dat <- dat %>%
     tidyr::unite(
       {{out_field}},

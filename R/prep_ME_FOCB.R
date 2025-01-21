@@ -75,8 +75,8 @@ prep_ME_FOCB <- function(df, date_format = 'm/d/y'){
 
   chk <- "Sample Date" %in% colnames(df) & "Analysis Date" %in% colnames(df)
   if (chk) {
-    df <- format_date(df, "Sample Date", date_format)
-    df <- format_date(df, "Analysis Date", date_format)
+    df <- col_to_date(df, "Sample Date", date_format)
+    df <- col_to_date(df, "Analysis Date", date_format)
 
     df <- df %>%
       dplyr::rename(

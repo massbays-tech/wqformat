@@ -82,7 +82,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
       old_varname = col_sub$old_names,
       new_varname = col_sub$new_names)
     if (col_name %in% colnames(df)) {
-      df <- format_date(df, col_name, date_format)
+      df <- col_to_date(df, col_name, date_format)
     }
   }
 
@@ -125,7 +125,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
     in_var = "Result Measure Qualifier",
     old_varname = col_sub$old_names,
     new_varname = col_sub$new_names)
-  if (out_format != "MassWater" & col_name %in% colnames(df)) {
+  if (out_format != "MassWateR" & col_name %in% colnames(df)) {
     qual <- find_var_names(varnames_qualifiers, in_format, out_format)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
   }

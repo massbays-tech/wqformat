@@ -26,7 +26,7 @@ ppm,ppm,,,,
 ppt,ppt,ppt,ppt,,
 ppth,ppth,,,PPTH,PPTH
 PSS,PSS,,,PSS,PSS
-PSU,PSU,,,,psu
+PSU,PSU,,,PSU|psu,psu
 S/m,S/m,,,,
 ug/L|mg/m3|ng/cm3,ug/l,ug/l,ug/l,UG/L,ug/L|UG/L
 umol/L,umol/l,,,UMOL/L,UMOL/L

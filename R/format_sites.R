@@ -65,9 +65,9 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE,
 
   # Update variables ----
   if (out_format == "WQX" & "State Code" %in% colnames(df)) {
-    df <- state_to_abb(df, "State Code")
+    df <- col_to_state(df, "State Code")
   } else if (out_format == "WQdashboard" & "State" %in% colnames(df)) {
-    df <- state_to_abb(df, "State")
+    df <- col_to_state(df, "State")
   }
 
   if (show_messages) {

@@ -2,6 +2,10 @@
 # wqformat
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/massbays-tech/wqformat/graph/badge.svg)](https://app.codecov.io/gh/massbays-tech/wqformat)
+[![R-CMD-check](https://github.com/massbays-tech/wqformat/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/massbays-tech/wqformat/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of wqformat is to provide simple R functions to convert common

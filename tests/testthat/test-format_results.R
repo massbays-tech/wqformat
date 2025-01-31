@@ -267,8 +267,8 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     ),
     "Characteristic Name" = c(
       "Cloud Cover", "Wind Speed", "Wind Direction", "Depth",
-      "Depth, Secchi disk depth", "Cloud Cover", "Wind Speed", "Wind Direction",
-      "Depth", "Depth, Secchi disk depth", "Cloud Cover", "Wind Speed",
+      "Secchi Depth", "Cloud Cover", "Wind Speed", "Wind Direction",
+      "Depth", "Secchi Depth", "Cloud Cover", "Wind Speed",
       "Wind Direction"
     ),
     "Result Value" = c(
@@ -312,12 +312,10 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       0, 0, 0, 0, 0, 0
     ),
     "Characteristic Name" = c(
-      "Temperature, water", "Salinity", "Dissolved oxygen (DO)",
-      "Dissolved oxygen saturation", "pH", "Chlorophyll a", "Turbidity",
-      "Temperature, water", "Salinity", "Dissolved oxygen (DO)",
-      "Dissolved oxygen saturation", "pH", "Chlorophyll a", "Turbidity",
-      "Temperature, water", "Salinity", "Dissolved oxygen (DO)",
-      "Dissolved oxygen saturation", "pH", "Chlorophyll a", "Turbidity"
+      "Water Temp", "Salinity", "DO", "DO saturation", "pH", "Chl a",
+      "Turbidity", "Water Temp", "Salinity", "DO", "DO saturation", "pH",
+      "Chl a", "Turbidity", "Water Temp", "Salinity", "DO", "DO saturation",
+      "pH", "Chl a", "Turbidity"
     ),
     "Result Value" = c(
       11.3, 27.5, 9.3, 100.7, 7.93, 1.2, 2.7, 11, 28, 9.3, 100.7, 7.93, 1.2,
@@ -342,10 +340,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   df_long_mwr <- data.frame(
     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-    "Characteristic Name" = c(
-      "Total Nitrogen, mixed forms", "Total Nitrogen, mixed forms",
-      "Total Nitrogen, mixed forms"
-    ),
+    "Characteristic Name" = c("TN", "TN", "TN"),
     "Result Value" = c(0.22, 0.18, 0.28),
     "Result Unit" = c("mg/l", "mg/l", "mg/l"),
     "Activity Depth/Height Measure" = c(0.2, 0.2, 0.2),
@@ -447,10 +442,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 #   df_mwr <- data.frame(
 #     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
 #     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-#     "Characteristic Name" = c(
-#       "Total Nitrogen, mixed forms", "Total Nitrogen, mixed forms",
-#       "Total Nitrogen, mixed forms"
-#     ),
+#     "Characteristic Name" = c("TN", "TN", "TN"),
 #     "Result Value" = c(0.22, 0.18, 0.28),
 #     "Result Unit" = c("mg/l", "mg/l", "mg/l"),
 #     "Activity Depth/Height Measure" = c(0.2, 0.2, 0.2),

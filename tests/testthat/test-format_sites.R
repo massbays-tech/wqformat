@@ -36,11 +36,15 @@ test_that("format_sites works", {
 
   # Test conversions
   expect_equal(
-    format_sites(df_me_focb, "ME_FOCB", "MassWateR", show_messages = FALSE),
+    suppressMessages(
+      format_sites(df_me_focb, "ME_FOCB", "MassWateR")
+    ),
     df_masswater
   )
   expect_equal(
-    format_sites(df_masswater, "MassWateR", "WQdashboard", show_messages = FALSE),
+    suppressMessages(
+      format_sites(df_masswater, "MassWateR", "WQdashboard")
+    ),
     df_wqdashboard
   )
 
@@ -50,9 +54,8 @@ test_that("format_sites works", {
 
   expect_equal(
     suppressWarnings(
-      format_sites(
-        df_me_focb, "ME_FOCB", "MassWateR", drop_extra_col = FALSE,
-        show_messages = FALSE
+      suppressMessages(
+        format_sites(df_me_focb, "ME_FOCB", "MassWateR", drop_extra_col = FALSE)
       )
     ),
     df_extracol
@@ -60,9 +63,12 @@ test_that("format_sites works", {
 
   # Test warnings
   expect_warning(
-    format_sites(
-      df_wqdashboard, "WQdashboard", "MassWateR", drop_extra_col = FALSE,
-      show_messages = FALSE
+    suppressMessages(
+      format_sites(
+        df_wqdashboard,
+        "WQdashboard", "MassWateR",
+        drop_extra_col = FALSE
+      )
     ),
     regexp = "\tUnable to rename 8 columns: Town, County, State, Watershed, Location_Type, Max_Depth_Surface, Max_Depth_Midwater, Max_Depth_Near_Bottom"
   )

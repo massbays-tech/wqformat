@@ -104,12 +104,13 @@ to_MassWateR <- function(df, in_format){
       )
     ) %>%
     dplyr::mutate(
-      `Result Measure Qualifier` = dplyr::if_else(
-        `Result Measure Qualifier` %in% c("Not Reviewed", "Suspect"),
-        "Q",
-        NA
+      `Result Measure Qualifier` = dplyr::case_when(
+        `Result Measure Qualifier` %in% c("Not Reviewed", "Suspect") ~ "Q",
+        `Result Measure Qualifier` %in% c("Over-Detect", "Non-Detect", "Pass") ~ NA,
+        TRUE ~ `Result Measure Qualifier`
       )
     )
+  warn_invalid_var(df, "Result Measure Qualifier", "Q")
 
   # Transfer QC duplicates to QC Reference Value
   qc_duplicate <- c("Quality Control Sample-Lab Duplicate",

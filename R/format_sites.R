@@ -8,19 +8,13 @@
 #' @param date_format String. Date format, uses lubridate. (word better)
 #' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
 #'    converted to `out_format`. Default value TRUE.
-#' @param show_messages Boolean. If TRUE, displays status messages while
-#'    function runs. If FALSE, hides messages and only displays warnings and
-#'    errors. Default TRUE.
 #'
 #' @returns Updated dataframe.
 #'
 #' @noRd
-format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE,
-    show_messages = TRUE) {
+format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
-  if (show_messages) {
-    message("Reformatting data...")
-  }
+  message("Reformatting data...")
 
   # Update columns ----
   var_names <- find_var_names(
@@ -36,12 +30,10 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE,
   missing_col <- setdiff(var_names$keep_var, colnames(df))
   if (length(missing_col) > 0) {
     df[missing_col] <- NA
-    if(show_messages) {
-      message(
-        "\tAdded ", toString(length(missing_col)), " new columns: ",
-        paste(missing_col, collapse = ", ")
-      )
-    }
+    message(
+      "\tAdded ", toString(length(missing_col)), " new columns: ",
+      paste(missing_col, collapse = ", ")
+    )
   }
 
   # Sort columns, drop surplus if drop_extra_col is TRUE
@@ -51,9 +43,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE,
     df <- dplyr::select(df, dplyr::all_of(keep_col))
   } else if (drop_extra_col) {
     df <- dplyr::select(df, dplyr::all_of(keep_col))
-    if (show_messages) {
-      message("\tDropped ", toString(length(drop_col)), " columns")
-    }
+    message("\tDropped ", toString(length(drop_col)), " columns")
   } else {
     df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
     warning(
@@ -70,9 +60,6 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE,
     df <- col_to_state(df, "State")
   }
 
-  if (show_messages) {
-    message("Done")
-  }
-
+  message("Done")
   return(df)
 }

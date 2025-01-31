@@ -13,10 +13,15 @@
 #'
 #' @return String. Updated variable name.
 rename_var <- function(in_var, old_varname, new_varname, allow_multiple = FALSE) {
-  names(new_varname) <- old_varname
-
   if (!in_var %in% old_varname) {
     return(in_var)
+  }
+
+  chk <- c(is.na(old_varname), is.na(new_varname))
+  if (any(chk)) {
+    stop("old_varname and new_varname must not contain NA values")
+  } else if (length(old_varname) != length(new_varname)) {
+    stop("old_varname and new_varname must be the same length")
   }
 
   names(new_varname) <- old_varname
@@ -50,12 +55,11 @@ rename_all_var <- function(df, col_name, old_varname, new_varname) {
   if (!chk) {
     stop("col_name not in dataframe")
   }
-  chk <- all(is.na(old_varname))
-  chk2 <- all(is.na(new_varname))
-  if (chk & chk2) {
+  chk <- c(is.na(old_varname), is.na(new_varname))
+  if (all(chk)) {
     return(df)
-  } else if (chk | chk2) {
-    stop("old_varname and new_varname are different lengths")
+  } else if (any(chk)) {
+    stop("old_varname and new_varname must not contain NA values")
   } else if (all(old_varname == new_varname)) {
     return(df)
   } else if (length(old_varname) != length(new_varname)) {
@@ -71,4 +75,32 @@ rename_all_var <- function(df, col_name, old_varname, new_varname) {
     dplyr::mutate({{col_name}} := unname(.data[[col_name]])) # remove names
 
   return(df)
+}
+
+#' Warn if Invalid Variables
+#'
+#' @description Checks if column contains variables that aren't included in the
+#'  list of acceptable names.
+#'
+#' @param df Input dataframe.
+#' @param col_name String. Column name.
+#' @param varlist List. List of acceptable variable names.
+#'
+#' @return Updated dataframe.
+warn_invalid_var <- function(df, col_name, varlist) {
+  chk <- col_name %in% colnames(df)
+  if (!chk) {
+    stop("col_name not in dataframe")
+  }
+
+  x <- unique(df[[col_name]])
+  y <- setdiff(x, varlist)
+  y <- y[!is.na(y)]
+
+  if (length(y) > 0) {
+    warning(
+      "Invalid variables in ", col_name, ": ", paste(y, collapse = ", "),
+      call. = FALSE
+    )
+  }
 }

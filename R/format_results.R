@@ -8,19 +8,14 @@
 #' @param date_format String. Date format, uses lubridate. (word better)
 #' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
 #'    converted to `out_format`. Default value TRUE.
-#' @param show_messages Boolean. If TRUE, displays status messages while
-#'    function runs. If FALSE, hides messages and only displays warnings and
-#'    errors. Default TRUE.
 #'
 #' @returns Updated dataframe.
 #'
 #' @noRd
 format_results <- function(df, in_format, out_format, date_format="m/d/Y",
-                           drop_extra_col = TRUE, show_messages = TRUE){
+                           drop_extra_col = TRUE){
 
-  if (show_messages) {
-    message("Reformatting data...")
-  }
+  message("Reformatting data...")
 
   # Preformat data ----
   if (in_format == "MassWateR") {
@@ -48,9 +43,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
   missing_col <- setdiff(var_names$keep_var, colnames(df))
   if (length(missing_col) > 0) {
     df[missing_col] <- NA
-    if (show_messages) {
-      message("\tAdded ", toString(length(missing_col)), " new columns")
-    }
+    message("\tAdded ", toString(length(missing_col)), " new columns")
   }
 
   # Sort columns, drop surplus if drop_extra_col is TRUE
@@ -60,9 +53,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
     df <- dplyr::select(df, dplyr::all_of(keep_col))
   } else if (drop_extra_col) {
     df <- dplyr::select(df, dplyr::all_of(keep_col))
-    if (show_messages) {
-      message("\tDropped ", toString(length(drop_col)), " columns")
-    }
+    message("\tDropped ", toString(length(drop_col)), " columns")
   } else {
     df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
     warning(
@@ -87,13 +78,20 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
   }
 
   # Check - in_format and out_format using same variables?
-  if (in_format == "WQdashboard") { in_format <- "WQX" }
-  if (out_format == "WQdashboard") { out_format <- "WQX" }
+  if (in_format == "WQdashboard") {
+    in_format <- "WQX"
+  } else if (in_format == "RI_WW") {
+    in_format <- "RI_DEM"
+  }
+
+  if (out_format == "WQdashboard") {
+    out_format <- "WQX"
+  } else if (out_format == "RI_WW") {
+    out_format <- "RI_DEM"
+  }
 
   if (in_format == out_format) {
-    if (show_messages) {
-      message("Done")
-    }
+    message("Done")
     return(df)
   }
 
@@ -105,6 +103,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
   if (col_name %in% colnames(df)) {
     param <- find_var_names(varnames_parameters, in_format, out_format)
     df <- rename_all_var(df, col_name, param$old_names, param$new_names)
+    warn_invalid_var(df, col_name, param$keep_var)
   }
 
   # Rename units
@@ -117,6 +116,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
       new_varname = col_sub$new_names)
     if (col_name %in% colnames(df)) {
       df <- rename_all_var(df, col_name, unit_name$old_names, unit_name$new_names)
+      warn_invalid_var(df, col_name, unit_name$keep_var)
     }
   }
 
@@ -128,6 +128,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
   if (out_format != "MassWateR" & col_name %in% colnames(df)) {
     qual <- find_var_names(varnames_qualifiers, in_format, out_format)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
+    warn_invalid_var(df, col_name, qual$keep_var)
   }
 
   # Rename activity type
@@ -140,13 +141,9 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
       find_var_names(varnames_activity, in_format, out_format),
       silent = TRUE
     )
-    if (class(atype) == "try-error") {
-      warning(
-        "\tUnable to update variables in column ", col_name,
-        call. = FALSE
-      )
-    } else {
+    if (class(atype) != "try-error") {
       df <- rename_all_var(df, col_name, atype$old_names, atype$new_names)
+      warn_invalid_var(df, col_name, atype$keep_var)
     }
   }
 
@@ -155,9 +152,6 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
     df <- to_MassWateR(df, in_format)
   }
 
-  if (show_messages) {
-    message("Done")
-  }
-
+  message("Done")
   return(df)
 }

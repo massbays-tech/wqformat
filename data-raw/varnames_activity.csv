@@ -1,7 +1,7 @@
-WQX,MassWateR,RI_DEM,RI_WW,ME_DEP
+WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP
 Field Msr/Obs,Field Msr/Obs,Grab,Grab,NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)
-Quality Control Sample-Field Blank,Quality Control Sample-Field Blank,,,FB|FIELD BLANK
-Quality Control Sample-Lab Blank,Quality Control Sample-Lab Blank,,,LB|LAB BLANK
+Quality Control Sample-Field Blank,Quality Control Sample-Field Blank,,Field Blank,FB|FIELD BLANK
+Quality Control Sample-Lab Blank,Quality Control Sample-Lab Blank,,Lab Blank,LB|LAB BLANK
 Quality Control Sample-Lab Duplicate,Quality Control Sample-Lab Duplicate,,,L|LAB DUPLICATE
 Quality Control Sample-Lab Spike,Quality Control Sample-Lab Spike,,,MS|MATRIX SPIKE
 Quality Control-Calibration Check,Quality Control-Calibration Check,,,
@@ -9,10 +9,10 @@ Quality Control-Meter Lab Blank,Quality Control-Meter Lab Blank,,,
 Quality Control-Meter Lab Duplicate,Quality Control-Meter Lab Duplicate,,,
 Sample-Routine,Sample-Routine,,,
 ,,Blank,,
-,,Composite,Composite,
-,,Duplicate,Duplicate,
-,,Replicate,Replicate,
-Quality Control Field Replicate Msr/Obs,,,,D|FIELD DUPLICATE
+,,Composite,,
+,,Duplicate,,
+,,Replicate,,
+Quality Control Field Replicate Msr/Obs,,,Replicate,D|FIELD DUPLICATE
 ,,,,LCS|LAB CONTROL SAMPLE
 ,,,,LCSD|LAB CONTROL SAMPLE DUPLICATE
 Quality Control Sample-Lab Spike Duplicate,,,,MSD|MATRIX SPIKE DUPLICATE

@@ -9,3 +9,4 @@ data-raw/example_data_ME_FOCB_long-MSORLIEN.csv
 *.xlsx
 *.xls
 notes
+*.rds

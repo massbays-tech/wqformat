@@ -94,8 +94,8 @@ col_to_state <- function(df, state_col, full_name = FALSE) {
     df <- df %>%
       dplyr::mutate(
         {{state_col}} := dplyr::if_else(
-          .data[[state_col]] %in% state.abb,
-          state.name[match(.data[[state_col]], state.abb)],
+          .data[[state_col]] %in% datasets::state.abb,
+          datasets::state.name[match(.data[[state_col]], datasets::state.abb)],
           .data[[state_col]]
         )
       )
@@ -103,8 +103,8 @@ col_to_state <- function(df, state_col, full_name = FALSE) {
     df <- df %>%
       dplyr::mutate(
         {{state_col}} := dplyr::if_else(
-          .data[[state_col]] %in% state.name,
-          state.abb[match(.data[[state_col]], state.name)],
+          .data[[state_col]] %in% datasets::state.name,
+          datasets::state.abb[match(.data[[state_col]], datasets::state.name)],
           .data[[state_col]]
         )
       )

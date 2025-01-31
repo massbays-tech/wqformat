@@ -1,15 +1,14 @@
-﻿WQX,MassWateR,RI_DEM,RI_WW,ME_DEP,ME_FOCB,Flag,Description
-GT,AQL,,,G,G,Over-Detect,The listed result is greater than the upper quantitation limit for either the analytical method or the meter used for the measurement. Equivalent to the Legacy STORET Remark Code of L: Actual Value is known to be greater than the value given.
-DL,BDL,U,U,UJH,,Non-Detect,Not Detected: The analyte was not detected at a level >= to the Method Detection Limit for the analysis.
-Q,Q,,,R,,Suspect,The result did not pass the lab quality checks and there was an insufficient amount of the sample for re-analysis.
+﻿WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP,ME_FOCB,Flag,Description
+GT,AQL,Z,,G,G,Over-Detect,The listed result is greater than the upper quantitation limit for either the analytical method or the meter used for the measurement. Equivalent to the Legacy STORET Remark Code of L: Actual Value is known to be greater than the value given.
+DL,BDL,U,,UJH,UJH,Non-Detect,Not Detected: The analyte was not detected at a level >= to the Method Detection Limit for the analysis.
+Q,Q,,,R,R,Suspect,The result did not pass the lab quality checks and there was an insufficient amount of the sample for re-analysis.
 J-R,,I,,,,Suspect,Approximate value result is below the reporting level but greater than the method detection limit
-NRR,,N,N,,,Suspect,"No Result Reported, other"
-B,,V,,B|JB,,Suspect,"Detection in blank, Analyte found in sample and associated blank"
-,,,Z,,,,
-AR,,,,*|B*|J*,,Suspect,counts outside acceptable range
-DI,,,,D,,Pass,Dilution required
+NRR,,N,,,,Suspect,"No Result Reported, other"
+B,,V,,B|JB,B|JB,Suspect,"Detection in blank, Analyte found in sample and associated blank"
+AR,,,,*|B*|J*,*|B*|J*,Suspect,counts outside acceptable range
+DI,,,,D,D,Pass,Dilution required
 J,,,,J,J,Pass,Estimated: The analyte was positively identified and the associated numerical value is the approximate concentration of the analyte in the sample.
-BQL,,,,U|UJ,,Non-Detect,Below Quantitation Limit
+BQL,,,,U|UJ,U|UJ,Non-Detect,Below Quantitation Limit
 $,,,,,,Suspect,Incorrect sample container
 &,,,,,,Pass,biological organism established as dominant
 (,,,,,,Suspect,blank greater than the sample-specific Critical Level

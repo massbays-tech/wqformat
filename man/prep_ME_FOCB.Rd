@@ -8,6 +8,8 @@ prep_ME_FOCB(df, date_format = "m/d/y")
 }
 \arguments{
 \item{df}{Dataframe.}
+
+\item{date_format}{String. Date format, uses lubridate. (word better)}
 }
 \value{
 Updated dataframe.

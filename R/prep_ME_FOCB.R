@@ -4,6 +4,7 @@
 #'   Adds "Sample Depth Unit" column and pivots table from wide to long.
 #'
 #' @param df Dataframe.
+#' @param date_format String. Date format, uses lubridate. (word better)
 #'
 #' @returns Updated dataframe.
 prep_ME_FOCB <- function(df, date_format = "m/d/y"){
@@ -14,8 +15,8 @@ prep_ME_FOCB <- function(df, date_format = "m/d/y"){
   }
 
   df <- df %>%
-    dplyr::mutate(Project = "FRIENDS OF CASCO BAY ALL SITES") %>%
-    dplyr::mutate(`Sampled By` = "FRIENDS OF CASCO BAY")
+    dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
+    dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
 
   # Check if table is long, else make long
   if (!"Parameter" %in% colnames(df)) {
@@ -42,35 +43,37 @@ prep_ME_FOCB <- function(df, date_format = "m/d/y"){
     # Add parameters, units
     df <- as.data.frame(df)  %>%
       dplyr::mutate(
-        Unit = dplyr::case_when(
-          grepl("mg/L", Parameter) ~ "mg/L",
-          grepl("ug/L", Parameter) ~ "ug/L",
-          grepl("FNU", Parameter) ~ "FNU",
-          grepl("psu", Parameter) ~ "psu",
-          grepl("%", Parameter) | Parameter == "Cloud Cover" ~ "%",
-          Parameter == "Wind Speed" ~ "BFT",
-          Parameter == "Wind Direction" ~ "DEG TRUE",
-          Parameter %in% c("Water Depth", "Secchi Depth") ~ "m",
-          Parameter == "pH" ~ "STU",
-          grepl("Temp", Parameter) & grepl("C", Parameter) ~ "deg C",
+        "Unit" = dplyr::case_when(
+          grepl("mg/L", .data$Parameter) ~ "mg/L",
+          grepl("ug/L", .data$Parameter) ~ "ug/L",
+          grepl("FNU", .data$Parameter) ~ "FNU",
+          grepl("psu", .data$Parameter) ~ "psu",
+          grepl("%", .data$Parameter) | .data$Parameter == "Cloud Cover" ~ "%",
+          .data$Parameter == "Wind Speed" ~ "BFT",
+          .data$Parameter == "Wind Direction" ~ "DEG TRUE",
+          .data$Parameter %in% c("Water Depth", "Secchi Depth") ~ "m",
+          .data$Parameter == "pH" ~ "STU",
+          grepl("Temp", .data$Parameter) &
+            grepl("C", .data$Parameter) ~ "deg C",
           TRUE ~ NA
         )
       ) %>%
       dplyr::mutate(
-        Parameter = dplyr::case_when(
-          Parameter == "ODO mg/L" ~ "ODO",
-          Parameter == "Sal psu" ~ "Sal",
-          grepl("Chlorophyll", Parameter) ~ "Chlorophyll",
-          grepl("Turbidity", Parameter) ~ "Turbidity",
-          grepl("Temp", Parameter) & grepl("C", Parameter) ~ "Temp",
-          TRUE ~ Parameter
+        "Parameter" = dplyr::case_when(
+          .data$Parameter == "ODO mg/L" ~ "ODO",
+          .data$Parameter == "Sal psu" ~ "Sal",
+          grepl("Chlorophyll", .data$Parameter) ~ "Chlorophyll",
+          grepl("Turbidity", .data$Parameter) ~ "Turbidity",
+          grepl("Temp", .data$Parameter) &
+            grepl("C", .data$Parameter) ~ "Temp",
+          TRUE ~ .data$Parameter
         )
       )
   }
 
   # Calc gap between Sample Date & Analysis Date
   if ("Date" %in% colnames(df)) {
-    df <- dplyr::rename(df, "Sample Date" = Date)
+    df <- dplyr::rename(df, "Sample Date" = "Date")
   }
 
   chk <- "Sample Date" %in% colnames(df) & "Analysis Date" %in% colnames(df)
@@ -80,13 +83,15 @@ prep_ME_FOCB <- function(df, date_format = "m/d/y"){
 
     df <- df %>%
       dplyr::rename(
-        c(Sample_Date = "Sample Date",
-          Analysis_Date = "Analysis Date")
+        c("Sample_Date" = "Sample Date",
+          "Analysis_Date" = "Analysis Date")
       ) %>%
-      dplyr::mutate(temp_gap = as.numeric(Analysis_Date - Sample_Date)) %>%
+      dplyr::mutate(
+        "temp_gap" = as.numeric(.data$Analysis_Date - .data$Sample_Date)
+      ) %>%
       dplyr::rename(
-        c("Sample Date" = Sample_Date,
-          "Analysis Date" = Analysis_Date)
+        c("Sample Date" = "Sample_Date",
+          "Analysis Date" = "Analysis_Date")
       )
   } else {
     df$temp_gap <- 0
@@ -95,15 +100,15 @@ prep_ME_FOCB <- function(df, date_format = "m/d/y"){
   # Add qualifiers
   df <- df %>%
     dplyr::mutate(
-      Qualifier = dplyr::case_when(
-        Parameter == "Chlorophyll" ~ "J",
-        Parameter == "Secchi Depth" & Result == "BSV" ~ "G",
-        grepl("NITROGEN", Parameter, fixed=TRUE) &
-          temp_gap > 28 ~ "J",
+      "Qualifier" = dplyr::case_when(
+        .data$Parameter == "Chlorophyll" ~ "J",
+        .data$Parameter == "Secchi Depth" & .data$Result == "BSV" ~ "G",
+        grepl("NITROGEN", .data$Parameter, fixed=TRUE) &
+          .data$temp_gap > 28 ~ "J",
         TRUE ~ NA
       )
     ) %>%
-    dplyr::select(!temp_gap)
+    dplyr::select(!"temp_gap")
 
   return(df)
 }

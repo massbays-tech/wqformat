@@ -14,7 +14,7 @@
 13||County Code (Auto-Generated),,,,,,,
 14||HUC 8,,,,22||HUC_8,,,
 15||HUC 12,,,,24||HUC_12,12||HUC12_NUM,,
-,05||Location Group,09||Group,,,,,06||Category
+,05||Location Group,09||Group,,,05||ZONE,,06||Category
 ,,05||Town,,07||Town,10||TOWN,,03||Town
 ,,08||Watershed,,26||HUC_12_NAME,13||HUC_NAME,,
 ,,11||Max_Depth_Surface,,,,,
@@ -41,7 +41,6 @@
 ,,,,29||elevation_meters,,,
 ,,,,,01||SITE_NUMBER,,
 ,,,,,04||WATERBODY_NAME,,
-,,,,,05||ZONE,,
 ,,,,,06||SITE_DESCR|SITE_DESCRIPTION,,
 ,,,,,09||WATERSHED,,
 ,,,,,11||CFR,,

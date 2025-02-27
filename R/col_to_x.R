@@ -28,14 +28,14 @@ col_to_numeric <- function(df, field){
 #'   formatted as date, converts column to date type.
 #' @param df Input dataframe.
 #' @param date_col String. Name of date column.
-#' @param date_format String. Uses the same formatting as
+#' @param date_format String. Date format. Uses the same formatting as
 #'  `lubridate::parse_date_time`. Default value "m/d/Y".
-#'
-#' @noRd
-col_to_date <- function(df, date_col, date_format="m/d/Y") {
+#' @param tz String. Specifies the timezone used to parse dates. Defaults to
+#'    system timezone.
+col_to_date <- function(df, date_col, date_format="m/d/Y", tz=Sys.timezone()) {
 
   df_temp <- dplyr::filter(df, !is.na(.data[[date_col]]))
-  chk <- mapply(lubridate::is.Date, df_temp[[date_col]])
+  chk <- mapply(lubridate::is.Date, df_temp[[date_col]])  # Update to check if datetime!
 
   if(all(chk)){
     return(df)
@@ -43,10 +43,12 @@ col_to_date <- function(df, date_col, date_format="m/d/Y") {
     stop("Date format is missing", call. = FALSE)
   }
 
-  date_var <- c("OS", "Om", "Op", "a", "A", "b", "B", "d", "H", "I", "j", "q",
-                "m", "M", "p", "S", "U", "w", "W", "y", "Y", "z", "r", "R", "T")
+  date_var <- c("Om", "a", "A", "b", "B", "d", "j", "q", "m", "U", "w", "W",
+                "y", "Y")
+  time_var <- c("Op", "OS", "H", "I", "M", "p", "S", "r", "R", "T", "z")
   chk_var <- gsub("[^a-zA-Z]", "", date_format)
-  chk_var <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
+  chk_time <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
+  chk_var <- gsub(paste(unlist(time_var), collapse = "|"), "", chk_time)
 
   if(chk_var != "") {
     stop("date_format contains invalid variables: ", chk_var, call. = FALSE)
@@ -56,11 +58,17 @@ col_to_date <- function(df, date_col, date_format="m/d/Y") {
 
   df <- df %>%
     dplyr::mutate(
-      {{date_col}} := as.Date(
-        lubridate::parse_date_time(
-          as.character(.data[[date_col]]),
-          date_format,
-          quiet = TRUE)))
+      {{date_col}} := lubridate::parse_date_time(
+        as.character(.data[[date_col]]),
+        date_format,
+        tz = tz,
+        quiet = TRUE
+      )
+    )
+
+  if(chk_time == "") {
+    df[[date_col]] <- as.Date(df[[date_col]])
+  }
 
   chk2 <- !is.na(df[[date_col]])
   chk <- chk | chk2

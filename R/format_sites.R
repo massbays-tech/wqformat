@@ -1,20 +1,23 @@
 #' Reformat Site Data
 #'
-#' @description boop
+#' @description Converts water quality site data between formats. (List formats)
+#'
 #'
 #' @param df Input dataframe.
 #' @param in_format String. Name of input format. (word better)
 #' @param out_format String. Name of desired output format. (word better)
-#' @param date_format String. Date format, uses lubridate. (word better)
 #' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
 #'    converted to `out_format`. Default value TRUE.
 #'
 #' @returns Updated dataframe.
-#'
-#' @noRd
 format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   message("Reformatting data...")
+
+  # Prep data with nonstandard formats ----
+  if (in_format == "MA_BRC") {
+    df <- sites_from_MA_BRC(df)
+  }
 
   # Update columns ----
   var_names <- find_var_names(
@@ -58,6 +61,11 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     df <- col_to_state(df, "State Code")
   } else if (out_format == "WQdashboard" & "State" %in% colnames(df)) {
     df <- col_to_state(df, "State")
+  }
+
+  # Format data with nonstandard formats ----
+  if (out_format == "MA_BRC") {
+    df <- sites_to_MA_BRC(df)
   }
 
   message("Done")

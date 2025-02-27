@@ -28,7 +28,7 @@ rename_col <- function(df, old_colnames, new_colnames){
       old_name = old_colnames,
       new_name = new_colnames
     ) %>%
-    dplyr::filter(old_name %in% colnames(df))
+    dplyr::filter(.data$old_name %in% colnames(df))
 
   if (nrow(df_colnames) == 0) {
     return(df)
@@ -42,14 +42,14 @@ rename_col <- function(df, old_colnames, new_colnames){
 
     # Iterate through each duplicate new_name
     for (val in dup_val) {
-      df_temp <- dplyr::filter(df_colnames, new_name == val)
+      df_temp <- dplyr::filter(df_colnames, .data$new_name == val)
       target_col <- df_temp$old_name
 
       # Add new column, set to first non-NA value from old columns
       df <- concat_columns(df, target_col, val)
 
       # Drop redundant conversions from df_colnames
-      df_colnames <- dplyr::filter(df_colnames, new_name != val)
+      df_colnames <- dplyr::filter(df_colnames, .data$new_name != val)
 
       # Check if old columns needed for further conversions, else drop
       chk <- target_col %in% df_colnames$old_name
@@ -69,7 +69,7 @@ rename_col <- function(df, old_colnames, new_colnames){
   if (any(chk)) {
     # List duplicate old_name
     dup_val <- unique(df_colnames$old_name[which(chk)])
-    df_temp <- dplyr::filter(df_colnames, old_name %in% dup_val)
+    df_temp <- dplyr::filter(df_colnames, .data$old_name %in% dup_val)
 
     # Add new columns
     for (i in 1:nrow(df_temp)) {
@@ -81,7 +81,7 @@ rename_col <- function(df, old_colnames, new_colnames){
 
     # Drop old columns, update df_colnames
     df <- dplyr::select(df, !dplyr::any_of(dup_val))
-    df_colnames <- dplyr::filter(df_colnames, !old_name %in% dup_val)
+    df_colnames <- dplyr::filter(df_colnames, !.data$old_name %in% dup_val)
   }
 
   if (nrow(df_colnames) == 0) {

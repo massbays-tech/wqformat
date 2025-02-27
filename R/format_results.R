@@ -1,30 +1,35 @@
 #' Format result data
 #'
-#' @description boop
+#' @description Converts water quality result data between formats. (List formats)
 #'
 #' @param df Input dataframe.
 #' @param in_format String. Name of input format. (word better)
 #' @param out_format String. Name of desired output format. (word better)
-#' @param date_format String. Date format, uses lubridate. (word better)
+#' @param date_format String. Date format, uses lubridate. (word better) Default
+#'    value "m/d/Y".
+#' @param tz Timezone. Default value "America/New_York".
 #' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
 #'    converted to `out_format`. Default value TRUE.
 #'
 #' @returns Updated dataframe.
-#'
-#' @noRd
-format_results <- function(df, in_format, out_format, date_format="m/d/Y",
-                           drop_extra_col = TRUE){
+format_results <- function(
+    df, in_format, out_format, date_format="m/d/Y", tz="America/New_York",
+    drop_extra_col = TRUE
+    ){
 
   message("Reformatting data...")
 
   # Preformat data ----
   if (in_format == "MassWateR") {
     df <- prep_MassWateR(df)
+  } else if (in_format == "MA_BRC") {
+    df <- results_from_MA_BRC(df, date_format, tz)
   } else if (in_format == "ME_DEP") {
-    df <- concat_columns(df,
-      in_fields = c("LAB_QUALIFIER", "PARAMETER_QUALIFIER",
-                    "VALIDATION_QUALIFIER"),
-      out_field = "LAB_QUALIFIER")
+    df <- concat_columns(
+      df,
+      in_fields = c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
+      out_field = "LAB_QUALIFIER"
+      )
   } else if (in_format == "ME_FOCB") {
     df <- prep_ME_FOCB(df, date_format)
   }
@@ -141,7 +146,7 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
       find_var_names(varnames_activity, in_format, out_format),
       silent = TRUE
     )
-    if (class(atype) != "try-error") {
+    if (!inherits(atype, 'try-error')) {
       df <- rename_all_var(df, col_name, atype$old_names, atype$new_names)
       warn_invalid_var(df, col_name, atype$keep_var)
     }
@@ -150,6 +155,8 @@ format_results <- function(df, in_format, out_format, date_format="m/d/Y",
   # Custom format changes -----
   if (out_format == "MassWateR") {
     df <- to_MassWateR(df, in_format)
+  } else if (out_format == "MA_BRC") {
+    df <- results_to_MA_BRC(df)
   }
 
   message("Done")

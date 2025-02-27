@@ -15,22 +15,23 @@ test_that("col_to_numeric works", {
 
 test_that("col_to_date works", {
   df <- data.frame(
-    "good_date" = c(
-      as.Date("2022-03-01"), as.Date("2023-04-18"), as.Date("2004-06-12"),
-      as.Date("2024-09-26")
-    ),
-    "na_date" = c(as.Date("2022-03-01"), NA, NA, as.Date("2024-09-26")),
+    "good_date" = c("2022-03-01", "2023-04-18", "2004-06-12", "2024-09-26"),
+    "na_date" = c("2022-03-01", NA, NA, "2024-09-26"),
     "mdy_date" = c("3/1/22", NA, "4/18/23", NA),
-    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA))
+    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA)
+  )
+  df[["good_date"]] <- as.Date(df[["good_date"]])
+  df[["na_date"]] <- as.Date(df[["na_date"]])
 
   df_format <- data.frame(
-    "good_date" = c(
-      as.Date("2022-03-01"), as.Date("2023-04-18"), as.Date("2004-06-12"),
-      as.Date("2024-09-26")
-    ),
-    "na_date" = c(as.Date("2022-03-01"), NA, NA, as.Date("2024-09-26")),
-    "mdy_date" = c(as.Date("2022-03-01"), NA, as.Date("2023-04-18"), NA),
-    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA))
+    "good_date" = c("2022-03-01", "2023-04-18", "2004-06-12", "2024-09-26"),
+    "na_date" = c("2022-03-01", NA, NA, "2024-09-26"),
+    "mdy_date" = c("2022-03-01", NA, "2023-04-18", NA),
+    "bad_date" = c("3/1/2022", "2023/6/4", "18/4/2023", NA)
+  )
+  df_format[["good_date"]] <- as.Date(df_format[["good_date"]])
+  df_format[["na_date"]] <- as.Date(df_format[["na_date"]])
+  df_format[["mdy_date"]] <- as.Date(df_format[["mdy_date"]])
 
   # Check error messages
   expect_error(

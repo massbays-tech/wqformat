@@ -8,6 +8,8 @@ to_MassWateR(df, in_format)
 }
 \arguments{
 \item{df}{Dataframe.}
+
+\item{in_format}{String. Input format.}
 }
 \value{
 Updated dataframe.

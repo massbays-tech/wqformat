@@ -2,3 +2,4 @@
 
 importFrom(data.table,":=")
 importFrom(magrittr,"%>%")
+importFrom(rlang,.data)

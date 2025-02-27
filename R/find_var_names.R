@@ -42,7 +42,7 @@ find_var_names <- function(df, in_format, out_format){
   # Convert all columns to character to prevent errors from numeric variables
   df <- df %>%
     dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
-    dplyr::filter_at(out_format, dplyr::all_vars(!is.na(.)  & . != "")) %>%
+    dplyr::filter(!is.na(.data[[out_format]])) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
 
   # Sort data by out_format; drop ##|| from start of vars if present
@@ -79,7 +79,7 @@ find_var_names <- function(df, in_format, out_format){
   # Tidy data
   df <- df %>%
     # Drop rows where in_format is NA
-    dplyr::filter_at(in_format, dplyr::all_vars(!is.na(.) & . != "")) %>%
+    dplyr::filter(!is.na(.data[[in_format]])) %>%
     # If in_format includes alternate vars, split to multiple rows
     tidyr::separate_longer_delim({{in_format}}, "|") %>%
     # Drop rows where in_format == out_format

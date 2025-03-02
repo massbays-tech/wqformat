@@ -43,8 +43,6 @@ test_that("results_to_MA_BRC works", {
     "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank")
   )
 
-  # EXPAND TEST TO CHECK EVERY PARAMETER/CODE COMBO!!
-
   df_out <- data.frame(
     "SITE_BRC_CODE" = c(1,2,3,4,5),
     "DATE_TIME" = c(

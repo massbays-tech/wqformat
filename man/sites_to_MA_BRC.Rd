@@ -7,7 +7,7 @@
 sites_to_MA_BRC(df)
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{df}{Dataframe.}
 }
 \value{
 Updated dataframe.

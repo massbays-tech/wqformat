@@ -8,8 +8,8 @@
 #'   same order as `new_varname`.
 #' @param new_varname List. New variable names; must be same length and in
 #'   same order as `old_varname`.
-#' @param allow_multiple Boolean. If TRUE, will return all matches for `in_var`.
-#'   If FALSE, only returns the first match. Default value is FALSE.
+#' @param allow_multiple Boolean. If \code{TRUE}, will return all matches for
+#'  `in_var`. If \code{FALSE}, only returns the first match. Default \code{FALSE}.
 #'
 #' @return String. Updated variable name.
 rename_var <- function(in_var, old_varname, new_varname, allow_multiple = FALSE) {

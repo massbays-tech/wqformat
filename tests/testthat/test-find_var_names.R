@@ -33,4 +33,9 @@ test_that("find_var_names works", {
   expect_equal(var_num$old_names, c("A", "D", "E", "F", "G"))
   expect_equal(var_num$new_names, c("1", "2", "2", "3", "5"))
   expect_equal(var_num$keep_var, c("1", "2", "3", "5", "6"))
+
+  var_equal <- find_var_names(df, "col3", "col3")
+  expect_equal(var_equal$old_names, NA)
+  expect_equal(var_equal$new_names, NA)
+  expect_equal(var_equal$keep_var, c("1", "2", "3", "5", "6"))
 })

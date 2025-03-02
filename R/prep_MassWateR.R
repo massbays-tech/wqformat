@@ -66,11 +66,9 @@ prep_MassWateR <- function(df){
         NA,
         .data[["Result Value"]]
       )
-    )
-
-  # Reset columns to numeric
-  df <- col_to_numeric(df, "Result Value")
-  df <- col_to_numeric(df, "QC Reference Value")
+    ) %>%
+    col_to_numeric("Result Value") %>%
+    col_to_numeric("QC Reference Value")
 
   return(df)
 }
@@ -155,9 +153,9 @@ to_MassWateR <- function(df, in_format){
       .data[["Activity Start Date"]],
       .data[["Activity Start Time"]]
     ) %>%
-    dplyr::select(dplyr::all_of(df_colnames))  # Reorder columns, else "Result Value" sent to end
-  df <- col_to_numeric(df, "Result Value")
-  df <- col_to_numeric(df, "QC Reference Value")
+    dplyr::select(dplyr::all_of(df_colnames)) %>%
+    col_to_numeric("Result Value") %>%
+    col_to_numeric("QC Reference Value")
 
   return(df)
 }

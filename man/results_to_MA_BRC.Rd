@@ -16,6 +16,7 @@ Updated dataframe.
 Helper function for `format_results` that formats result data for
    the Blackstone River Coalition (MA_BRC).
    * Uses DATE, TIME columns to fill DATE_TIME column
-   * Renames variables in PARAMETER column
+   * uses SAMPLE_TYPE column to update PARAMETER column
+   * Adds columns UNIQUE_ID
    * Removes DATE, TIME, and SAMPLE_TYPE columns
 }

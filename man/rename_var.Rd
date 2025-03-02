@@ -15,8 +15,8 @@ same order as `new_varname`.}
 \item{new_varname}{List. New variable names; must be same length and in
 same order as `old_varname`.}
 
-\item{allow_multiple}{Boolean. If TRUE, will return all matches for `in_var`.
-If FALSE, only returns the first match. Default value is FALSE.}
+\item{allow_multiple}{Boolean. If \code{TRUE}, will return all matches for
+`in_var`. If \code{FALSE}, only returns the first match. Default \code{FALSE}.}
 }
 \value{
 String. Updated variable name.

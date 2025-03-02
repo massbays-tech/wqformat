@@ -9,17 +9,16 @@ results_from_MA_BRC(df, date_format = "Y-m-d H:M", tz = "America/New_York")
 \arguments{
 \item{df}{Input dataframe.}
 
-\item{date_format}{description}
+\item{date_format}{String. Date format. Uses the same formatting as
+`lubridate`. Default value "m/d/Y".}
 
-\item{tz}{String. Specifies the timezone used to parse dates. Defaults to
-America/New York.}
+\item{tz}{String. Timezone. Default value "America/New York".}
 }
 \value{
 Updated dataframe.
 }
 \description{
-Helper function for `format_results` that formats result data
-   from the Blackstone River Coalition (MA_BRC) format.
-   * Uses DATE_TIME column to fill DATE, TIME columns
-   * Adds SAMPLE_TYPE column
+Helper function for `format_results` that preformats result
+ data from the Blackstone River Coalition (MA_BRC).
+   * Adds columns for DATE, TIME, SAMPLE_TYPE
 }

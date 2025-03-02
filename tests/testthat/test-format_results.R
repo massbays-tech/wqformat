@@ -62,6 +62,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   )
 
   df_wide1_DEP <- data.frame(
+    "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18","HR2", "HR2", "HR2"
@@ -88,11 +89,12 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "%", "BFT", "DEG TRUE", "M", "M", "%", "BFT", "DEG TRUE", "M", "M","%",
       "BFT", "DEG TRUE"
     ),
+    "ANALYSIS_DATE" = NA,
+    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
-  df_wide1_DEP[["SAMPLE_DATE"]] <- as.Date(df_wide1_DEP[["SAMPLE_DATE"]])
-  df_wide1_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_wide1_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  df_wide1_DEP$SAMPLE_DATE <- as.Date(df_wide1_DEP$SAMPLE_DATE)
+  df_wide1_DEP$ANALYSIS_DATE <- as.Date(df_wide1_DEP$ANALYSIS_DATE)
   missing_col <- setdiff(dep_col_order, colnames(df_wide1_DEP))
   df_wide1_DEP[missing_col] <- NA
   df_wide1_DEP <- df_wide1_DEP[,dep_col_order]
@@ -137,12 +139,14 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA,
       NA, "J", NA
     ),
+    "ANALYSIS_DATE" = NA,
+    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
-  df_wide2_DEP[["SAMPLE_DATE"]] <- as.Date(df_wide2_DEP[["SAMPLE_DATE"]])
+  df_wide2_DEP$SAMPLE_DATE <- as.Date(df_wide2_DEP$SAMPLE_DATE)
+  df_wide2_DEP$ANALYSIS_DATE <- as.Date(df_wide2_DEP$ANALYSIS_DATE)
   df_wide2_DEP["SAMPLE_DEPTH_UNIT"] <- "M"
-  df_wide2_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_wide2_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  df_wide2_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
   missing_col <- setdiff(dep_col_order, colnames(df_wide2_DEP))
   df_wide2_DEP[missing_col] <- NA
   df_wide2_DEP <- df_wide2_DEP[,dep_col_order]
@@ -163,10 +167,10 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "LAB_QUALIFIER" = c("J", "J", NA),
     check.names = FALSE
   )
-  df_long_DEP[["SAMPLE_DATE"]] <- as.Date(df_long_DEP[["SAMPLE_DATE"]])
-  df_long_DEP[["ANALYSIS_DATE"]] <- as.Date(df_long_DEP[["ANALYSIS_DATE"]])
-  df_long_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_long_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+  df_long_DEP$SAMPLE_DATE <- as.Date(df_long_DEP$SAMPLE_DATE)
+  df_long_DEP$ANALYSIS_DATE <- as.Date(df_long_DEP$ANALYSIS_DATE)
+  df_long_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_long_DEP$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
   missing_col <- setdiff(dep_col_order, colnames(df_long_DEP))
   df_long_DEP[missing_col] <- NA
   df_long_DEP <- df_long_DEP[,dep_col_order]
@@ -421,10 +425,10 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 #     "LAB_QUALIFIER" = c("J", "J", NA),
 #     check.names = FALSE
 #   )
-#   df_DEP[["SAMPLE_DATE"]] <- as.Date(df_DEP[["SAMPLE_DATE"]])
-#   df_DEP[["ANALYSIS_DATE"]] <- as.Date(df_DEP[["ANALYSIS_DATE"]])
-#   df_DEP["PROJECT/SITE"] <- "FRIENDS OF CASCO BAY ALL SITES"
-#   df_DEP["SAMPLED_BY"] <- "FRIENDS OF CASCO BAY"
+#   df_DEP$SAMPLE_DATE <- as.Date(df_DEP$SAMPLE_DATE)
+#   df_DEP$ANALYSIS_DATE <- as.Date(df_DEP$ANALYSIS_DATE)
+#   df_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
+#   df_DEP$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
 #   missing_col <- setdiff(dep_col_order, colnames(df_DEP))
 #   df_DEP[missing_col] <- NA
 #   df_DEP <- df_DEP[,dep_col_order]

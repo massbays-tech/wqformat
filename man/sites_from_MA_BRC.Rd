@@ -7,14 +7,14 @@
 sites_from_MA_BRC(df)
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{df}{Dataframe.}
 }
 \value{
 Updated dataframe.
 }
 \description{
-Helper function for `format_sites` that formats site data from
-   the Blackstone River Coalition (MA_BRC) format.
+Helper function for `format_sites` that pre-formats site data
+ from the Blackstone River Coalition (MA_BRC).
    * Adds column "STATE" with each site's state
    * Adds column "WATER_DEPTH_M" and converts values in "WATER_DEPTH_FT" to
      meters

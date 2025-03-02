@@ -1,12 +1,12 @@
 #' Sites from Massachusetts Blackstone River Coalition
 #'
-#' @description Helper function for `format_sites` that formats site data from
-#'    the Blackstone River Coalition (MA_BRC) format.
+#' @description Helper function for `format_sites` that pre-formats site data
+#'  from the Blackstone River Coalition (MA_BRC).
 #'    * Adds column "STATE" with each site's state
 #'    * Adds column "WATER_DEPTH_M" and converts values in "WATER_DEPTH_FT" to
 #'      meters
 #'
-#' @param df Input dataframe.
+#' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
 sites_from_MA_BRC <- function(df) {
@@ -30,24 +30,19 @@ sites_from_MA_BRC <- function(df) {
     warning('Columns "TOWN", "WATER_DEPTH_FT" are missing')
     return(df)
   } else if (length(missing_col) == 1) {
+    df[[missing_col]] <- NA
     warning('Column "', missing_col, '" is missing')
   }
 
-  if ("TOWN" %in% colnames(df)) {
-    df <- df %>%
-      dplyr::mutate(
-        "STATE" = dplyr::case_when(
-          .data$TOWN %in% ri_towns ~ "RI",
-          .data$TOWN %in% ma_towns ~ "MA",
-          TRUE ~ NA
-        )
+  df <- df %>%
+    dplyr::mutate(
+      "STATE" = dplyr::case_when(
+        .data$TOWN %in% ri_towns ~ "RI",
+        .data$TOWN %in% ma_towns ~ "MA",
+        TRUE ~ NA
       )
-  }
-
-  if ("WATER_DEPTH_FT" %in% colnames(df)) {
-    df <- df %>%
-      dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT)*0.3048)
-  }
+    ) %>%
+    dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT)*0.3048)
 
   return(df)
 }
@@ -60,13 +55,13 @@ sites_from_MA_BRC <- function(df) {
 #'      values in column "WATER_DEPTH_FT"
 #'    * Removes columns "STATE", "WATER_DEPTH_M"
 #'
-#' @param df Input dataframe.
+#' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
 sites_to_MA_BRC <- function(df) {
 
   if (!"WATER_DEPTH_FT" %in% colnames(df)) {
-    df <- dplyr::mutate(df, "WATER_DEPTH_FT" = NA)
+    df$WATER_DEPTH_FT <- NA
   }
 
   if ("WATER_DEPTH_M" %in% colnames(df)) {

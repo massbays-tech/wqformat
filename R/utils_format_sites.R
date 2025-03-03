@@ -9,13 +9,22 @@
 #' @param df Dataframe.
 #'
 #' @returns Updated dataframe.
-sites_from_MA_BRC <- function(df) {
+prep_MA_BRC_sites <- function(df) {
+  missing_col <- setdiff(c("TOWN", "WATER_DEPTH_FT"), colnames(df))
 
-  ri_towns = c(
+  if (length(missing_col) == 2) {
+    warning('Columns "TOWN", "WATER_DEPTH_FT" are missing')
+    return(df)
+  } else if (length(missing_col) == 1) {
+    df[[missing_col]] <- NA
+    warning('Column "', missing_col, '" is missing')
+  }
+
+  ri_towns <- c(
     "Burrillville", "Central Falls", "Cumberland", "Glocester",
     "Lincoln", "North Smithfield", "Pawtucket", "Scituate", "Woonsocket"
   )
-  ma_towns = c(
+  ma_towns <- c(
     "Attleboro", "Auburn", "Bellingham", "Blackstone", "Boylston", "Douglas",
     "Franklin", "Grafton", "Holden", "Hopedale", "Leicester", "Mendon",
     "Milford", "Millbury", "Millville", "North Attleborough", "Northbridge",
@@ -23,16 +32,6 @@ sites_from_MA_BRC <- function(df) {
     "Upton", "Uxbridge", "Webster", "West Boylston", "Westborough", "Worcester",
     "Wrentham"
   )
-
-  missing_col <- setdiff(c("TOWN", "WATER_DEPTH_FT"), colnames(df))
-
-  if(length(missing_col) == 2) {
-    warning('Columns "TOWN", "WATER_DEPTH_FT" are missing')
-    return(df)
-  } else if (length(missing_col) == 1) {
-    df[[missing_col]] <- NA
-    warning('Column "', missing_col, '" is missing')
-  }
 
   df <- df %>%
     dplyr::mutate(
@@ -42,7 +41,7 @@ sites_from_MA_BRC <- function(df) {
         TRUE ~ NA
       )
     ) %>%
-    dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT)*0.3048)
+    dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048)
 
   return(df)
 }
@@ -59,7 +58,6 @@ sites_from_MA_BRC <- function(df) {
 #'
 #' @returns Updated dataframe.
 sites_to_MA_BRC <- function(df) {
-
   if (!"WATER_DEPTH_FT" %in% colnames(df)) {
     df$WATER_DEPTH_FT <- NA
   }
@@ -69,7 +67,7 @@ sites_to_MA_BRC <- function(df) {
       dplyr::mutate(
         "WATER_DEPTH_FT" = dplyr::if_else(
           is.na(as.numeric(.data$WATER_DEPTH_FT)),
-          as.numeric(.data$WATER_DEPTH_M)/0.3048,
+          as.numeric(.data$WATER_DEPTH_M) / 0.3048,
           .data$WATER_DEPTH_FT
         )
       )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_format_results.R
 \name{results_to_MA_BRC}
 \alias{results_to_MA_BRC}
-\title{Results to Massachusetts Blackstone River Coalition}
+\title{Results to Blackstone River Coalition}
 \usage{
 results_to_MA_BRC(df)
 }
@@ -13,7 +13,7 @@ results_to_MA_BRC(df)
 Updated dataframe.
 }
 \description{
-Helper function for `format_results` that formats result data for
+Helper function for `format_results`. Formats result data for
    the Blackstone River Coalition (MA_BRC).
    * Uses DATE, TIME columns to fill DATE_TIME column
    * uses SAMPLE_TYPE column to update PARAMETER column

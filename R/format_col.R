@@ -7,7 +7,7 @@
 #' @param col_name String. Column name.
 #'
 #' @returns Updated dataframe.
-col_to_numeric <- function(.data, col_name){
+col_to_numeric <- function(.data, col_name) {
   if (is.numeric(.data[[col_name]])) {
     return(.data)
   }
@@ -15,8 +15,11 @@ col_to_numeric <- function(.data, col_name){
   typ <- .data[col_name]
   chk <- !is.na(suppressWarnings(mapply(as.numeric, typ))) | is.na(typ)
 
-  if(all(chk)){
-    .data <- dplyr::mutate(.data, {{col_name}} := as.numeric(.data[[col_name]]))
+  if (all(chk)) {
+    .data <- dplyr::mutate(
+      .data,
+      {{ col_name }} := as.numeric(.data[[col_name]])
+    )
   }
 
   return(.data)
@@ -32,10 +35,16 @@ col_to_numeric <- function(.data, col_name){
 #'  `lubridate::parse_date_time`. Default value "m/d/Y".
 #' @param tz String. Specifies the timezone used to parse dates. Defaults to
 #'    system timezone.
-col_to_date <- function(.data, date_col, date_format="m/d/Y", tz=Sys.timezone()) {
+col_to_date <- function(.data, date_col, date_format = "m/d/Y",
+                        tz = Sys.timezone()) {
+  if (!date_col %in% colnames(.data)) {
+    stop(date_col, " is not a valid column")
+  }
 
   chk <- inherits(.data[[date_col]], c("Date", "POSIXt"))
-  if (chk) { return(.data) }
+  if (chk) {
+    return(.data)
+  }
 
   chk <- is.na(.data[[date_col]])
   if (all(chk)) {
@@ -47,14 +56,16 @@ col_to_date <- function(.data, date_col, date_format="m/d/Y", tz=Sys.timezone())
     stop("Date format is missing", call. = FALSE)
   }
 
-  date_var <- c("Om", "a", "A", "b", "B", "d", "j", "q", "m", "U", "w", "W",
-                "y", "Y")
+  date_var <- c(
+    "Om", "a", "A", "b", "B", "d", "j", "q", "m", "U", "w", "W",
+    "y", "Y"
+  )
   time_var <- c("Op", "OS", "H", "I", "M", "p", "S", "r", "R", "T", "z")
   chk_var <- gsub("[^a-zA-Z]", "", date_format)
   chk_time <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
   chk_var <- gsub(paste(unlist(time_var), collapse = "|"), "", chk_time)
 
-  if(chk_var != "") {
+  if (chk_var != "") {
     stop("date_format contains invalid variables: ", chk_var, call. = FALSE)
   }
 
@@ -62,7 +73,7 @@ col_to_date <- function(.data, date_col, date_format="m/d/Y", tz=Sys.timezone())
 
   dat <- .data %>%
     dplyr::mutate(
-      {{date_col}} := lubridate::parse_date_time(
+      {{ date_col }} := lubridate::parse_date_time(
         as.character(.data[[date_col]]),
         date_format,
         tz = tz,
@@ -70,14 +81,14 @@ col_to_date <- function(.data, date_col, date_format="m/d/Y", tz=Sys.timezone())
       )
     )
 
-  if(chk_time == "") {
+  if (chk_time == "") {
     dat[[date_col]] <- as.Date(dat[[date_col]])
   }
 
   chk2 <- !is.na(dat[[date_col]])
   chk <- chk | chk2
 
-  if(all(!chk2)) {
+  if (all(!chk2)) {
     stop(
       'Date does not match format "', date_format, '"',
       call. = FALSE
@@ -110,7 +121,7 @@ col_to_state <- function(.data, state_col, full_name = FALSE) {
   if (full_name) {
     dat <- .data %>%
       dplyr::mutate(
-        {{state_col}} := dplyr::if_else(
+        {{ state_col }} := dplyr::if_else(
           .data[[state_col]] %in% datasets::state.abb,
           datasets::state.name[match(.data[[state_col]], datasets::state.abb)],
           .data[[state_col]]
@@ -119,7 +130,7 @@ col_to_state <- function(.data, state_col, full_name = FALSE) {
   } else {
     dat <- .data %>%
       dplyr::mutate(
-        {{state_col}} := dplyr::if_else(
+        {{ state_col }} := dplyr::if_else(
           .data[[state_col]] %in% datasets::state.name,
           datasets::state.abb[match(.data[[state_col]], datasets::state.name)],
           .data[[state_col]]

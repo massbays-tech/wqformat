@@ -16,12 +16,14 @@ same order as `new_varname`.}
 same order as `old_varname`.}
 
 \item{allow_multiple}{Boolean. If \code{TRUE}, will return all matches for
-`in_var`. If \code{FALSE}, only returns the first match. Default \code{FALSE}.}
+`in_var`. If \code{FALSE}, only returns the first match. Default
+\code{FALSE}.}
 }
 \value{
 String. Updated variable name.
 }
 \description{
 Converts value from old variable to new variable name. If no
-  match found, leaves old variable name. Helper function for `rename_all_var`.
+  match found, leaves old variable name. Helper function for
+  `rename_all_var`.
 }

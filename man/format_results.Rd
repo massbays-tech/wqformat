@@ -32,5 +32,6 @@ converted to `out_format`. Default value TRUE.}
 Updated dataframe.
 }
 \description{
-Converts water quality result data between formats. (List formats)
+Converts water quality result data between formats. (List
+ formats)
 }

@@ -1,6 +1,7 @@
 #' Format result data
 #'
-#' @description Converts water quality result data between formats. (List formats)
+#' @description Converts water quality result data between formats. (List
+#'  formats)
 #'
 #' @param df Input dataframe.
 #' @param in_format String. Name of input format. (word better)
@@ -13,36 +14,38 @@
 #'
 #' @returns Updated dataframe.
 format_results <- function(
-    df, in_format, out_format, date_format="m/d/Y", tz="America/New_York",
-    drop_extra_col = TRUE
-    ){
-
+    df, in_format, out_format, date_format = "m/d/Y", tz = "America/New_York",
+    drop_extra_col = TRUE) {
   message("Reformatting data...")
 
   # Preformat data ----
   if (in_format == "MassWateR") {
-    df <- prep_MassWateR(df)
+    df <- prep_MassWateR_results(df)
   } else if (in_format == "MA_BRC") {
-    df <- results_from_MA_BRC(df, date_format, tz)
+    df <- prep_MA_BRC_results(df, date_format, tz)
   } else if (in_format == "ME_DEP") {
     df <- concat_columns(
       df,
-      in_fields = c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
+      in_fields = c(
+        "LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"
+      ),
       out_field = "LAB_QUALIFIER"
-      )
+    )
   } else if (in_format == "ME_FOCB") {
-    df <- prep_ME_FOCB(df, date_format)
+    df <- prep_ME_FOCB_results(df, date_format)
   }
 
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_results,
     in_format = in_format,
-    out_format = out_format)
+    out_format = out_format
+  )
   df <- rename_col(
     df = df,
     old_colnames = var_names$old_names,
-    new_colnames = var_names$new_names)
+    new_colnames = var_names$new_names
+  )
 
   # Add missing columns
   missing_col <- setdiff(var_names$keep_var, colnames(df))
@@ -76,7 +79,8 @@ format_results <- function(
     col_name <- rename_var(
       in_var = date_col,
       old_varname = col_sub$old_names,
-      new_varname = col_sub$new_names)
+      new_varname = col_sub$new_names
+    )
     if (col_name %in% colnames(df)) {
       df <- col_to_date(df, col_name, date_format)
     }
@@ -104,7 +108,8 @@ format_results <- function(
   col_name <- rename_var(
     in_var = "Characteristic Name",
     old_varname = col_sub$old_names,
-    new_varname = col_sub$new_names)
+    new_varname = col_sub$new_names
+  )
   if (col_name %in% colnames(df)) {
     param <- find_var_names(varnames_parameters, in_format, out_format)
     df <- rename_all_var(df, col_name, param$old_names, param$new_names)
@@ -113,12 +118,15 @@ format_results <- function(
 
   # Rename units
   unit_name <- find_var_names(varnames_units, in_format, out_format)
-  for (unit_col in c("Result Unit", "Activity Depth/Height Unit",
-                     "Result Detection/Quantitation Limit Unit")) {
+  for (unit_col in c(
+    "Result Unit", "Activity Depth/Height Unit",
+    "Result Detection/Quantitation Limit Unit"
+  )) {
     col_name <- rename_var(
       in_var = unit_col,
       old_varname = col_sub$old_names,
-      new_varname = col_sub$new_names)
+      new_varname = col_sub$new_names
+    )
     if (col_name %in% colnames(df)) {
       df <- rename_all_var(df, col_name, unit_name$old_names, unit_name$new_names)
       warn_invalid_var(df, col_name, unit_name$keep_var)
@@ -129,8 +137,9 @@ format_results <- function(
   col_name <- rename_var(
     in_var = "Result Measure Qualifier",
     old_varname = col_sub$old_names,
-    new_varname = col_sub$new_names)
-  if (out_format != "MassWateR" & col_name %in% colnames(df)) {
+    new_varname = col_sub$new_names
+  )
+  if (out_format != "MassWateR" && col_name %in% colnames(df)) {
     qual <- find_var_names(varnames_qualifiers, in_format, out_format)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
     warn_invalid_var(df, col_name, qual$keep_var)
@@ -140,13 +149,14 @@ format_results <- function(
   col_name <- rename_var(
     in_var = "Activity Type",
     old_varname = col_sub$old_names,
-    new_varname = col_sub$new_names)
+    new_varname = col_sub$new_names
+  )
   if (col_name %in% colnames(df)) {
     atype <- try(
       find_var_names(varnames_activity, in_format, out_format),
       silent = TRUE
     )
-    if (!inherits(atype, 'try-error')) {
+    if (!inherits(atype, "try-error")) {
       df <- rename_all_var(df, col_name, atype$old_names, atype$new_names)
       warn_invalid_var(df, col_name, atype$keep_var)
     }
@@ -154,7 +164,7 @@ format_results <- function(
 
   # Custom format changes -----
   if (out_format == "MassWateR") {
-    df <- to_MassWateR(df, in_format)
+    df <- results_to_MassWateR(df, in_format)
   } else if (out_format == "MA_BRC") {
     df <- results_to_MA_BRC(df)
   }

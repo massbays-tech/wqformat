@@ -5,3 +5,4 @@
 ^\.github$
 notes
 ^codecov\.yml$
+.lintr

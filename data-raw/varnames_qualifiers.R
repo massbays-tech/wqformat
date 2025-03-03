@@ -2,8 +2,9 @@ library(readr)
 library(dplyr)
 
 df <- readr::read_csv("data-raw/varnames_qualifiers.csv",
-                      show_col_types = FALSE) %>%
-  dplyr::select_if(function(x) !(all(is.na(x)))) %>%  # drop empty columns
+  show_col_types = FALSE
+) %>%
+  dplyr::select_if(function(x) !(all(is.na(x)))) %>% # drop empty columns
   dplyr::select(!dplyr::any_of("Description"))
 
 # Drop rows with only 1 unique value

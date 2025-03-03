@@ -10,8 +10,7 @@
 #'   same order as `old_colnames`.
 #'
 #' @returns Updated dataframe.
-rename_col <- function(df, old_colnames, new_colnames){
-
+rename_col <- function(df, old_colnames, new_colnames) {
   # Check inputs
   chk <- is.na(c(old_colnames, new_colnames))
   if (all(chk)) {
@@ -25,9 +24,9 @@ rename_col <- function(df, old_colnames, new_colnames){
   }
 
   df_colnames <- data.frame(
-      old_name = old_colnames,
-      new_name = new_colnames
-    ) %>%
+    old_name = old_colnames,
+    new_name = new_colnames
+  ) %>%
     dplyr::filter(.data$old_name %in% colnames(df))
 
   if (nrow(df_colnames) == 0) {
@@ -72,11 +71,11 @@ rename_col <- function(df, old_colnames, new_colnames){
     df_temp <- dplyr::filter(df_colnames, .data$old_name %in% dup_val)
 
     # Add new columns
-    for (i in 1:nrow(df_temp)) {
+    for (i in seq_len(nrow(df_temp))) {
       old_col <- df_temp$old_name[i]
       new_col <- df_temp$new_name[i]
 
-      df <- dplyr::mutate(df, {{new_col}} := .data[[old_col]])
+      df <- dplyr::mutate(df, {{ new_col }} := .data[[old_col]])
     }
 
     # Drop old columns, update df_colnames
@@ -92,7 +91,7 @@ rename_col <- function(df, old_colnames, new_colnames){
   field_subs <- df_colnames$new_name
   names(field_subs) <- df_colnames$old_name
 
-  df <- dplyr::rename_with(df, ~ field_subs, names(field_subs))
+  df <- dplyr::rename_with(df, ~field_subs, names(field_subs))
 
   return(df)
 }
@@ -117,21 +116,21 @@ concat_columns <- function(df, in_fields, out_field) {
   if (length(in_fields) == 0) {
     return(df)
   } else if (length(in_fields) == 1) {
-    df <- dplyr::mutate(df, {{out_field}} := .data[[in_fields]])
+    df <- dplyr::mutate(df, {{ out_field }} := .data[[in_fields]])
     return(df)
   }
 
   df <- df %>%
     tidyr::unite(
-      {{out_field}},
+      {{ out_field }},
       dplyr::any_of(in_fields),
-      sep="|",
+      sep = "|",
       remove = FALSE
     ) %>%
-    dplyr::mutate({{out_field}} := gsub("NA\\|", "", .data[[out_field]])) %>%
+    dplyr::mutate({{ out_field }} := gsub("NA\\|", "", .data[[out_field]])) %>%
     dplyr::mutate(
-      {{out_field}} := dplyr::case_when(
-        grepl("|", .data[[out_field]], fixed=TRUE) ~
+      {{ out_field }} := dplyr::case_when(
+        grepl("|", .data[[out_field]], fixed = TRUE) ~
           stringr::str_split_i(.data[[out_field]], "\\|", 1),
         .data[[out_field]] == "NA" ~ NA,
         TRUE ~ .data[[out_field]]

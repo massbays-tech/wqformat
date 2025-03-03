@@ -69,6 +69,10 @@ test_that("col_to_date error messages", {
 
   # Check error messages
   expect_error(
+    col_to_date(df_in, "good_date", "foobar"),
+    regexp = "good_date is not a valid column"
+  )
+  expect_error(
     col_to_date(df_in, "mdy_date", "foobar"),
     regexp = "date_format contains invalid variables: foo"
   )

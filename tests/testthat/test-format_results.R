@@ -17,10 +17,10 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth m" = c(0.2, 0.2,0),
-    "Temp °C" = c(11.3,11,14),
+    "Sample Depth m" = c(0.2, 0.2, 0),
+    "Temp °C" = c(11.3, 11, 14),
     "Sal psu" = c(27.5, 28, 28),
-    "ODO mg/L" = c(9.3,9.3, 8.2),
+    "ODO mg/L" = c(9.3, 9.3, 8.2),
     "ODO % sat" = c(100.7, 100.7, 94.9),
     "pH" = c(7.93, 7.93, 7.82),
     "Chlorophyll ug/L" = c(1.2, 1.2, 1.4),
@@ -31,19 +31,16 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_long <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "Lab" = c("UMWL", "UMWL", "UMWL"),
+    "Lab" = "UMWL",
     "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
-    "Parameter" = c(
+    "Parameter" =
       "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
-    ),
     "Result" = c(0.22, 0.18, 0.28),
-    "Unit" = c("MG/L", "MG/L", "MG/L"),
-    "RL" = c(0.1, 0.1, 0.1),
-    "MDL" = c(0.73, 0.73, 0.73),
-    "Method" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
-    "Sample Depth m" = c(0.2, 0.2, 0.2),
+    "Unit" = "MG/L",
+    "RL" = 0.1,
+    "MDL" = 0.73,
+    "Method" = "SM4500NE_2021",
+    "Sample Depth m" = 0.2,
     check.names = FALSE
   )
 
@@ -65,7 +62,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
-      "EEB18", "EEB18","HR2", "HR2", "HR2"
+      "EEB18", "EEB18", "HR2", "HR2", "HR2"
     ),
     "SAMPLE_DATE" = c(
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
@@ -73,8 +70,8 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "2023-05-24", "2023-05-24", "2023-05-24"
     ),
     "SAMPLE_TIME" = c(
-      "12:32","12:32","12:32","12:32","12:32","12:45","12:45","12:45", "12:45",
-      "12:45","10:22","10:22","10:22"
+      "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
+      "12:45", "12:45", "10:22", "10:22", "10:22"
     ),
     "PARAMETER_NAME" = c(
       "CLOUD COVER", "WSPD", "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD",
@@ -86,7 +83,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     ),
     "LAB_QUALIFIER" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
     "PARAMETER_UNITS" = c(
-      "%", "BFT", "DEG TRUE", "M", "M", "%", "BFT", "DEG TRUE", "M", "M","%",
+      "%", "BFT", "DEG TRUE", "M", "M", "%", "BFT", "DEG TRUE", "M", "M", "%",
       "BFT", "DEG TRUE"
     ),
     "ANALYSIS_DATE" = NA,
@@ -97,7 +94,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_wide1_DEP$ANALYSIS_DATE <- as.Date(df_wide1_DEP$ANALYSIS_DATE)
   missing_col <- setdiff(dep_col_order, colnames(df_wide1_DEP))
   df_wide1_DEP[missing_col] <- NA
-  df_wide1_DEP <- df_wide1_DEP[,dep_col_order]
+  df_wide1_DEP <- df_wide1_DEP[, dep_col_order]
 
   df_wide2_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c(
@@ -113,9 +110,9 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "2023-05-24"
     ),
     "SAMPLE_TIME" = c(
-      "12:32","12:32","12:32","12:32","12:32","12:32","12:32","12:45", "12:45",
-      "12:45","12:45","12:45","12:45","12:45","10:22","10:22","10:22", "10:22",
-      "10:22","10:22","10:22"
+      "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:45",
+      "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
+      "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
     "SAMPLE_DEPTH" = c(
       0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
@@ -149,7 +146,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_wide2_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
   missing_col <- setdiff(dep_col_order, colnames(df_wide2_DEP))
   df_wide2_DEP[missing_col] <- NA
-  df_wide2_DEP <- df_wide2_DEP[,dep_col_order]
+  df_wide2_DEP <- df_wide2_DEP[, dep_col_order]
 
   df_long_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
@@ -173,24 +170,24 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_long_DEP$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
   missing_col <- setdiff(dep_col_order, colnames(df_long_DEP))
   df_long_DEP[missing_col] <- NA
-  df_long_DEP <- df_long_DEP[,dep_col_order]
+  df_long_DEP <- df_long_DEP[, dep_col_order]
 
   # test ME_FOCB to ME_DEP
   expect_equal(
     suppressMessages(
-      format_results(df_wide1, "ME_FOCB", "ME_DEP", date_format="m/d/y")
+      format_results(df_wide1, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
     df_wide1_DEP
   )
   expect_equal(
     suppressMessages(
-      format_results(df_wide2, "ME_FOCB", "ME_DEP", date_format="m/d/y")
+      format_results(df_wide2, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
     df_wide2_DEP
   )
   expect_equal(
     suppressMessages(
-      format_results(df_long, "ME_FOCB", "ME_DEP", date_format="m/d/y")
+      format_results(df_long, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
     df_long_DEP
   )
@@ -214,10 +211,10 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth m" = c(0.2, 0.2,0),
-    "Temp °C" = c(11.3,11,14),
+    "Sample Depth m" = c(0.2, 0.2, 0),
+    "Temp °C" = c(11.3, 11, 14),
     "Sal psu" = c(27.5, 28, 28),
-    "ODO mg/L" = c(9.3,9.3, 8.2),
+    "ODO mg/L" = c(9.3, 9.3, 8.2),
     "ODO % sat" = c(100.7, 100.7, 94.9),
     "pH" = c(7.93, 7.93, 7.82),
     "Chlorophyll ug/L" = c(1.2, 1.2, 1.4),
@@ -228,19 +225,16 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   df_long <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "Lab" = c("UMWL", "UMWL", "UMWL"),
+    "Lab" = "UMWL",
     "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
-    "Parameter" = c(
+    "Parameter" =
       "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
-    ),
     "Result" = c(0.22, 0.18, 0.28),
-    "Unit" = c("MG/L", "MG/L", "MG/L"),
-    "RL" = c(0.1, 0.1, 0.1),
-    "MDL" = c(0.73, 0.73, 0.73),
-    "Method" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
-    "Sample Depth m" = c(0.2, 0.2, 0.2),
+    "Unit" = "MG/L",
+    "RL" = 0.1,
+    "MDL" = 0.73,
+    "Method" = "SM4500NE_2021",
+    "Sample Depth m" = 0.2,
     check.names = FALSE
   )
 
@@ -258,7 +252,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   df_wide1_mwr <- data.frame(
     "Monitoring Location ID" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
-      "EEB18", "EEB18","HR2", "HR2", "HR2"
+      "EEB18", "EEB18", "HR2", "HR2", "HR2"
     ),
     "Activity Start Date" = c(
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
@@ -266,8 +260,8 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "2023-05-24", "2023-05-24", "2023-05-24"
     ),
     "Activity Start Time" = c(
-      "12:32","12:32","12:32","12:32","12:32","12:45","12:45","12:45", "12:45",
-      "12:45","10:22","10:22","10:22"
+      "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
+      "12:45", "12:45", "10:22", "10:22", "10:22"
     ),
     "Characteristic Name" = c(
       "Cloud Cover", "Wind Speed", "Wind Direction", "Depth",
@@ -280,18 +274,20 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "2", "180"
     ),
     "Result Unit" = c(
-      "%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m", "m","%",
+      "%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m", "m", "%",
       "BFT", "DEG TRUE"
     ),
     check.names = FALSE
   )
-  df_wide1_mwr[["Activity Start Date"]] <- as.Date(df_wide1_mwr[["Activity Start Date"]])
+  df_wide1_mwr[["Activity Start Date"]] <- as.Date(
+    df_wide1_mwr[["Activity Start Date"]]
+  )
   df_wide1_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
   df_wide1_mwr["Result Measure Qualifier"] <- NA_character_
   df_wide1_mwr[["QC Reference Value"]] <- NA_integer_
   missing_col <- setdiff(mwr_col_order, colnames(df_wide1_mwr))
   df_wide1_mwr[missing_col] <- NA
-  df_wide1_mwr <- df_wide1_mwr[,mwr_col_order]
+  df_wide1_mwr <- df_wide1_mwr[, mwr_col_order]
 
   df_wide2_mwr <- data.frame(
     "Monitoring Location ID" = c(
@@ -307,9 +303,9 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "2023-05-24"
     ),
     "Activity Start Time" = c(
-      "12:32","12:32","12:32","12:32","12:32","12:32","12:32","12:45", "12:45",
-      "12:45","12:45","12:45","12:45","12:45","10:22","10:22","10:22", "10:22",
-      "10:22","10:22","10:22"
+      "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:45",
+      "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
+      "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
     "Activity Depth/Height Measure" = c(
       0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
@@ -332,14 +328,16 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     ),
     check.names = FALSE
   )
-  df_wide2_mwr[["Activity Start Date"]] <- as.Date(df_wide2_mwr[["Activity Start Date"]])
+  df_wide2_mwr[["Activity Start Date"]] <- as.Date(
+    df_wide2_mwr[["Activity Start Date"]]
+  )
   df_wide2_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
   df_wide2_mwr["Activity Depth/Height Unit"] <- "m"
   df_wide2_mwr["Result Measure Qualifier"] <- NA_character_
   df_wide2_mwr[["QC Reference Value"]] <- NA_integer_
   missing_col <- setdiff(mwr_col_order, colnames(df_wide2_mwr))
   df_wide2_mwr[missing_col] <- NA
-  df_wide2_mwr <- df_wide2_mwr[,mwr_col_order]
+  df_wide2_mwr <- df_wide2_mwr[, mwr_col_order]
 
   df_long_mwr <- data.frame(
     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
@@ -352,20 +350,22 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     "Quantitation Limit" = c(0.73, 0.73, 0.73),
     check.names = FALSE
   )
-  df_long_mwr[["Activity Start Date"]] <- as.Date(df_long_mwr[["Activity Start Date"]])
+  df_long_mwr[["Activity Start Date"]] <- as.Date(
+    df_long_mwr[["Activity Start Date"]]
+  )
   df_long_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
   df_long_mwr["Result Measure Qualifier"] <- NA_character_
   df_long_mwr[["QC Reference Value"]] <- NA_integer_
   missing_col <- setdiff(mwr_col_order, colnames(df_long_mwr))
   df_long_mwr[missing_col] <- NA
-  df_long_mwr <- df_long_mwr[,mwr_col_order]
+  df_long_mwr <- df_long_mwr[, mwr_col_order]
 
   # Test --- ME_FOCB to MassWateR
   # Test warnings
   expect_warning(
     expect_warning(
       suppressMessages(
-        format_results(df_wide1, "ME_FOCB", "MassWateR", date_format="m/d/y")
+        format_results(df_wide1, "ME_FOCB", "MassWateR", date_format = "m/d/y")
       ),
       "Invalid variables in Characteristic Name: Cloud Cover, Wind Speed, Wind Direction"
     ),
@@ -376,20 +376,20 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   expect_equal(
     suppressWarnings(
       suppressMessages(
-        format_results(df_wide1, "ME_FOCB", "MassWateR", date_format="m/d/y")
+        format_results(df_wide1, "ME_FOCB", "MassWateR", date_format = "m/d/y")
       )
     ),
     df_wide1_mwr
   )
   expect_equal(
     suppressMessages(
-      format_results(df_wide2, "ME_FOCB", "MassWateR", date_format="m/d/y")
+      format_results(df_wide2, "ME_FOCB", "MassWateR", date_format = "m/d/y")
     ),
     df_wide2_mwr
   )
   expect_equal(
     suppressMessages(
-      format_results(df_long, "ME_FOCB", "MassWateR", date_format="m/d/y")
+      format_results(df_long, "ME_FOCB", "MassWateR", date_format = "m/d/y")
     ),
     df_long_mwr
   )

@@ -2,21 +2,27 @@ test_that("find_var_names works", {
   df <- data.frame(
     "col1" = c("01||A", "03||B|C", "D|E", "F", "02||G", NA),
     "col2" = c("X|Y", "Z", "T|U", NA, "V", "W"),
-    "col3" = c(1, NA, 2, 3, 5, 6))
+    "col3" = c(1, NA, 2, 3, 5, 6)
+  )
 
   # Check errors
   expect_error(
     find_var_names("foo", "col1", "col2"),
-    regexp = "df must be type dataframe")
+    regexp = "df must be type dataframe"
+  )
   expect_error(
     find_var_names(df, "col4", "col1"),
-    regexp = "Invalid in_format. Acceptable formats: col1, col2, col3")
+    regexp = "Invalid in_format. Acceptable formats: col1, col2, col3"
+  )
   expect_error(
     find_var_names(df, "col1", "col4"),
-    regexp = "Invalid out_format. Acceptable formats: col1, col2, col3")
+    regexp = "Invalid out_format. Acceptable formats: col1, col2, col3"
+  )
   expect_error(
     find_var_names(df, "col4", "col5"),
-    regexp = "Invalid in_format and out_format. Acceptable formats: col1, col2, col3")
+    regexp =
+      "Invalid in_format and out_format. Acceptable formats: col1, col2, col3"
+  )
 
   # Check works
   var_names <- find_var_names(df, "col1", "col2")

@@ -26,5 +26,6 @@ Generates list of name substitutions from dataframe. Each column
 
    Alternate variables can be listed in a cell with the delimiter "|".
    Alternate variables in `in_format` will be included in output. Alternate
-   variables in `out_format` will only be included if `multiple_out_var` is TRUE.
+   variables in `out_format` will only be included if `multiple_out_var` is
+   TRUE.
 }

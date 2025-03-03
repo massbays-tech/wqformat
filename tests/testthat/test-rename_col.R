@@ -73,7 +73,6 @@ test_that("rename_col error messages", {
     rename_col(df, c("species", "class"), c(NA, "foo")),
     regexp = "Can not include NA values in old_colnames or new_colnames"
   )
-
 })
 
 # Check concat_Columns ----

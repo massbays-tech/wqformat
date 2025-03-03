@@ -11,23 +11,24 @@
 #'
 #' @returns Updated dataframe.
 format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
-
   message("Reformatting data...")
 
   # Prep data with nonstandard formats ----
   if (in_format == "MA_BRC") {
-    df <- sites_from_MA_BRC(df)
+    df <- prep_MA_BRC_sites(df)
   }
 
   # Update columns ----
   var_names <- find_var_names(
     df = colnames_sites,
     in_format = in_format,
-    out_format = out_format)
+    out_format = out_format
+  )
   df <- rename_col(
     df = df,
     old_colnames = var_names$old_names,
-    new_colnames = var_names$new_names)
+    new_colnames = var_names$new_names
+  )
 
   # Add missing columns
   missing_col <- setdiff(var_names$keep_var, colnames(df))
@@ -57,9 +58,9 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   }
 
   # Update variables ----
-  if (out_format == "WQX" & "State Code" %in% colnames(df)) {
+  if (out_format == "WQX" && "State Code" %in% colnames(df)) {
     df <- col_to_state(df, "State Code")
-  } else if (out_format == "WQdashboard" & "State" %in% colnames(df)) {
+  } else if (out_format == "WQdashboard" && "State" %in% colnames(df)) {
     df <- col_to_state(df, "State")
   }
 

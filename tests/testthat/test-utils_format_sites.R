@@ -1,5 +1,5 @@
-# Test sites_from_MA_BRC----
-test_that("sites_from_MA_BRC works", {
+# Test prep_MA_BRC_sites----
+test_that("prep_MA_BRC_sites works", {
   df <- data.frame(
     "TOWN" = c(
       "Worcester", "Uxbridge", "Grafton", "Cumberland", "Lincoln", "Blackstone",
@@ -32,18 +32,17 @@ test_that("sites_from_MA_BRC works", {
       0.3048, 3.048, 3.6576, NA, NA, 1, 10, 12, NA, NA, NA, NA, NA, NA, NA, NA,
       NA, NA, NA, NA, NA, NA, NA
     )
-
   )
 
-  expect_equal(sites_from_MA_BRC(df), df_out)
+  expect_equal(prep_MA_BRC_sites(df), df_out)
 })
 
-test_that("sites_from_MA_BRC warns if missing columns", {
+test_that("prep_MA_BRC_sites warns if missing columns", {
   df <- data.frame(
     "SITE_NUMBER" = c("1", "2")
   )
   expect_warning(
-    sites_from_MA_BRC(df),
+    prep_MA_BRC_sites(df),
     regexp = 'Columns "TOWN", "WATER_DEPTH_FT" are missing'
   )
 
@@ -52,7 +51,7 @@ test_that("sites_from_MA_BRC warns if missing columns", {
     "WATER_DEPTH_FT" = c(1, 10)
   )
   expect_warning(
-    sites_from_MA_BRC(df2),
+    prep_MA_BRC_sites(df2),
     regexp = 'Column "TOWN" is missing'
   )
 
@@ -61,7 +60,7 @@ test_that("sites_from_MA_BRC warns if missing columns", {
     "TOWN" = c("Worcester", "Uxbridge")
   )
   expect_warning(
-    sites_from_MA_BRC(df3),
+    prep_MA_BRC_sites(df3),
     regexp = 'Column "WATER_DEPTH_FT" is missing'
   )
 })

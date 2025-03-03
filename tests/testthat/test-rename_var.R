@@ -1,11 +1,11 @@
 # test rename_var -----
 test_that("rename_var works", {
   expect_equal(
-    rename_var("cat", c("cat","dog"), c("kitten", "puppy")),
+    rename_var("cat", c("cat", "dog"), c("kitten", "puppy")),
     "kitten"
   )
   expect_equal(
-    rename_var(1, c(1,2), c(11, 22)),
+    rename_var(1, c(1, 2), c(11, 22)),
     11
   )
 
@@ -18,18 +18,18 @@ test_that("rename_var works", {
     "kitten"
   )
   expect_equal(
-    rename_var("cat", in_list, out_list, allow_multiple=TRUE),
+    rename_var("cat", in_list, out_list, allow_multiple = TRUE),
     c("kitten", "kitty")
   )
 })
 
 test_that("rename_var handles NA values appropriately", {
   expect_error(
-    rename_var("dog", c(NA,"dog"), c("kitten", "puppy")),
+    rename_var("dog", c(NA, "dog"), c("kitten", "puppy")),
     regexp = "old_varname and new_varname must not contain NA values"
   )
   expect_equal(
-    rename_var(NA, c("cat","dog"), c("kitten", "puppy")),
+    rename_var(NA, c("cat", "dog"), c("kitten", "puppy")),
     NA
   )
   expect_error(
@@ -113,10 +113,12 @@ test_that("rename_all_var sends error messages", {
 
   expect_error(
     rename_all_var(df, "genus", "chinchilla", "cat"),
-    regexp = "col_name not in dataframe")
+    regexp = "col_name not in dataframe"
+  )
   expect_error(
     rename_all_var(df, "species", c("ant", "chinchilla"), "cat"),
-    regexp = "old_varname and new_varname are different lengths")
+    regexp = "old_varname and new_varname are different lengths"
+  )
 })
 
 # test rename_var -----

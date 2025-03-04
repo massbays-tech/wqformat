@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_col.R
 \name{col_to_numeric}
 \alias{col_to_numeric}
-\title{Column to Numeric}
+\title{Convert column to numeric format}
 \usage{
 col_to_numeric(.data, col_name)
 }
@@ -12,9 +12,14 @@ col_to_numeric(.data, col_name)
 \item{col_name}{String. Column name.}
 }
 \value{
-Updated dataframe.
+If all values are numeric, converts column to numeric and returns dataframe.
+If there are any non-numeric values, leaves column as-is and returns
+dataframe.
 }
 \description{
-Checks if column can be converted to numeric. If all
-   entries can be converted with no loss of data, converts column to numeric.
+If all values in column are numbers, `col_to_numeric()` converts column type
+to numeric.
+}
+\seealso{
+[col_to_date], [col_to_state], [rename_all_var]
 }

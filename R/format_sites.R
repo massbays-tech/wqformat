@@ -1,13 +1,11 @@
-#' Reformat Site Data
+#' Format site data
 #'
 #' @description Converts water quality site data between formats. (List formats)
 #'
-#'
 #' @param df Input dataframe.
-#' @param in_format String. Name of input format. (word better)
-#' @param out_format String. Name of desired output format. (word better)
-#' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
-#'    converted to `out_format`. Default value TRUE.
+#' @param in_format,out_format String. Name of input & output formats
+#'
+#' @inheritParams format_results
 #'
 #' @returns Updated dataframe.
 format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
@@ -19,16 +17,8 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   }
 
   # Update columns ----
-  var_names <- find_var_names(
-    df = colnames_sites,
-    in_format = in_format,
-    out_format = out_format
-  )
-  df <- rename_col(
-    df = df,
-    old_colnames = var_names$old_names,
-    new_colnames = var_names$new_names
-  )
+  var_names <- fetch_var(colnames_sites, in_format, out_format)
+  df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns
   missing_col <- setdiff(var_names$keep_var, colnames(df))

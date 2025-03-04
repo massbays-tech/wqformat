@@ -4,23 +4,26 @@
 \alias{rename_all_var}
 \title{Rename all variables in column}
 \usage{
-rename_all_var(df, col_name, old_varname, new_varname)
+rename_all_var(.data, col_name, old_varname, new_varname)
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{.data}{Dataframe}
 
 \item{col_name}{String. Column name.}
 
-\item{old_varname}{List. Old variable names; must be same length and in
-same order as `new_varname`.}
-
-\item{new_varname}{List. New variable names; must be same length and in
-same order as `old_varname`.}
+\item{old_varname, new_varname}{List. List old variable names in `old_varname`
+and new variable names in `new_varname`. `old_varname` and `new_varname` are
+a paired list, therefor they must be the same length and in the same order.}
 }
 \value{
-Updated dataframe.
+Dataframe with updated variables in target column. If no
+substitutions found, returns original dataframe.
 }
 \description{
-Converts values in column from old variable names to new
-  new variable names. If no match found, leaves old variable name.
+`rename_all_var()` uses a paired list (`old_varname`, `new_varname`) to
+generate a list of name substitutions and update all variables in the input
+column. If no match found, leaves old variable name.
+}
+\seealso{
+[rename_var], [col_to_numeric], [col_to_date], [col_to_state]
 }

@@ -2,23 +2,26 @@
 % Please edit documentation in R/format_col.R
 \name{col_to_state}
 \alias{col_to_state}
-\title{Format State Columns}
+\title{Format state names in column}
 \usage{
-col_to_state(.data, state_col, full_name = FALSE)
+col_to_state(.data, state_col, abb = TRUE)
 }
 \arguments{
 \item{.data}{Dataframe.}
 
 \item{state_col}{String. Name of state column.}
 
-\item{full_name}{Boolean. If \code{TRUE}, formats `state_col` as full
-state names. If \code{FALSE}, formats `state_col` as state abbreviations.
-Default \code{FALSE}.}
+\item{abb}{Boolean. If `TRUE`, uses abbreviations. If `FALSE`, uses full
+state names. Default `TRUE`.}
 }
 \value{
-Updated dataframe.
+* If abb is `TRUE`, converts all state names in column to abbreviations
+* If abb is `FALSE`, converts all state abbreviations in column to names
 }
 \description{
 Formats all state names in column as either abbreviations or
  full names.
+}
+\seealso{
+[col_to_numeric], [call_to_date], [rename_all_var]
 }

@@ -4,19 +4,29 @@
 \alias{concat_columns}
 \title{Concatenate Columns}
 \usage{
-concat_columns(df, in_fields, out_field)
+concat_columns(.data, in_colnames, out_colname)
 }
 \arguments{
-\item{df}{Dataframe.}
+\item{.data}{Dataframe.}
 
-\item{in_fields}{List. Dataframe columns to combine.}
+\item{in_colnames}{List. Input column names.
+* Columns will be assessed in the order they are listed
+* The first non-`NA` value will be transferred to `out_colname`
+* If all columns contain `NA` values, then the value for `out_colname` value
+will also be `NA`.}
 
-\item{out_field}{String. Name of column to transfer values to.}
+\item{out_colname}{String. Name of column to transfer values to.
+* Will create new column if `out_colname` is missing from dataframe.}
 }
 \value{
-Updated dataframe.
+Updated dataframe where `out_colname` continues the first non-`NA`
+value from `in_colnames`. If all values for `in_colnames` are `NA`, then
+the value for `out_colname` will also be `NA`.
 }
 \description{
-Combines values from multiple columns and saves the first
- non-NA value to the output column.
+`concat_columns()` combines values from multiple columns and saves the first
+ non-`NA` value to the output column.
+}
+\seealso{
+[rename_col]
 }

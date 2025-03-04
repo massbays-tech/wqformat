@@ -18,7 +18,7 @@ test_that("rename_var works", {
     "kitten"
   )
   expect_equal(
-    rename_var("cat", in_list, out_list, allow_multiple = TRUE),
+    rename_var("cat", in_list, out_list, multiple = TRUE),
     c("kitten", "kitty")
   )
 })

@@ -4,18 +4,15 @@
 #'  formats)
 #'
 #' @param df Input dataframe.
-#' @param in_format String. Name of input format. (word better)
-#' @param out_format String. Name of desired output format. (word better)
-#' @param date_format String. Date format, uses lubridate. (word better) Default
-#'    value "m/d/Y".
-#' @param tz Timezone. Default value "America/New_York".
-#' @param drop_extra_col Boolean. If TRUE, removes any columns that can't be
-#'    converted to `out_format`. Default value TRUE.
+#' @param in_format,out_format String. Name of input & output formats
+#' @param drop_extra_col Boolean. If `TRUE`, removes any columns that can't be
+#'    converted to `out_format`. Default `TRUE`.
+#'
+#' @inheritParams col_to_date
 #'
 #' @returns Updated dataframe.
-format_results <- function(
-    df, in_format, out_format, date_format = "m/d/Y", tz = "America/New_York",
-    drop_extra_col = TRUE) {
+format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
+                           tz = Sys.timezone(), drop_extra_col = TRUE) {
   message("Reformatting data...")
 
   # Preformat data ----
@@ -24,28 +21,18 @@ format_results <- function(
   } else if (in_format == "MA_BRC") {
     df <- prep_MA_BRC_results(df, date_format, tz)
   } else if (in_format == "ME_DEP") {
-    df <- concat_columns(
-      df,
-      in_fields = c(
-        "LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"
-      ),
-      out_field = "LAB_QUALIFIER"
-    )
+    df <- df %>%
+      concat_columns(
+        c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
+        "LAB_QUALIFIER"
+      )
   } else if (in_format == "ME_FOCB") {
     df <- prep_ME_FOCB_results(df, date_format)
   }
 
   # Update columns ----
-  var_names <- find_var_names(
-    df = colnames_results,
-    in_format = in_format,
-    out_format = out_format
-  )
-  df <- rename_col(
-    df = df,
-    old_colnames = var_names$old_names,
-    new_colnames = var_names$new_names
-  )
+  var_names <- fetch_var(colnames_results, in_format, out_format)
+  df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns
   missing_col <- setdiff(var_names$keep_var, colnames(df))
@@ -72,7 +59,7 @@ format_results <- function(
   }
 
   # Update variables ----
-  col_sub <- find_var_names(colnames_results, "WQX", out_format)
+  col_sub <- fetch_var(colnames_results, "WQX", out_format)
 
   # Format dates
   for (date_col in c("Activity Start Date", "Analysis Start Date")) {
@@ -111,13 +98,13 @@ format_results <- function(
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    param <- find_var_names(varnames_parameters, in_format, out_format)
+    param <- fetch_var(varnames_parameters, in_format, out_format)
     df <- rename_all_var(df, col_name, param$old_names, param$new_names)
     warn_invalid_var(df, col_name, param$keep_var)
   }
 
   # Rename units
-  unit_name <- find_var_names(varnames_units, in_format, out_format)
+  unit_name <- fetch_var(varnames_units, in_format, out_format)
   for (unit_col in c(
     "Result Unit", "Activity Depth/Height Unit",
     "Result Detection/Quantitation Limit Unit"
@@ -128,7 +115,8 @@ format_results <- function(
       new_varname = col_sub$new_names
     )
     if (col_name %in% colnames(df)) {
-      df <- rename_all_var(df, col_name, unit_name$old_names, unit_name$new_names)
+      df <- df %>%
+        rename_all_var(col_name, unit_name$old_names, unit_name$new_names)
       warn_invalid_var(df, col_name, unit_name$keep_var)
     }
   }
@@ -140,7 +128,7 @@ format_results <- function(
     new_varname = col_sub$new_names
   )
   if (out_format != "MassWateR" && col_name %in% colnames(df)) {
-    qual <- find_var_names(varnames_qualifiers, in_format, out_format)
+    qual <- fetch_var(varnames_qualifiers, in_format, out_format)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
     warn_invalid_var(df, col_name, qual$keep_var)
   }
@@ -153,7 +141,7 @@ format_results <- function(
   )
   if (col_name %in% colnames(df)) {
     atype <- try(
-      find_var_names(varnames_activity, in_format, out_format),
+      fetch_var(varnames_activity, in_format, out_format),
       silent = TRUE
     )
     if (!inherits(atype, "try-error")) {

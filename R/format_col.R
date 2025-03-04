@@ -1,12 +1,18 @@
-#' Column to Numeric
+#' Convert column to numeric format
 #'
-#' @description Checks if column can be converted to numeric. If all
-#'    entries can be converted with no loss of data, converts column to numeric.
+#' @description
+#' If all values in column are numbers, `col_to_numeric()` converts column type
+#' to numeric.
 #'
 #' @param .data Dataframe.
 #' @param col_name String. Column name.
 #'
-#' @returns Updated dataframe.
+#' @seealso [col_to_date], [col_to_state], [rename_all_var]
+#'
+#' @returns
+#' If all values are numeric, converts column to numeric and returns dataframe.
+#' If there are any non-numeric values, leaves column as-is and returns
+#' dataframe.
 col_to_numeric <- function(.data, col_name) {
   if (is.numeric(.data[[col_name]])) {
     return(.data)
@@ -16,25 +22,30 @@ col_to_numeric <- function(.data, col_name) {
   chk <- !is.na(suppressWarnings(mapply(as.numeric, typ))) | is.na(typ)
 
   if (all(chk)) {
-    .data <- dplyr::mutate(
-      .data,
-      {{ col_name }} := as.numeric(.data[[col_name]])
-    )
+    .data[[col_name]] <- as.numeric(.data[[col_name]])
   }
 
   return(.data)
 }
 
-#' Column to Date
+#' Convert column to date or datetime format
 #'
-#' @description Checks if column is formatted as a date. If column is not
-#'   formatted as date, converts column to date OR datetime.
+#' @description
+#' `col_to_date` converts column to date or datetime format.
+#' * Uses date format by default
+#' * Will use datetime format if time variables are included in `date_format`
+#'
 #' @param .data Dataframe.
 #' @param date_col String. Name of date column.
 #' @param date_format String. Date format. Uses the same formatting as
-#'  `lubridate::parse_date_time`. Default value "m/d/Y".
-#' @param tz String. Specifies the timezone used to parse dates. Defaults to
-#'    system timezone.
+#' [lubridate::parse_date_time()]. Default value "m/d/Y".
+#' @param tz String. Specifies the timezone used to parse dates. Uses system
+#' timezone as default.
+#'
+#' @seealso [col_to_numeric], [col_to_state], [rename_all_var]
+#'
+#' @return
+#' Converts column to date or datetime and returns dataframe
 col_to_date <- function(.data, date_col, date_format = "m/d/Y",
                         tz = Sys.timezone()) {
   if (!date_col %in% colnames(.data)) {
@@ -105,25 +116,39 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
   return(dat)
 }
 
-#' Format State Columns
+#' Format state names in column
 #'
 #' @description Formats all state names in column as either abbreviations or
 #'  full names.
 #'
 #' @param .data Dataframe.
 #' @param state_col String. Name of state column.
-#' @param full_name Boolean. If \code{TRUE}, formats `state_col` as full
-#'  state names. If \code{FALSE}, formats `state_col` as state abbreviations.
-#'  Default \code{FALSE}.
+#' @param abb Boolean. If `TRUE`, uses abbreviations. If `FALSE`, uses full
+#' state names. Default `TRUE`.
 #'
-#' @returns Updated dataframe.
-col_to_state <- function(.data, state_col, full_name = FALSE) {
-  if (full_name) {
+#' @seealso [col_to_numeric], [call_to_date], [rename_all_var]
+#'
+#' @returns
+#' * If abb is `TRUE`, converts all state names in column to abbreviations
+#' * If abb is `FALSE`, converts all state abbreviations in column to names
+col_to_state <- function(.data, state_col, abb = TRUE) {
+  chk <- .data[[state_col]] %in% c(
+    NA, datasets::state.abb, datasets::state.name
+  )
+  if (any(!chk)) {
+    bad_state <- .data[[state_col]][which(!chk)]
+    warning(
+      paste(unique(bad_state), collapse = ", "),
+      " is not a valid state name"
+    )
+  }
+
+  if (abb) {
     dat <- .data %>%
       dplyr::mutate(
         {{ state_col }} := dplyr::if_else(
-          .data[[state_col]] %in% datasets::state.abb,
-          datasets::state.name[match(.data[[state_col]], datasets::state.abb)],
+          .data[[state_col]] %in% datasets::state.name,
+          datasets::state.abb[match(.data[[state_col]], datasets::state.name)],
           .data[[state_col]]
         )
       )
@@ -131,8 +156,8 @@ col_to_state <- function(.data, state_col, full_name = FALSE) {
     dat <- .data %>%
       dplyr::mutate(
         {{ state_col }} := dplyr::if_else(
-          .data[[state_col]] %in% datasets::state.name,
-          datasets::state.abb[match(.data[[state_col]], datasets::state.name)],
+          .data[[state_col]] %in% datasets::state.abb,
+          datasets::state.name[match(.data[[state_col]], datasets::state.abb)],
           .data[[state_col]]
         )
       )

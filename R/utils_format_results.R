@@ -1,18 +1,21 @@
-#' Prepare MassWateR Results
+#' Preformat result data from MassWateR
 #'
-#' @description Helper function for `format_results`. Standardizes result data
-#'    from MassWateR.
-#'  * Transfers "BDL" and "AQL" values from `Result Value` to
-#'    `Result Measure Qualifier`.
-#'  * Data in `QC Reference Value` is copied to its own row.
+#' @description
+#' `prep_MassWateR_results()` is a helper function for [format_results()] that
+#' preformats result data from MassWateR.
+#' * Transfers "BDL" and "AQL" values from "Result Value" to "Result Measure
+#' Qualifier".
+#' * Data in "QC Reference Value" is copied to its own row.
 #'
-#' @param df Dataframe.
+#' @param .data Dataframe
 #'
-#' @returns Updated dataframe.
-prep_MassWateR_results <- function(df) {
+#' @returns Dataframe matching the standard format used by [format_results()]
+#'
+#' @noRd
+prep_MassWateR_results <- function(.data) {
   # Prep data
-  df[["Result Value"]] <- as.character(df[["Result Value"]])
-  df[["QC Reference Value"]] <- as.character(df[["QC Reference Value"]])
+  .data[["Result Value"]] <- as.character(.data[["Result Value"]])
+  .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
 
   # Transfer QC Reference Value to own row
   qc_duplicate <- c(
@@ -20,7 +23,7 @@ prep_MassWateR_results <- function(df) {
     "Quality Control-Meter Lab Duplicate"
   )
 
-  df <- df %>%
+  dat <- .data %>%
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
         .data[["Activity Type"]] %in% qc_duplicate &
@@ -54,7 +57,7 @@ prep_MassWateR_results <- function(df) {
     )
 
   # Update qualifiers, result value
-  df <- df %>%
+  dat <- dat %>%
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::if_else(
         .data[["Result Value"]] %in% c("BDL", "AQL"),
@@ -72,38 +75,42 @@ prep_MassWateR_results <- function(df) {
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
 
-  return(df)
+  return(dat)
 }
 
 #' Results to MassWateR
 #'
-#' @description Helper function for `format_results`. Formats result data for
-#'    MassWateR.
-#'  * Sets "Result Value" to "BDL" or "AQL" as needed
-#'  * Sets "Result Measure Qualifier" to Q or NA
-#'  * Transfers duplicate values to "QC Reference Value"
+#' @description
+#' `results_to_MassWateR()` is a helper function for [format_results()] that
+#' formats result data for MassWateR.
+#' * Sets "Result Value" to "BDL" or "AQL" as needed
+#' * Sets "Result Measure Qualifier" to Q or NA
+#' * Transfers duplicate values to "QC Reference Value"
 #'
-#' @param df Dataframe.
-#' @param in_format String. Input format.
+#' @param .data Dataframe
 #'
-#' @returns Updated dataframe.
-results_to_MassWateR <- function(df, in_format) {
+#' @inheritParams format_results
+#'
+#' @returns Dataframe matching the standard format used by MassWateR
+#'
+#' @noRd
+results_to_MassWateR <- function(.data, in_format) {
   # Prep data
-  df[["Result Value"]] <- as.character(df[["Result Value"]])
-  df[["QC Reference Value"]] <- as.character(df[["QC Reference Value"]])
+  .data[["Result Value"]] <- as.character(.data[["Result Value"]])
+  .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
 
-  df_colnames <- colnames(df)
+  dat_colnames <- colnames(.data)
 
   # Update qualifiers, result value
-  qual <- find_var_names(varnames_qualifiers, in_format, "Flag")
-  df <- rename_all_var(
-    df,
+  qual <- fetch_var(varnames_qualifiers, in_format, "Flag")
+  dat <- rename_all_var(
+    .data,
     "Result Measure Qualifier",
     qual$old_names,
     qual$new_names
   )
 
-  df <- df %>%
+  dat <- dat %>%
     dplyr::mutate(
       "Result Value" = dplyr::case_when(
         .data[["Result Measure Qualifier"]] == "Non-Detect" ~ "BDL",
@@ -120,21 +127,21 @@ results_to_MassWateR <- function(df, in_format) {
         TRUE ~ .data[["Result Measure Qualifier"]]
       )
     )
-  warn_invalid_var(df, "Result Measure Qualifier", "Q")
+  warn_invalid_var(dat, "Result Measure Qualifier", "Q")
 
   # Transfer QC duplicates to QC Reference Value
   qc_duplicate <- c(
     "Quality Control Sample-Lab Duplicate",
     "Quality Control-Meter Lab Duplicate"
   )
-  group_col <- setdiff(df_colnames, "Result Value")
+  group_col <- setdiff(dat_colnames, "Result Value")
 
-  chk <- df[["Activity Type"]] %in% qc_duplicate &
-    is.na(df[["QC Reference Value"]])
-  df1 <- df[which(chk), ] # data to group
-  df2 <- df[which(!chk), ] # data to leave as-is
+  chk <- dat[["Activity Type"]] %in% qc_duplicate &
+    is.na(dat[["QC Reference Value"]])
+  dat1 <- dat[which(chk), ] # data to group
+  dat2 <- dat[which(!chk), ] # data to leave as-is
 
-  df1 <- df1 %>%
+  dat1 <- dat1 %>%
     dplyr::group_by_at(group_col) %>%
     dplyr::summarize(
       "Result Value" = stringr::str_c(.data[["Result Value"]], collapse = "|"),
@@ -156,34 +163,37 @@ results_to_MassWateR <- function(df, in_format) {
     ) %>%
     tidyr::separate_longer_delim(dplyr::all_of("Result Value"), "|")
 
-  df <- rbind(df1, df2)
-  df <- as.data.frame(df) %>%
+  dat <- rbind(dat1, dat2)
+  dat <- as.data.frame(dat) %>%
     dplyr::arrange(
       .data[["Activity Start Date"]],
       .data[["Activity Start Time"]]
     ) %>%
-    dplyr::select(dplyr::all_of(df_colnames)) %>%
+    dplyr::select(dplyr::all_of(dat_colnames)) %>%
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
 
-  return(df)
+  return(dat)
 }
 
-#' Prepare Blackstone River Coalition Results
+#' Preformat result data from the Blackstone River Coalition
 #'
-#' @description Helper function for `format_results`. Standardizes result data
-#'    from the Blackstone River Coalition (MA_BRC).
-#'    * Adds columns for DATE, TIME, SAMPLE_TYPE
+#' @description
+#' `prep_MA_BRC_results()` is a helper function for [format_results()] that
+#' preformats result data from the Blackstone River Coalition (MA_BRC).
+#' * Adds columns "DATE", "TIME", "SAMPLE_TYPE"
 #'
-#' @param df Input dataframe.
+#' @param .data Input Dataframe
 #' @param date_format String. Date format. Uses the same formatting as
-#'  `lubridate`. Default value "m/d/Y".
-#' @param tz String. Timezone. Default value "America/New York".
+#' [lubridate::parse_date_time()]. Default value is "Y-m-d H:M".
+#' @param tz String. Timezone. Default value is "America/New York".
 #'
-#' @returns Updated dataframe.
-prep_MA_BRC_results <- function(
-    df, date_format = "Y-m-d H:M", tz = "America/New_York") {
-  df <- df %>%
+#' @returns Dataframe matching the standard format used by [format_results()]
+#'
+#' @noRd
+prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
+                                tz = "America/New_York") {
+  dat <- .data %>%
     col_to_date("DATE_TIME", date_format = date_format, tz = tz) %>%
     dplyr::mutate("DATE" = as.Date(.data$DATE_TIME)) %>%
     dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) %>%
@@ -195,23 +205,28 @@ prep_MA_BRC_results <- function(
         TRUE ~ "Grab"
       )
     )
-  return(df)
+  return(dat)
 }
 
 #' Results to Blackstone River Coalition
 #'
-#' @description Helper function for `format_results`. Formats result data for
-#'    the Blackstone River Coalition (MA_BRC).
-#'    * Uses DATE, TIME columns to fill DATE_TIME column
-#'    * uses SAMPLE_TYPE column to update PARAMETER column
-#'    * Adds columns UNIQUE_ID
-#'    * Removes DATE, TIME, and SAMPLE_TYPE columns
+#' @description
+#' `results_to_MA_BRC()` is a helper function for [format_results()] that
+#' formats result data for the Blackstone River Coalition (MA_BRC).
+#' * Uses "DATE", "TIME" columns to fill "DATE_TIME" column
+#' * uses "SAMPLE_TYPE" column to update "PARAMETER" column
+#' * Adds column "UNIQUE_ID"
+#' * Removes "DATE", "TIME", and "SAMPLE_TYPE" columns
 #'
-#' @param df Input dataframe.
+#' @param .data Dataframe
 #'
-#' @returns Updated dataframe.
-results_to_MA_BRC <- function(df) {
-  df <- df %>%
+#' @returns
+#' Dataframe matching the standard format used by the Blackstone River
+#' Coalition.
+#'
+#' @noRd
+results_to_MA_BRC <- function(.data) {
+  dat <- .data %>%
     dplyr::mutate("DATE_TIME" = paste(.data$DATE, .data$TIME)) %>%
     dplyr::mutate(
       "PARAMETER" = dplyr::if_else(
@@ -250,33 +265,36 @@ results_to_MA_BRC <- function(df) {
     dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") %>%
     dplyr::select(!dplyr::any_of(c("DATE", "TIME", "SAMPLE_TYPE")))
 
-  return(df)
+  return(dat)
 }
 
-#' Prep Friends of Casco Bay Results
+#' Preformat result data from Friends of Casco Bay
 #'
-#' @description Helper function for `format_results`. Standardizes result data
-#'    from the Friends of Casco Bay (ME_FOCB).
+#' @description
+#' `prep_ME_FOCB_results()` is a helper function for [format_results()] that
+#' preformats result data from Friends of Casco Bay (ME_FOCB).
+#' * Adds column "Sample Depth Unit"
+#' * Pivots table from wide to long
 #'
-#'   * Adds "Sample Depth Unit" column
-#'   * Pivots table from wide to long.
+#' @param .data Dataframe
 #'
-#' @param df Dataframe.
-#' @param date_format String. Date format, uses lubridate. (word better)
+#' @inheritParams col_to_date
 #'
-#' @returns Updated dataframe.
-prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
+#' @returns Dataframe matching the standard format used by [format_results()]
+#'
+#' @noRd
+prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
   # Add columns
-  if ("Sample Depth m" %in% colnames(df)) {
-    df <- dplyr::mutate(df, "Sample Depth Unit" = "m")
+  if ("Sample Depth m" %in% colnames(.data)) {
+    .data <- dplyr::mutate(.data, "Sample Depth Unit" = "m")
   }
 
-  df <- df %>%
+  dat <- .data %>%
     dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
 
   # Check if table is long, else make long
-  if (!"Parameter" %in% colnames(df)) {
+  if (!"Parameter" %in% colnames(dat)) {
     # Pivot table longer, update parameter & unit names
     keep_col <- c(
       "SiteID", "Site ID", "Sample ID", "Date", "Time", "Sample Depth",
@@ -284,7 +302,7 @@ prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
     )
 
     # Set table to numeric before pivot to avoid errors from "BSV" score
-    df <- df %>%
+    dat <- dat %>%
       dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
       tidyr::pivot_longer(
         !dplyr::any_of(keep_col),
@@ -294,12 +312,12 @@ prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
       )
 
     # Return columns to numeric...
-    for (field in colnames(df)) {
-      df <- col_to_numeric(df, field)
+    for (field in colnames(dat)) {
+      dat <- col_to_numeric(dat, field)
     }
 
     # Add parameters, units
-    df <- as.data.frame(df) %>%
+    dat <- as.data.frame(dat) %>%
       dplyr::mutate(
         "Unit" = dplyr::case_when(
           grepl("mg/L", .data$Parameter) ~ "mg/L",
@@ -330,12 +348,12 @@ prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
   }
 
   # Calc gap between Sample Date & Analysis Date
-  if ("Date" %in% colnames(df) && !"Sample Date" %in% colnames(df)) {
-    df <- dplyr::rename(df, "Sample Date" = "Date")
+  if ("Date" %in% colnames(dat) && !"Sample Date" %in% colnames(dat)) {
+    dat <- dplyr::rename(dat, "Sample Date" = "Date")
   }
 
-  if (all(c("Sample Date", "Analysis Date") %in% colnames(df))) {
-    df <- df %>%
+  if (all(c("Sample Date", "Analysis Date") %in% colnames(dat))) {
+    dat <- dat %>%
       col_to_date("Sample Date", date_format = date_format) %>%
       col_to_date("Analysis Date", date_format = date_format) %>%
       dplyr::mutate(
@@ -344,11 +362,11 @@ prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
         )
       )
   } else {
-    df$temp_gap <- 0
+    dat$temp_gap <- 0
   }
 
   # Add qualifiers
-  df <- df %>%
+  dat <- dat %>%
     dplyr::mutate(
       "Qualifier" = dplyr::case_when(
         .data$Parameter == "Chlorophyll" ~ "J",
@@ -360,5 +378,5 @@ prep_ME_FOCB_results <- function(df, date_format = "m/d/y") {
     ) %>%
     dplyr::select(!"temp_gap")
 
-  return(df)
+  return(dat)
 }

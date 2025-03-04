@@ -2,12 +2,12 @@
 % Please edit documentation in R/rename_var.R
 \name{warn_invalid_var}
 \alias{warn_invalid_var}
-\title{Warn if Invalid Variables}
+\title{Check column for invalid variables}
 \usage{
-warn_invalid_var(df, col_name, varlist)
+warn_invalid_var(dat, col_name, varlist)
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{dat}{Dataframe}
 
 \item{col_name}{String. Column name.}
 
@@ -17,6 +17,9 @@ warn_invalid_var(df, col_name, varlist)
 Updated dataframe.
 }
 \description{
-Checks if column contains variables that aren't included in the
- list of acceptable names.
+`warn_invalid_var()` checks if the input column contains any variables that
+aren't included in `varlist`.
+}
+\seealso{
+[rename_all_var]
 }

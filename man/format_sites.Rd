@@ -2,19 +2,17 @@
 % Please edit documentation in R/format_sites.R
 \name{format_sites}
 \alias{format_sites}
-\title{Reformat Site Data}
+\title{Format site data}
 \usage{
 format_sites(df, in_format, out_format, drop_extra_col = TRUE)
 }
 \arguments{
 \item{df}{Input dataframe.}
 
-\item{in_format}{String. Name of input format. (word better)}
+\item{in_format, out_format}{String. Name of input & output formats}
 
-\item{out_format}{String. Name of desired output format. (word better)}
-
-\item{drop_extra_col}{Boolean. If TRUE, removes any columns that can't be
-converted to `out_format`. Default value TRUE.}
+\item{drop_extra_col}{Boolean. If `TRUE`, removes any columns that can't be
+converted to `out_format`. Default `TRUE`.}
 }
 \value{
 Updated dataframe.

@@ -9,24 +9,23 @@ format_results(
   in_format,
   out_format,
   date_format = "m/d/Y",
-  tz = "America/New_York",
+  tz = Sys.timezone(),
   drop_extra_col = TRUE
 )
 }
 \arguments{
 \item{df}{Input dataframe.}
 
-\item{in_format}{String. Name of input format. (word better)}
+\item{in_format, out_format}{String. Name of input & output formats}
 
-\item{out_format}{String. Name of desired output format. (word better)}
+\item{date_format}{String. Date format. Uses the same formatting as
+[lubridate::parse_date_time()]. Default value "m/d/Y".}
 
-\item{date_format}{String. Date format, uses lubridate. (word better) Default
-value "m/d/Y".}
+\item{tz}{String. Specifies the timezone used to parse dates. Uses system
+timezone as default.}
 
-\item{tz}{Timezone. Default value "America/New_York".}
-
-\item{drop_extra_col}{Boolean. If TRUE, removes any columns that can't be
-converted to `out_format`. Default value TRUE.}
+\item{drop_extra_col}{Boolean. If `TRUE`, removes any columns that can't be
+converted to `out_format`. Default `TRUE`.}
 }
 \value{
 Updated dataframe.

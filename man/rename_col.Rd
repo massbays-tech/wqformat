@@ -4,21 +4,22 @@
 \alias{rename_col}
 \title{Rename columns}
 \usage{
-rename_col(df, old_colnames, new_colnames)
+rename_col(.data, old_colnames, new_colnames)
 }
 \arguments{
-\item{df}{Dataframe.}
+\item{.data}{Dataframe}
 
-\item{old_colnames}{List. Old column names; must be same length and in
-same order as `new_colnames`.}
-
-\item{new_colnames}{List. New column names; must be same length and in
-same order as `old_colnames`.}
+\item{old_colnames, new_colnames}{List. Columns listed in `old_colnames` will
+be renamed to match paired name in `new_colnames`. `old_colnames` and
+`new_colnames` must be the same length and in the same order.}
 }
 \value{
-Updated dataframe.
+Dataframe with updated column names.
 }
 \description{
-Rename columns from `old_colnames` to `new_colnames`. If no
-  match found, leaves old column name.
+`rename_col()` renames columns by substituting values from `new_colnames` for
+values from `old_colnames`.
+}
+\seealso{
+[concat_columns]
 }

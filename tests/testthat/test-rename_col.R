@@ -30,6 +30,19 @@ test_that("rename_col works", {
     )
   )
 
+  # Check pipes
+  expect_equal(
+    df %>% rename_col(
+      c("species", "genus", "numbers"),
+      c("foo", "bar", "foofy")
+    ),
+    data.frame(
+      "foo" = c("aardvark", "bittern", NA, NA),
+      "class" = c("mammal", "bird", "mammal", NA),
+      "foofy" = c(1, 2, 3, 4)
+    )
+  )
+
   # Check 2:1 column name conversion
   expect_equal(
     rename_col(
@@ -84,41 +97,44 @@ test_that("concat_columns works", {
     "numbers" = c(1, 2, 3, 4)
   )
 
-  df2 <- data.frame(
-    "foo" = c("aardvark", "bittern", "mammal", NA),
-    "species" = c("aardvark", "bittern", NA, NA),
-    "class" = c("mammal", "bird", "mammal", NA),
-    "numbers" = c(1, 2, 3, 4)
-  )
-
-  df3 <- data.frame(
-    "numbers" = c("aardvark", "bittern", "mammal", 4),
-    "species" = c("aardvark", "bittern", NA, NA),
-    "class" = c("mammal", "bird", "mammal", NA)
-  )
-
-  # Test concatenate multiple columns
-  expect_equal(concat_columns(df, c("species", "class"), "foo"), df2)
+  # Test intended use
   expect_equal(
-    concat_columns(df, c("species", "class", "numbers"), "numbers"),
-    df3
+    concat_columns(
+      df,
+      c("species", "class"),
+      "foo"
+    ),
+    data.frame(
+      "foo" = c("aardvark", "bittern", "mammal", NA),
+      "species" = c("aardvark", "bittern", NA, NA),
+      "class" = c("mammal", "bird", "mammal", NA),
+      "numbers" = c(1, 2, 3, 4)
+    )
+  )
+  expect_equal(
+    concat_columns(
+      df,
+      c("species", "class", "numbers"),
+      "numbers"
+    ),
+    data.frame(
+      "numbers" = c("aardvark", "bittern", "mammal", 4),
+      "species" = c("aardvark", "bittern", NA, NA),
+      "class" = c("mammal", "bird", "mammal", NA)
+    )
   )
 
-  # Test for only one in column, invalid in column
-  df4 <- data.frame(
-    "species" = c("aardvark", "bittern", NA, NA),
-    "class" = c("mammal", "bird", "mammal", NA),
-    "numbers" = c(1, 2, 3, 4),
-    "foo" = c("aardvark", "bittern", NA, NA)
+  # Test edge cases, pipes
+  expect_equal(
+    df %>%
+      concat_columns("species", "foo") %>% # only 1 in_colnames
+      concat_columns("foofy", "owl"), # invalid in_colnames
+    data.frame(
+      "species" = c("aardvark", "bittern", NA, NA),
+      "class" = c("mammal", "bird", "mammal", NA),
+      "numbers" = c(1, 2, 3, 4),
+      "foo" = c("aardvark", "bittern", NA, NA),
+      "owl" = NA
+    )
   )
-
-  df5 <- data.frame(
-    "species" = c("aardvark", "bittern", NA, NA),
-    "class" = c("mammal", "bird", "mammal", NA),
-    "numbers" = c(1, 2, 3, 4),
-    "bar" = c(NA, NA, NA, NA)
-  )
-
-  expect_equal(concat_columns(df, "species", "foo"), df4)
-  expect_equal(concat_columns(df, "foo", "bar"), df5)
 })

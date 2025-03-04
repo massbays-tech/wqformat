@@ -96,22 +96,42 @@ test_that("col_to_state works", {
     "State_abb" = c("RI", "MA"),
     "State_name" = c("Rhode Island", "Massachusetts"),
     "State_mix" = c("Rhode Island", "MA"),
-    "State_misspell" = c("RI", "foo")
-  )
-
-  df_out <- data.frame(
-    "State_abb" = c("Rhode Island", "Massachusetts"),
-    "State_name" = c("RI", "MA"),
-    "State_mix" = c("Rhode Island", "Massachusetts"),
-    "State_misspell" = c("RI", "foo")
+    "State_error" = c("RI", "foo")
   )
 
   expect_equal(
     df_in %>%
-      col_to_state("State_abb", full_name = TRUE) %>%
+      col_to_state("State_abb", abb = FALSE) %>%
       col_to_state("State_name") %>%
-      col_to_state("State_mix", full_name = TRUE) %>%
-      col_to_state("State_misspell"),
-    df_out
+      col_to_state("State_mix", abb = FALSE),
+    data.frame(
+      "State_abb" = c("Rhode Island", "Massachusetts"),
+      "State_name" = c("RI", "MA"),
+      "State_mix" = c("Rhode Island", "Massachusetts"),
+      "State_error" = c("RI", "foo")
+    )
+  )
+  expect_equal(
+    suppressWarnings(
+      col_to_state(df_in, "State_error", abb = FALSE)
+    ),
+    data.frame(
+      "State_abb" = c("RI", "MA"),
+      "State_name" = c("Rhode Island", "Massachusetts"),
+      "State_mix" = c("Rhode Island", "MA"),
+      "State_error" = c("Rhode Island", "foo")
+    )
+  )
+})
+
+test_that("col_to_state error messages", {
+  dat <- data.frame(
+    "State_name" = c("Rhode Island", "Massachusetts"),
+    "State_error" = c("RI", "foo")
+  )
+
+  expect_warning(
+    col_to_state(dat, "State_error"),
+    regexp = "foo is not a valid state name"
   )
 })

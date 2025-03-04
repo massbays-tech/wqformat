@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_col.R
 \name{col_to_date}
 \alias{col_to_date}
-\title{Column to Date}
+\title{Convert column to date or datetime format}
 \usage{
 col_to_date(.data, date_col, date_format = "m/d/Y", tz = Sys.timezone())
 }
@@ -12,12 +12,19 @@ col_to_date(.data, date_col, date_format = "m/d/Y", tz = Sys.timezone())
 \item{date_col}{String. Name of date column.}
 
 \item{date_format}{String. Date format. Uses the same formatting as
-`lubridate::parse_date_time`. Default value "m/d/Y".}
+[lubridate::parse_date_time()]. Default value "m/d/Y".}
 
-\item{tz}{String. Specifies the timezone used to parse dates. Defaults to
-system timezone.}
+\item{tz}{String. Specifies the timezone used to parse dates. Uses system
+timezone as default.}
+}
+\value{
+Converts column to date or datetime and returns dataframe
 }
 \description{
-Checks if column is formatted as a date. If column is not
-  formatted as date, converts column to date OR datetime.
+`col_to_date` converts column to date or datetime format.
+* Uses date format by default
+* Will use datetime format if time variables are included in `date_format`
+}
+\seealso{
+[col_to_numeric], [col_to_state], [rename_all_var]
 }

@@ -4,26 +4,27 @@
 \alias{rename_var}
 \title{Rename variable}
 \usage{
-rename_var(in_var, old_varname, new_varname, allow_multiple = FALSE)
+rename_var(in_var, old_varname, new_varname, multiple = FALSE)
 }
 \arguments{
 \item{in_var}{String. Variable to update.}
 
-\item{old_varname}{List. Old variable names; must be same length and in
-same order as `new_varname`.}
+\item{old_varname, new_varname}{List. List old variable names in `old_varname`
+and new variable names in `new_varname`. `old_varname` and `new_varname` are
+a paired list, therefor they must be the same length and in the same order.}
 
-\item{new_varname}{List. New variable names; must be same length and in
-same order as `old_varname`.}
-
-\item{allow_multiple}{Boolean. If \code{TRUE}, will return all matches for
-`in_var`. If \code{FALSE}, only returns the first match. Default
-\code{FALSE}.}
+\item{multiple}{Boolean. If `TRUE`, will return all matches for
+`in_var`. If `FALSE`, only returns the first match. Default `FALSE`.}
 }
 \value{
-String. Updated variable name.
+String. If substitution found, provides updated variable name.
+Otherwise returns input variable.
 }
 \description{
-Converts value from old variable to new variable name. If no
-  match found, leaves old variable name. Helper function for
-  `rename_all_var`.
+`rename_var()` uses a paired list (`old_varname`, `new_varname`) to generate
+a list of name substitutions and update the input variable. If no match
+found, leaves input variable as-is. Helper function for [rename_all_var()].
+}
+\seealso{
+[rename_all_var]
 }

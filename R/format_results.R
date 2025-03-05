@@ -1,10 +1,18 @@
 #' Format result data
 #'
-#' @description Converts water quality result data between formats. (List
-#'  formats)
+#' @description Converts water quality result data between different formats.
 #'
 #' @param df Input dataframe.
-#' @param in_format,out_format String. Name of input & output formats
+#' @param in_format,out_format String. Desired input and output formats.
+#' Possible inputs:
+#' * WQX
+#' * MassWateR
+#' * WQdashboard
+#' * RI_WW (Rhode Island Watershed Watch)
+#' * RI_DEM (Rhode Island DEM)
+#' * MA_BRC (Blackstone River Coalition)
+#' * ME_DEP (Maine DEP)
+#' * ME_FOCB (Friends of Casco Bay)
 #' @param drop_extra_col Boolean. If `TRUE`, removes any columns that can't be
 #'    converted to `out_format`. Default `TRUE`.
 #'
@@ -14,6 +22,19 @@
 format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
                            tz = Sys.timezone(), drop_extra_col = TRUE) {
   message("Reformatting data...")
+
+  # Check inputs ----
+  target_formats <- c(
+    "WQX", "MassWateR", "WQdashboard", "RI_WW", "RI_DEM", "MA_BRC", "ME_DEP",
+    "ME_FOCB"
+  )
+  chk <- c(in_format, out_format) %in% target_formats
+  if (any(!chk)) {
+    stop(
+      "Invalid format. Acceptable options: ",
+      paste(target_formats, collapse = ", ")
+    )
+  }
 
   # Preformat data ----
   if (in_format == "MassWateR") {

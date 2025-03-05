@@ -16,7 +16,16 @@ format_results(
 \arguments{
 \item{df}{Input dataframe.}
 
-\item{in_format, out_format}{String. Name of input & output formats}
+\item{in_format, out_format}{String. Desired input and output formats.
+Possible inputs:
+* WQX
+* MassWateR
+* WQdashboard
+* RI_WW (Rhode Island Watershed Watch)
+* RI_DEM (Rhode Island DEM)
+* MA_BRC (Blackstone River Coalition)
+* ME_DEP (Maine DEP)
+* ME_FOCB (Friends of Casco Bay)}
 
 \item{date_format}{String. Date format. Uses the same formatting as
 [lubridate::parse_date_time()]. Default value "m/d/Y".}
@@ -31,6 +40,5 @@ converted to `out_format`. Default `TRUE`.}
 Updated dataframe.
 }
 \description{
-Converts water quality result data between formats. (List
- formats)
+Converts water quality result data between different formats.
 }

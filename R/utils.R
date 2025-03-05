@@ -1,18 +1,19 @@
-#' Fetch list of variable name substitutions
+#' Fetch variable name substitutions
 #'
 #' @description
-#' `fetch_var()` generates list of name substitutions. Helper function for
+#' `fetch_var()` generates a list of name substitutions. Helper function for
 #' [format_results()] and [format_sites()].
 #'
-#' @section How table data is interpreted:
+#' @section How in_table is interpreted:
 #' * Each column is sorted alphabetically. If variables need to be listed in a
 #' specific order, then append ##|| (eg "01||") to the start of the variable.
 #' Numbers must be exactly two digits. If variable contains "||", then the first
 #' four letters for the variable will be dropped after alphabetizing but
 #' before further processing.
-#' * Alternate variable names can be listed in a cell with the delimiter "|".
-#' Alternate variable names for `in_format` will be included in the output.
-#' Alternate variable names for `out_format` will be dropped.
+#' * Multiple variable names can be listed in a cell with the delimiter "|".
+#' All variable names for `in_format` will be included in the output. Only the
+#' first variable in an `out_format` cell will be included.
+#' * Formatted cell example: 01||var1|var2|var3
 #'
 #' @param in_table Dataframe.
 #' @param in_format,out_format String. Column names for the input format
@@ -26,6 +27,7 @@
 #' * `keep_var` is a list of unique variables in the `out_format` column.
 #' Matching pairs between `in_format` and `out_format` are kept.
 #'
+#' @noRd
 fetch_var <- function(in_table, in_format, out_format) {
   # Check input values
   chk <- inherits(in_table, "data.frame")

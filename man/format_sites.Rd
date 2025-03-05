@@ -9,7 +9,14 @@ format_sites(df, in_format, out_format, drop_extra_col = TRUE)
 \arguments{
 \item{df}{Input dataframe.}
 
-\item{in_format, out_format}{String. Name of input & output formats}
+\item{in_format, out_format}{String. Desired input and output formats.
+Possible inputs:
+* WQX
+* MassWateR
+* WQdashboard
+* RI_WW (Rhode Island Watershed Watch)
+* MA_BRC (Blackstone River Coalition)
+* ME_FOCB (Friends of Casco Bay)}
 
 \item{drop_extra_col}{Boolean. If `TRUE`, removes any columns that can't be
 converted to `out_format`. Default `TRUE`.}
@@ -18,5 +25,5 @@ converted to `out_format`. Default `TRUE`.}
 Updated dataframe.
 }
 \description{
-Converts water quality site data between formats. (List formats)
+Converts water quality site data between different formats.
 }

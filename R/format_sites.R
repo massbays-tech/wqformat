@@ -1,15 +1,33 @@
 #' Format site data
 #'
-#' @description Converts water quality site data between formats. (List formats)
+#' @description Converts water quality site data between different formats.
 #'
 #' @param df Input dataframe.
-#' @param in_format,out_format String. Name of input & output formats
+#' @param in_format,out_format String. Desired input and output formats.
+#' Possible inputs:
+#' * WQX
+#' * MassWateR
+#' * WQdashboard
+#' * RI_WW (Rhode Island Watershed Watch)
+#' * MA_BRC (Blackstone River Coalition)
+#' * ME_FOCB (Friends of Casco Bay)
 #'
 #' @inheritParams format_results
 #'
 #' @returns Updated dataframe.
 format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   message("Reformatting data...")
+
+  # Check inputs ----
+  target_formats <-
+    c("WQX", "MassWateR", "WQdashboard", "RI_WW", "MA_BRC", "ME_FOCB")
+  chk <- c(in_format, out_format) %in% target_formats
+  if (any(!chk)) {
+    stop(
+      "Invalid format. Acceptable options: ",
+      paste(target_formats, collapse = ", ")
+    )
+  }
 
   # Prep data with nonstandard formats ----
   if (in_format == "MA_BRC") {

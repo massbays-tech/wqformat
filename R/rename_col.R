@@ -144,8 +144,8 @@ concat_columns <- function(.data, in_colnames, out_colname) {
     dplyr::mutate(
       {{ out_colname }} := gsub(
         "NA\\|", "", .data[[out_colname]]
-        )
-      ) %>%
+      )
+    ) %>%
     dplyr::mutate(
       {{ out_colname }} := dplyr::case_when(
         grepl("|", .data[[out_colname]], fixed = TRUE) ~

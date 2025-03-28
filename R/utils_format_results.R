@@ -59,10 +59,10 @@ prep_MassWateR_results <- function(.data) {
   # Update qualifiers, result value
   dat <- dat %>%
     dplyr::mutate(
-      "Result Measure Qualifier" = dplyr::if_else(
-        .data[["Result Value"]] %in% c("BDL", "AQL"),
-        .data[["Result Value"]],
-        .data[["Result Measure Qualifier"]]
+      "Result Measure Qualifier" = dplyr::case_when(
+        .data[["Result Value"]] == "BDL" ~ "DL",
+        .data[["Result Value"]] == "AQL" ~ "GT",
+        TRUE ~ .data[["Result Measure Qualifier"]]
       )
     ) %>%
     dplyr::mutate(
@@ -83,8 +83,8 @@ prep_MassWateR_results <- function(.data) {
 #' @description
 #' `results_to_MassWateR()` is a helper function for [format_results()] that
 #' formats result data for MassWateR.
-#' * Sets "Result Value" to "BDL" or "AQL" as needed
-#' * Sets "Result Measure Qualifier" to Q or NA
+#' * Updates "Result Value" and "Result Measure Qualifier" for over-detects and
+#' under-detects
 #' * Transfers duplicate values to "QC Reference Value"
 #'
 #' @param .data Dataframe
@@ -94,7 +94,7 @@ prep_MassWateR_results <- function(.data) {
 #' @returns Dataframe matching the standard format used by MassWateR
 #'
 #' @noRd
-results_to_MassWateR <- function(.data, in_format) {
+results_to_MassWateR <- function(.data) {
   # Prep data
   .data[["Result Value"]] <- as.character(.data[["Result Value"]])
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
@@ -102,32 +102,40 @@ results_to_MassWateR <- function(.data, in_format) {
   dat_colnames <- colnames(.data)
 
   # Update qualifiers, result value
-  qual <- fetch_var(varnames_qualifiers, in_format, "Flag")
-  dat <- rename_all_var(
-    .data,
-    "Result Measure Qualifier",
-    qual$old_names,
-    qual$new_names
+  q_under <- rename_var(
+    "Non-Detect",
+    varnames_qualifiers$Flag,
+    varnames_qualifiers$WQX,
+    multiple = TRUE
+  )
+  q_over <- rename_var(
+    "Over-Detect",
+    varnames_qualifiers$Flag,
+    varnames_qualifiers$WQX,
+    multiple = TRUE
+  )
+  q_pass <- rename_var(
+    "Pass",
+    varnames_qualifiers$Flag,
+    varnames_qualifiers$WQX,
+    multiple = TRUE
   )
 
-  dat <- dat %>%
+  dat <- .data %>%
     dplyr::mutate(
       "Result Value" = dplyr::case_when(
-        .data[["Result Measure Qualifier"]] == "Non-Detect" ~ "BDL",
-        .data[["Result Measure Qualifier"]] == "Over-Detect" ~ "AQL",
+        .data[["Result Measure Qualifier"]] %in% q_under ~ "BDL",
+        .data[["Result Measure Qualifier"]] %in% q_over ~ "AQL",
         TRUE ~ .data[["Result Value"]]
       )
     ) %>%
     dplyr::mutate(
-      "Result Measure Qualifier" = dplyr::case_when(
-        .data[["Result Measure Qualifier"]] %in%
-          c("Not Reviewed", "Suspect") ~ "Q",
-        .data[["Result Measure Qualifier"]] %in%
-          c("Over-Detect", "Non-Detect", "Pass") ~ NA,
-        TRUE ~ .data[["Result Measure Qualifier"]]
+      "Result Measure Qualifier" = dplyr::if_else(
+        .data[["Result Measure Qualifier"]] %in% c(q_under, q_over, q_pass),
+        NA,
+        .data[["Result Measure Qualifier"]]
       )
     )
-  warn_invalid_var(dat, "Result Measure Qualifier", "Q")
 
   # Transfer QC duplicates to QC Reference Value
   qc_duplicate <- c(
@@ -204,7 +212,8 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
         grepl("Replicate", .data$PARAMETER, fixed = TRUE) ~ "Replicate",
         TRUE ~ "Grab"
       )
-    )
+    ) %>%
+    dplyr::mutate("DEPTH_CATEGORY" = "Surface")
   return(dat)
 }
 
@@ -263,7 +272,11 @@ results_to_MA_BRC <- function(.data) {
       )
     ) %>%
     dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") %>%
-    dplyr::select(!dplyr::any_of(c("DATE", "TIME", "SAMPLE_TYPE")))
+    dplyr::select(
+      !dplyr::any_of(
+        c("DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY")
+      )
+    )
 
   return(dat)
 }
@@ -285,7 +298,7 @@ results_to_MA_BRC <- function(.data) {
 #' @noRd
 prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
   # Add columns
-  if ("Sample Depth m" %in% colnames(.data)) {
+  if (any(c("Sample Depth", "Sample Depth m") %in% colnames(.data))) {
     .data <- dplyr::mutate(.data, "Sample Depth Unit" = "m")
   }
 

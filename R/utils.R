@@ -119,3 +119,25 @@ fetch_var <- function(in_table, in_format, out_format) {
     )
   )
 }
+
+#' Drop duplicate values from string
+#'
+#' @description
+#' `str_unique()` drops duplicate values from string. Helper function for
+#' [concat_columns()].
+#'
+#' @param x String.
+#' @param delim Delimiter used to separate items in string. Default ",".
+#'
+#' @returns String containing only unique values.
+#'
+#' @noRd
+str_unique <- function(x, delim = ",") {
+  x <- x %>%
+    stringr::str_split(paste0("\\", delim)) %>%
+    sapply(trimws, USE.NAMES = FALSE) %>%
+    unique() %>%
+    paste(collapse = delim)
+
+  return(x)
+}

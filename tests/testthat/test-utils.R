@@ -45,3 +45,18 @@ test_that("fetch_var works", {
   expect_equal(var_equal$new_names, NA)
   expect_equal(var_equal$keep_var, c("1", "2", "3", "5", "6"))
 })
+
+test_that("str_unique works", {
+  expect_equal(
+    str_unique("foo,bar, foo , bar, f o o"),
+    "foo,bar,f o o"
+  )
+  expect_equal(
+    str_unique("the most superb owl of all the owls", delim = " "),
+    "the most superb owl of all owls"
+  )
+  expect_equal(
+    str_unique("tweedle dee| tweedle dum |tweedle dee", delim = "|"),
+    "tweedle dee|tweedle dum"
+  )
+})

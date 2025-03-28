@@ -94,7 +94,8 @@ test_that("concat_columns works", {
   df <- data.frame(
     "species" = c("aardvark", "bittern", NA, NA),
     "class" = c("mammal", "bird", "mammal", NA),
-    "numbers" = c(1, 2, 3, 4)
+    "numbers" = c(1, 2, 3, 4),
+    "numbers2" = c(1, 3, 2, NA)
   )
 
   # Test intended use
@@ -108,7 +109,8 @@ test_that("concat_columns works", {
       "foo" = c("aardvark", "bittern", "mammal", NA),
       "species" = c("aardvark", "bittern", NA, NA),
       "class" = c("mammal", "bird", "mammal", NA),
-      "numbers" = c(1, 2, 3, 4)
+      "numbers" = c(1, 2, 3, 4),
+      "numbers2" = c(1, 3, 2, NA)
     )
   )
   expect_equal(
@@ -120,7 +122,25 @@ test_that("concat_columns works", {
     data.frame(
       "numbers" = c("aardvark", "bittern", "mammal", 4),
       "species" = c("aardvark", "bittern", NA, NA),
-      "class" = c("mammal", "bird", "mammal", NA)
+      "class" = c("mammal", "bird", "mammal", NA),
+      "numbers2" = c(1, 3, 2, NA)
+    )
+  )
+
+  # Test concatenation
+  expect_equal(
+    concat_columns(
+      df,
+      c("class", "numbers", "numbers2"),
+      "foo",
+      concat = TRUE
+    ),
+    data.frame(
+      "species" = c("aardvark", "bittern", NA, NA),
+      "foo" = c("mammal; 1", "bird; 2; 3", "mammal; 3; 2", "4"),
+      "class" = c("mammal", "bird", "mammal", NA),
+      "numbers" = c(1, 2, 3, 4),
+      "numbers2" = c(1, 3, 2, NA)
     )
   )
 
@@ -133,6 +153,7 @@ test_that("concat_columns works", {
       "species" = c("aardvark", "bittern", NA, NA),
       "class" = c("mammal", "bird", "mammal", NA),
       "numbers" = c(1, 2, 3, 4),
+      "numbers2" = c(1, 3, 2, NA),
       "foo" = c("aardvark", "bittern", NA, NA),
       "owl" = NA
     )

@@ -6,6 +6,7 @@
 #' * Adds column "STATE" with each site's state
 #' * Adds column "WATER_DEPTH_M", fills with values from "WATER_DEPTH_FT"
 #' that have been converted to meters
+#' * Converts values in "CFR" from Yes, No to Coldwater, Warmwater
 #'
 #' @param .data Dataframe
 #'
@@ -15,40 +16,44 @@
 #'
 #' @noRd
 prep_MA_BRC_sites <- function(.data) {
-  missing_col <- setdiff(c("TOWN", "WATER_DEPTH_FT"), colnames(.data))
-
-  if (length(missing_col) == 2) {
-    warning('Columns "TOWN", "WATER_DEPTH_FT" are missing')
-    return(.data)
-  } else if (length(missing_col) == 1) {
-    .data[[missing_col]] <- NA
-    warning('Column "', missing_col, '" is missing')
+  if ("TOWN" %in% colnames(.data)) {
+    .data <- .data %>%
+      dplyr::mutate(
+        "STATE" = dplyr::case_when(
+          .data$TOWN %in% c(
+            "Burrillville", "Central Falls", "Cumberland", "Glocester",
+            "Lincoln", "North Smithfield", "Pawtucket", "Scituate", "Woonsocket"
+          ) ~ "RI",
+          .data$TOWN %in% c(
+            "Attleboro", "Auburn", "Bellingham", "Blackstone", "Boylston",
+            "Douglas", "Franklin", "Grafton", "Holden", "Hopedale", "Leicester",
+            "Mendon", "Milford", "Millbury", "Millville", "North Attleborough",
+            "Northbridge", "Oxford", "Paxton", "Plainville", "Shrewsbury",
+            "Smithfield", "Sutton", "Upton", "Uxbridge", "Webster",
+            "West Boylston", "Westborough", "Worcester", "Wrentham"
+          ) ~ "MA",
+          TRUE ~ NA
+        )
+      )
   }
 
-  ri_towns <- c(
-    "Burrillville", "Central Falls", "Cumberland", "Glocester",
-    "Lincoln", "North Smithfield", "Pawtucket", "Scituate", "Woonsocket"
-  )
-  ma_towns <- c(
-    "Attleboro", "Auburn", "Bellingham", "Blackstone", "Boylston", "Douglas",
-    "Franklin", "Grafton", "Holden", "Hopedale", "Leicester", "Mendon",
-    "Milford", "Millbury", "Millville", "North Attleborough", "Northbridge",
-    "Oxford", "Paxton", "Plainville", "Shrewsbury", "Smithfield", "Sutton",
-    "Upton", "Uxbridge", "Webster", "West Boylston", "Westborough", "Worcester",
-    "Wrentham"
-  )
+  if ("WATER_DEPTH_FT" %in% colnames(.data)) {
+    .data <- .data %>%
+      dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048)
+  }
 
-  dat <- .data %>%
-    dplyr::mutate(
-      "STATE" = dplyr::case_when(
-        .data$TOWN %in% ri_towns ~ "RI",
-        .data$TOWN %in% ma_towns ~ "MA",
-        TRUE ~ NA
+  if ("CFR" %in% colnames(.data)) {
+    .data <- .data %>%
+      dplyr::mutate(
+        "CFR" = dplyr::case_when(
+          tolower(.data$CFR) == "no" ~ "Warmwater",
+          tolower(.data$CFR) == "yes" ~ "Coldwater",
+          TRUE ~ .data$CFR
+        )
       )
-    ) %>%
-    dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048)
+  }
 
-  return(dat)
+  return(.data)
 }
 
 #' Format site data for the Blackstone River Coalition
@@ -58,6 +63,7 @@ prep_MA_BRC_sites <- function(.data) {
 #' site data for the Blackstone River Coalition (MA_BRC).
 #' * Fills empty values in column "WATER_DEPTH_FT" by converting "WATER_DEPTH_M"
 #' to feet
+#' * Converts values in "CFR" from Coldwater, Warmwater to Yes, No
 #' * Removes columns "STATE", "WATER_DEPTH_M"
 #'
 #' @param .data Dataframe
@@ -79,6 +85,17 @@ sites_to_MA_BRC <- function(.data) {
           is.na(as.numeric(.data$WATER_DEPTH_FT)),
           as.numeric(.data$WATER_DEPTH_M) / 0.3048,
           .data$WATER_DEPTH_FT
+        )
+      )
+  }
+
+  if ("CFR" %in% colnames(.data)) {
+    .data <- .data %>%
+      dplyr::mutate(
+        "CFR" = dplyr::case_when(
+          tolower(.data$CFR) == "warmwater" ~ "No",
+          tolower(.data$CFR) == "coldwater" ~ "Yes",
+          TRUE ~ .data$CFR
         )
       )
   }

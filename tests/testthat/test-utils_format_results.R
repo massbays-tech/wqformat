@@ -35,7 +35,7 @@ test_that("prep_MassWateR_results works", {
     "Activity Start Time" = c("9:00", "8:00", "8:00", "9:00", "10:00", "10:00"),
     "Characteristic Name" = c("TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
     "Result Value" = c(12, NA, 6, NA, 15, 16),
-    "Result Measure Qualifier" = c(NA, "BDL", NA, "AQL", "Q", "Q"),
+    "Result Measure Qualifier" = c(NA, "DL", NA, "GT", "Q", "Q"),
     "QC Reference Value" = c(11, NA, NA, NA, NA, NA),
     check.names = FALSE
   )
@@ -86,36 +86,7 @@ test_that("results_to_MassWateR works", {
   )
   df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
 
-  expect_equal(results_to_MassWateR(df_in, "WQX"), df_out)
-})
-
-test_that("results_to_MassWateR warning messages", {
-  df_in <- data.frame(
-    "Activity Type" = c(
-      "Field Msr/Obs",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate"
-    ),
-    "Activity Start Date" = c(
-      "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-02", "2024-05-04",
-      "2024-05-04"
-    ),
-    "Activity Start Time" = c("9:00", "8:00", "8:00", "9:00", "10:00", "10:00"),
-    "Characteristic Name" = c("TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
-    "Result Value" = c(12, NA, 6, NA, 15, 16),
-    "Result Measure Qualifier" = c("foo", "bar", NA, "GT", "Q", "Q"),
-    "QC Reference Value" = c(11, NA, NA, NA, NA, NA),
-    check.names = FALSE
-  )
-  df_in[["Activity Start Date"]] <- as.Date(df_in[["Activity Start Date"]])
-
-  expect_warning(
-    results_to_MassWateR(df_in, "WQX"),
-    regexp = "Invalid variables in Result Measure Qualifier: foo, bar"
-  )
+  expect_equal(results_to_MassWateR(df_in), df_out)
 })
 
 # MA_BRC -----
@@ -144,7 +115,8 @@ test_that("prep_MA_BRC_results works", {
       "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
-    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank")
+    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
+    "DEPTH_CATEGORY" = "Surface"
   )
   df_out[["DATE_TIME"]] <- as.POSIXct(
     df_out[["DATE_TIME"]],
@@ -163,7 +135,8 @@ test_that("results_to_MA_BRC works", {
       "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
-    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank")
+    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
+    "DEPTH_CATEGORY" = "Surface"
   )
 
   df_out <- data.frame(

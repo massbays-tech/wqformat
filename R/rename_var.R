@@ -78,10 +78,10 @@ rename_all_var <- function(.data, col_name, old_varname, new_varname) {
     dplyr::mutate(
       {{ col_name }} := sapply(
         .data[[col_name]],
-        function(x) rename_var(x, old_varname, new_varname)
+        function(x) rename_var(x, old_varname, new_varname),
+        USE.NAMES = FALSE
       )
-    ) %>%
-    dplyr::mutate({{ col_name }} := unname(.data[[col_name]])) # remove names
+    )
 
   return(dat)
 }

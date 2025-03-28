@@ -46,6 +46,11 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
       concat_columns(
         c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
         "LAB_QUALIFIER"
+      ) %>%
+      concat_columns(
+        c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
+        "SAMPLE_COMMENTS",
+        concat = TRUE
       )
   } else if (in_format == "ME_FOCB") {
     df <- prep_ME_FOCB_results(df, date_format)
@@ -148,8 +153,17 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     old_varname = col_sub$old_names,
     new_varname = col_sub$new_names
   )
-  if (out_format != "MassWateR" && col_name %in% colnames(df)) {
-    qual <- fetch_var(varnames_qualifiers, in_format, out_format)
+  if (col_name %in% colnames(df)) {
+    in_qual <- in_format
+    out_qual <- out_format
+
+    if (in_format == "MassWateR") {
+      in_qual <- "WQX"
+    } else if (out_format == "MassWateR") {
+      out_qual <- "WQX"
+    }
+
+    qual <- fetch_var(varnames_qualifiers, in_qual, out_qual)
     df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
     warn_invalid_var(df, col_name, qual$keep_var)
   }
@@ -173,7 +187,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 
   # Custom format changes -----
   if (out_format == "MassWateR") {
-    df <- results_to_MassWateR(df, in_format)
+    df <- results_to_MassWateR(df)
   } else if (out_format == "MA_BRC") {
     df <- results_to_MA_BRC(df)
   }

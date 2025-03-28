@@ -15,7 +15,7 @@ g/kg,g/kg,,,,
 JTU,JTU,,,,
 L/min,l/min,,,,
 L/sec,l/sec,,,,
-m,m,m,,M,m|M
+m,m,m,m,M,m|M
 mg/L,mg/l,mg/l|mg/L,mg/L,MG/L,mg/L|MG/L
 Mgd,mgd,MGD,,,
 MPN/100mL,MPN/100ml,MPN/100ml|MPN/100mL,MPN/100mL,,
@@ -38,7 +38,6 @@ lb/day,,lbs/day,,,
 mi,,Mile,,,
 mL/L,,ml/l|mL/L,,,
 ng/L,,ng/l|ng/L,,,
-,,PT-CO,,,
 mi2,,Sq Mi,,,
 ,,,uS,,
 beaufort,,,,BFT,BFT

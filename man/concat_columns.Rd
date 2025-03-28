@@ -4,7 +4,7 @@
 \alias{concat_columns}
 \title{Concatenate Columns}
 \usage{
-concat_columns(.data, in_colnames, out_colname)
+concat_columns(.data, in_colnames, out_colname, concat = FALSE)
 }
 \arguments{
 \item{.data}{Dataframe.}
@@ -17,15 +17,24 @@ will also be `NA`.}
 
 \item{out_colname}{String. Name of column to transfer values to.
 * Will create new column if `out_colname` is missing from dataframe.}
+
+\item{concat}{Boolean. If `TRUE`, the values for the input columns will be
+concatenated and saved in the output column. If `FALSE`, only the first
+non-`NA` value will be saved in the output column. Default `FALSE`.}
 }
 \value{
-Updated dataframe where `out_colname` continues the first non-`NA`
-value from `in_colnames`. If all values for `in_colnames` are `NA`, then
-the value for `out_colname` will also be `NA`.
+Updated dataframe.
+* If `concat` is `TRUE`, the output column will include the concatenated
+data from all the input columns.
+* If `concat` is `FALSE`, the output column will contain the first non-`NA`
+value from the input columns.
 }
 \description{
-`concat_columns()` combines values from multiple columns and saves the first
- non-`NA` value to the output column.
+`concat_columns()` combines values from multiple columns.
+* If `concat` is `TRUE`, the output column will include the concatenated
+data from all the input columns.
+* If `concat` is `FALSE`, the output column will contain the first non-`NA`
+value from the input columns.
 }
 \seealso{
 [rename_col]

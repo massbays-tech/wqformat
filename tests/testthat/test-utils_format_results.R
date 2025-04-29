@@ -194,6 +194,7 @@ test_that("prep_ME_FOCB_results works", {
   df_long <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
+    "Sample Type" = c("foo", "bar", NA),
     "Lab" = "UMWL",
     "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
     "Parameter" =
@@ -293,6 +294,7 @@ test_that("prep_ME_FOCB_results works", {
   df_long2 <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
+    "Sample Type" = c("foo", "bar", "Field Measurement"),
     "Lab" = "UMWL",
     "Analysis Date" = c("2023-07-06", "2023-07-06", "2023-06-07"),
     "Parameter" = "TN as N",
@@ -305,7 +307,6 @@ test_that("prep_ME_FOCB_results works", {
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
     "Sample Depth Unit" = "m",
-    "Sample Type" = "Field Measurement",
     "Qualifier" = c("J", "J", NA),
     check.names = FALSE
   )

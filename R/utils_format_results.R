@@ -305,7 +305,7 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
 
   chk <- grepl("Sample Depth", colnames(dat))
-  if (any(chk) & !"Sample Depth Unit" %in% colnames(dat)) {
+  if (any(chk) && !"Sample Depth Unit" %in% colnames(dat)) {
     dat <- dplyr::mutate(dat, "Sample Depth Unit" = "m")
   }
 
@@ -354,7 +354,7 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
           "STU",
           stringr::str_split_i(.data$Parameter, "_", 2)
         )
-      )%>%
+      ) %>%
       dplyr::mutate("Parameter" = stringr::str_split_i(.data$Parameter, "_", 1))
   }
 

@@ -5,11 +5,11 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Cloud Cover" = c(50, 50, 50),
-    "Wind Speed" = c(3, 3, 2),
-    "Wind Direction" = c(120, 150, 180),
-    "Water Depth" = c(10.7, 3.2, NA),
-    "Secchi Depth" = c(1.9, "BSV", NA),
+    "Cloud Cover_%" = c(50, 50, 50),
+    "Wind Speed_BFT" = c(3, 3, 2),
+    "Wind Direction_DEG True" = c(120, 150, 180),
+    "Water Depth_m" = c(10.7, 3.2, NA),
+    "Secchi_m" = c(1.9, "BSV", NA),
     check.names = FALSE
   )
 
@@ -17,14 +17,14 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth m" = c(0.2, 0.2, 0),
-    "Temp °C" = c(11.3, 11, 14),
-    "Sal psu" = c(27.5, 28, 28),
-    "ODO mg/L" = c(9.3, 9.3, 8.2),
-    "ODO % sat" = c(100.7, 100.7, 94.9),
+    "Sample Depth_m" = c(0.2, 0.2, 0),
+    "Temperature_Deg C" = c(11.3, 11, 14),
+    "Salinity_PSU" = c(27.5, 28, 28),
+    "Dissolved Oxygen_mg/L" = c(9.3, 9.3, 8.2),
+    "DO Saturation_%" = c(100.7, 100.7, 94.9),
     "pH" = c(7.93, 7.93, 7.82),
-    "Chlorophyll ug/L" = c(1.2, 1.2, 1.4),
-    "Turbidity FNU" = c(2.7, 1.4, 2.4),
+    "Chlorophyll_ug/L" = c(1.2, 1.2, 1.4),
+    "Turbidity_FNU" = c(2.7, 1.4, 2.4),
     check.names = FALSE
   )
 
@@ -73,6 +73,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
       "12:45", "12:45", "10:22", "10:22", "10:22"
     ),
+    "SAMPLE_TYPE" = "NA",
     "PARAMETER_NAME" = c(
       "CLOUD COVER", "WSPD", "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD",
       "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD", "WDIR"
@@ -114,6 +115,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
       "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
+    "SAMPLE_TYPE" = "NA",
     "SAMPLE_DEPTH" = c(
       0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
       0, 0, 0, 0, 0, 0
@@ -151,6 +153,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_long_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
     "SAMPLE_DATE" = c("2023-05-23", "2023-05-23", "2023-05-24"),
+    "SAMPLE_TYPE" = "NA",
     "ANALYSIS_LAB" = c("UMWL", "UMWL", "UMWL"),
     "ANALYSIS_DATE" = c("2023-07-06", "2023-07-06", "2023-06-07"),
     "PARAMETER_NAME" = c("TN AS N", "TN AS N", "TN AS N"),
@@ -199,11 +202,11 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Cloud Cover" = c(50, 50, 50),
-    "Wind Speed" = c(3, 3, 2),
-    "Wind Direction" = c(120, 150, 180),
-    "Water Depth" = c(10.7, 3.2, NA),
-    "Secchi Depth" = c(1.9, "BSV", NA),
+    "Cloud Cover_%" = c(50, 50, 50),
+    "Wind Speed_BFT" = c(3, 3, 2),
+    "Wind Direction_DEG True" = c(120, 150, 180),
+    "Water Depth_m" = c(10.7, 3.2, NA),
+    "Secchi_m" = c(1.9, "BSV", NA),
     check.names = FALSE
   )
 
@@ -211,14 +214,14 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth m" = c(0.2, 0.2, 0),
-    "Temp °C" = c(11.3, 11, 14),
-    "Sal psu" = c(27.5, 28, 28),
-    "ODO mg/L" = c(9.3, 9.3, 8.2),
-    "ODO % sat" = c(100.7, 100.7, 94.9),
+    "Sample Depth_m" = c(0.2, 0.2, 0),
+    "Temperature_Deg C" = c(11.3, 11, 14),
+    "Salinity_PSU" = c(27.5, 28, 28),
+    "Dissolved Oxygen_mg/L" = c(9.3, 9.3, 8.2),
+    "DO Saturation_%" = c(100.7, 100.7, 94.9),
     "pH" = c(7.93, 7.93, 7.82),
-    "Chlorophyll ug/L" = c(1.2, 1.2, 1.4),
-    "Turbidity FNU" = c(2.7, 1.4, 2.4),
+    "Chlorophyll_ug/L" = c(1.2, 1.2, 1.4),
+    "Turbidity_FNU" = c(2.7, 1.4, 2.4),
     check.names = FALSE
   )
 
@@ -254,6 +257,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18", "HR2", "HR2", "HR2"
     ),
+    "Activity Type" = "Field Msr/Obs",
     "Activity Start Date" = c(
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
@@ -274,8 +278,8 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "2", "180"
     ),
     "Result Unit" = c(
-      "%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m", "m", "%",
-      "BFT", "DEG TRUE"
+      "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
+      "BFT", "DEG True"
     ),
     check.names = FALSE
   )
@@ -295,6 +299,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
       "HR2", "HR2", "HR2", "HR2"
     ),
+    "Activity Type" = "Field Msr/Obs",
     "Activity Start Date" = c(
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
       "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23", "2023-05-23",
@@ -341,6 +346,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 
   df_long_mwr <- data.frame(
     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
+    "Activity Type" = "Field Msr/Obs",
     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
     "Characteristic Name" = c("TN", "TN", "TN"),
     "Result Value" = c(0.22, 0.18, 0.28),
@@ -369,7 +375,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       ),
       "Invalid variables in Characteristic Name: Cloud Cover, Wind Speed, Wind Direction"
     ),
-    "Invalid variables in Result Unit: BFT, DEG TRUE"
+    "Invalid variables in Result Unit: BFT, DEG True"
   )
 
   # Test output
@@ -457,6 +463,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 #   df_mwr[["Activity Start Date"]] <- as.Date(df_mwr[["Activity Start Date"]])
 #   df_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
 #   df_mwr["Result Measure Qualifier"] <- NA_character_
+#   df_mwr["Result Comment"] <- NA_character_
 #   df_mwr[["QC Reference Value"]] <- NA_integer_
 #   missing_col <- setdiff(mwr_col_order, colnames(df_mwr))
 #   df_mwr[missing_col] <- NA
@@ -464,10 +471,8 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 #
 #   # Test - ME_DEP to MassWateR
 #   expect_equal(
-#     suppressWarnings(
-#       format_results(
-#         df_DEP, "ME_DEP", "MassWateR", show_messages = FALSE
-#       )
+#     suppressMessages(
+#       format_results(df_DEP, "ME_DEP", "MassWateR")
 #     ),
 #     df_mwr
 #   )

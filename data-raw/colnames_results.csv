@@ -1,9 +1,9 @@
 ﻿WQX,MassWateR,WQdashboard,RI_WW,RI_DEM,MA_BRC,ME_DEP,ME_FOCB
 02||Monitoring Location ID,01||Monitoring Location ID,01||Site_ID,01||WW ID,01||Station Name,02||SITE_BRC_CODE,02||SAMPLE_POINT_NAME,01||SiteID|Site ID|Sample ID
-05||Activity Type,02||Activity Type,02||Activity_Type,04||Sample Type,04||Sample Type,SAMPLE_TYPE,08||SAMPLE_TYPE,
+05||Activity Type,02||Activity Type,02||Activity_Type,04||Sample Type,04||Sample Type,SAMPLE_TYPE,08||SAMPLE_TYPE,Sample Type
 07||Activity Start Date,03||Activity Start Date,03||Date,02||Date of Sample,02||Date,DATE,06||SAMPLE_DATE,02||Sample Date|Date
 08||Activity Start Time,04||Activity Start Time,,03||Time,03||Time,TIME,07||SAMPLE_TIME,03||Sample Time|Time
-10||Activity Depth/Height Measure,05||Activity Depth/Height Measure,04||Depth,06||Depth,06||Depth,,22||SAMPLE_DEPTH,12||Sample Depth|Sample Depth m
+10||Activity Depth/Height Measure,05||Activity Depth/Height Measure,04||Depth,06||Depth,06||Depth,,22||SAMPLE_DEPTH,12||Sample Depth_m|Sample Depth m
 11||Activity Depth/Height Unit,06||Activity Depth/Height Unit,05||Depth_Unit,,,,23||SAMPLE_DEPTH_UNIT,13||Sample Depth Unit
 ,07||Activity Relative Depth Name,06||Depth_Category,,,DEPTH_CATEGORY,,
 16||Characteristic Name,08||Characteristic Name,07||Parameter,07||Parameter,07||Parameter,04||PARAMETER,10||PARAMETER_NAME,06||Parameter
@@ -14,7 +14,7 @@
 22||Result Measure Qualifier,13||Result Measure Qualifier,13||Qualifier,10||Qualifier Code,10||Qualifier Code,QUALIFIER,12||LAB_QUALIFIER,Qualifier
 ,14||Result Attribute,,,,,,
 12||Sample Collection Method ID,15||Sample Collection Method ID,,,,,24||SAMPLE_COLLECTION_METHOD,
-01||Project ID,16||Project ID,,,,,01||PROJECT/SITE,Project
+01||Project ID,16||Project ID,,,,PROJECT_ID,01||PROJECT/SITE,Project
 ,17||Local Record ID,,,,07||UNIQUE_ID,,
 35||Result Comment,18||Result Comment,,21||Comments,21||Comments,,29||SAMPLE_COMMENTS,
 03||Activity ID (CHILD-subset),,,,,,,

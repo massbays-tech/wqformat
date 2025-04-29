@@ -177,14 +177,19 @@ concat_columns <- function(.data, in_colnames, out_colname, concat = FALSE) {
   } else {
     dat <- dat %>%
       dplyr::mutate(
-        {{ out_colname }} := dplyr::case_when(
-          grepl("|", .data[[out_colname]], fixed = TRUE) ~
-            stringr::str_split_i(.data[[out_colname]], "\\|", 1),
-          .data[[out_colname]] == "NA" ~ NA,
-          TRUE ~ .data[[out_colname]]
-        )
+        {{ out_colname }} :=
+          stringr::str_split_i(.data[[out_colname]], "\\|", 1)
       )
   }
+
+  dat <- dat %>%
+    dplyr::mutate(
+      {{ out_colname }} := dplyr::if_else(
+        .data[[out_colname]] == "NA",
+        NA,
+        .data[[out_colname]]
+      )
+    )
 
   return(dat)
 }

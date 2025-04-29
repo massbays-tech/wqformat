@@ -23,15 +23,16 @@ test_that("format_sites works", {
     "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
     "Latitude" = c(41.82897, 42.31481, 43.66218),
     "Longitude" = c(-71.41924, -71.03931, -70.27354),
-    "Town" = c(NA, NA, NA),
-    "County" = c(NA, NA, NA),
-    "State" = c(NA_character_, NA_character_, NA_character_),
-    "Watershed" = c(NA, NA, NA),
-    "Group" = c("Freshwater", "Saltwater", "Saltwater"),
-    "Location_Type" = c(NA, NA, NA),
-    "Max_Depth_Surface" = c(NA, NA, NA),
-    "Max_Depth_Midwater" = c(NA, NA, NA),
-    "Max_Depth_Near_Bottom" = c(NA, NA, NA)
+    "Town" = NA,
+    "County" = NA,
+    "State" = NA_character_,
+    "Watershed" = NA,
+    "Group" = NA,
+    "Location_Type" = NA,
+    "Surface_Depth" = NA,
+    "Midwater_Depth" = NA,
+    "Near_Bottom_Depth" = NA,
+    "Bottom_Depth" = NA
   )
 
   # Test conversions
@@ -70,6 +71,6 @@ test_that("format_sites works", {
         drop_extra_col = FALSE
       )
     ),
-    regexp = "\tUnable to rename 8 columns: Town, County, State, Watershed, Location_Type, Max_Depth_Surface, Max_Depth_Midwater, Max_Depth_Near_Bottom"
+    regexp = "\tUnable to rename 10 columns: Town, County, State, Watershed, Group, Location_Type, Surface_Depth, Midwater_Depth, Near_Bottom_Depth, Bottom_Depth"
   )
 })

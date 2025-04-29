@@ -1,10 +1,14 @@
 ﻿WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP,ME_FOCB,Flag,Description
 GT,AQL,Z,,G,G,Over-Detect,The listed result is greater than the upper quantitation limit for either the analytical method or the meter used for the measurement. Equivalent to the Legacy STORET Remark Code of L: Actual Value is known to be greater than the value given.
 DL,BDL,U,,UJH,UJH,Non-Detect,Not Detected: The analyte was not detected at a level >= to the Method Detection Limit for the analysis.
-Q,Q,,,R,R,Suspect,The result did not pass the lab quality checks and there was an insufficient amount of the sample for re-analysis.
+Q,Q,,101|107,R,R,Suspect,The result did not pass the lab quality checks and there was an insufficient amount of the sample for re-analysis.
 J-R,,I,,,,Suspect,Approximate value result is below the reporting level but greater than the method detection limit
 NRR,,N,,,,Suspect,"No Result Reported, other"
 B,,V,,B|JB,B|JB,Suspect,"Detection in blank, Analyte found in sample and associated blank"
+RP,,,102,,,Pass,value reported is preferred
+R,,,108,,,Suspect,Rejected: The sample results are unusable due to the quality of the data generated because certain criteria were not met. The analyte may or may not be present in the sample. 
+FFD,,,103|105,,,Suspect,"Field Duplicate, failed"
+FLD,,,104|106,,,Suspect,Failed. Lab duplicate not acceptable.
 AR,,,,*|B*|J*,*|B*|J*,Suspect,counts outside acceptable range
 DI,,,,D,D,Pass,Dilution required
 J,,,,J,J,Pass,Estimated: The analyte was positively identified and the associated numerical value is the approximate concentration of the analyte in the sample.
@@ -76,7 +80,6 @@ FDC,,,,,,Suspect,"Drift Check, failed"
 FDL,,,,,,Suspect,"Lab Duplicate, failed"
 FEQ,,,,,,Suspect,Field Equipment Questionable
 FFB,,,,,,Suspect,Failed. Field blank not acceptable.
-FFD,,,,,,Suspect,"Field Duplicate, failed"
 FFS,,,,,,Suspect,Failed. Field spike not acceptable.
 FFT,,,,,,Suspect,Failed. Trip blank not acceptable.
 FH,,,,,,Suspect,"Failed high at audit check during deployment. Could include pre, mid or post deployment check."
@@ -84,7 +87,6 @@ FIS,,,,,,Suspect,"Internal Standard, failed"
 FL,,,,,,Suspect,"Failed low at audit check during deployment. Could include pre, mid or post deployment check."
 FLA,,,,,,Suspect,Field Lab Anomaly
 FLC,,,,,,Suspect,"Linearity Check, failed"
-FLD,,,,,,Suspect,Failed. Lab duplicate not acceptable.
 FLS,,,,,,Suspect,Failed. Lab spike recovery not acceptable.
 FMD,,,,,,Suspect,Failed. Matrix Spike Duplicate not acceptable.
 FMS,,,,,,Suspect,Failed. Matrix spike recovery not acceptable.
@@ -201,7 +203,6 @@ PQL,,,,,,Pass,PQL or LQL
 PRE,,,,,,Suspect,Presumptive evidence that analyte is present.
 QC,,,,,,Suspect,Quality Control problems
 QCI,,,,,,Suspect,Quality Control incomplete
-R,,,,,,Suspect,Rejected: The sample results are unusable due to the quality of the data generated because certain criteria were not met. The analyte may or may not be present in the sample. 
 RA,,,,,,Suspect,Results fall outside the normal limits of variability and do not meet Data Quality Objectives. Reanalyses were performed with consistent results. All QA 
 RC,,,,,,Pass,See result comment
 REX,,,,,,Pass,Re-Prepared
@@ -210,7 +211,6 @@ RLRS,,,,,,Suspect,"Reporting limit raised, low total solids"
 RMAX,,,,,,Pass,result is a maximum value
 RNAF,,,,,,Pass,result not affected by noted QC issue
 RNON,,,,,,Suspect,result reported as non-detect due to blank contamination
-RP,,,,,,Pass,value reported is preferred
 RPDX,,,,,,Suspect,"RPD is MS/MSD pair exceeds criterion, estimated value"
 RPO,,,,,,Suspect,% RPD outside of acceptable limits
 RR,,,,,,Pass,Lab reported a result value

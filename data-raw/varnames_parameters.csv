@@ -3,14 +3,14 @@
 Ammonia,Ammonia,"Nitrogen, Ammonia Dissolved as N - 00608",,NH3 AS N|AMMONIA AS NITROGEN,
 Ammonium,Ammonium,,,NH4 AS N|AMMONIUM AS NITROGEN,
 Chlorophyll a (probe),Chl a (probe)|Chlorophyll a (probe),,,,
-Chlorophyll a,Chl a|Chlorophyll a,,,CHLOROPHYLL,Chlorophyll|Chlorophyll ug/L|CHLOROPHYLL
+Chlorophyll a,Chl a|Chlorophyll a,,,CHLOROPHYLL,Chlorophyll
 Chloride,Chloride,Chloride - 00940,,,
 Conductivity,Conductivity,,Conductivity|Conductivity Replicate,,
 "Algae, blue-green (phylum cyanophyta) density","Cyanobacteria (lab)|Algae, blue-green (phylum cyanophyta) density",,,,
 "Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)","Cyanobacteria (probe)|Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)",,,,
-Depth,Depth,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth|DEPTH
-Dissolved oxygen saturation,DO saturation|Dissolved oxygen saturation,Dissolved Oxygen Percent Saturation - 00301,Dissolved Oxy Saturation,DO SAT|DISSOLVED OXYGEN SATURATION,ODO % sat|DO SAT|DISSOLVED OXYGEN SATURATION
-Dissolved oxygen (DO),DO|Dissolved oxygen (DO),Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,ODO|ODO mg/L|DO|DISSOLVED OXYGEN
+Depth,Depth,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth
+Dissolved oxygen saturation,DO saturation|Dissolved oxygen saturation,Dissolved Oxygen Percent Saturation - 00301,Dissolved Oxy Saturation,DO SAT|DISSOLVED OXYGEN SATURATION,DO Saturation
+Dissolved oxygen (DO),DO|Dissolved oxygen (DO),Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,Dissolved Oxygen
 Escherichia coli,E.coli|Escherichia coli,E.coli - 31633,E. coli|E. coli Field Blank|E. coli Lab Blank|E. coli Replicate,,
 Enterococcus,Enterococcus,Enterococci - 31639,,,
 Fecal Coliform,Fecal Coliform,Fecal Coliform - 74055,,,
@@ -22,25 +22,25 @@ Nitrate,Nitrate,,Nitrate|Nitrate Replicate,,
 Nitrate + Nitrite,Nitrate + Nitrite,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,
 Nitrite,Nitrite,,,,
 Orthophosphate,Ortho P|Orthophosphate,,Orthophosphate|Orthophosphate Replicate,,
-pH,pH,pH - 00400,,PH,pH|PH
+pH,pH,pH - 00400,,PH,pH
 Pheophytin a,Pheophytin a|Pheophytin,,,PHAEOPHYTIN,
 Phycocyanin,Phycocyanin,,,,
 Phycocyanin (probe),Phycocyanin (probe),,,,
 Particulate organic carbon,POC|Particulate organic carbon,,,,
 "Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic",,,,
-Salinity,Salinity,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Sal|Sal psu|SALINITY|SALINITY (FROM SODIUM)
-"Depth, Secchi disk depth","Secchi Depth|Depth, Secchi disk depth",Secchi Depth - 00069,,SECCHI,Secchi Depth|SECCHI
+Salinity,Salinity,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity
+"Depth, Secchi disk depth","Secchi Depth|Depth, Secchi disk depth",Secchi Depth - 00069,,SECCHI,Secchi
 Silicate,Silicate,,,,
 Specific conductance,Sp Conductance|Specific conductance,,,,
 Sulfate,Sulfate,Sulfate as SO4 - 00945,,,
 Surfactants,Surfactants,Surfactants - 38260,,,
 Total dissolved solids,TDS|Total dissolved solids,"Solids, Total Dissolved (Electrical Conductivity), mg/l - 47004|Solids, Total Dissolved (Electrical Conductivity) - 47004",,,
 Total Kjeldahl nitrogen,TKN|Total Kjeldahl nitrogen,,,,
-"Total Nitrogen, mixed forms","TN|PON|TDN|Total Nitrogen, mixed forms","Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN|TN AS N"
+"Total Nitrogen, mixed forms","TN|PON|TDN|Total Nitrogen, mixed forms","Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",TN as N
 "Total Phosphorus, mixed forms","TP|TDP|Total Phosphorus, mixed forms","Phosphorus, Total - 00665",,,
 Total suspended solids,TSS|Total suspended solids,TSS - 00530,,,
-Turbidity,Turbidity,Turbidity - 00070,Turbidity|Turbidity Replicate,TUR|TURBIDITY,Turbidity|Turbidity FNU|TUR|TURBIDITY
-"Temperature, water","Water Temp|Temperature, water",Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temp|Temp °C|TEMP|TEMPERATURE
+Turbidity,Turbidity,Turbidity - 00070,Turbidity|Turbidity Replicate,TUR|TURBIDITY,Turbidity
+"Temperature, water","Water Temp|Temperature, water",Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature
 "1,1,1-Trichloroethane",,"1,1,1 Trichloroethane - 34506",,,
 "1,2-Dichlorobenzene-d4",,"1,2 Dichlorobenzene - 34536",,,
 "1,4-Dichlorobenzene-d4",,"1,4 Dichlorobenzene - 34571",,,
@@ -49,7 +49,7 @@ Benzene,,Benzene - 34030,,,
 Calcium,,"Calcium, Dissolved - 00915",,,
 Chloroform,,Chloroform - 32106,,,
 "Chlorophyll a, corrected for pheophytin",,"Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209",,CHL-A-PH|CHLOROPHYLL A - PHAEOPHYTIN,
-Cloud cover,,,,CLOUD COVER,Cloud Cover|CLOUD COVER
+Cloud cover,,,,CLOUD COVER,Cloud Cover
 Ethylbenzene,,Ethylbenzene - 34371,,,
 Ethylene glycol,,"Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075|Ethylene Glycol, water, unfiltered, recoverable - 91075",,,
 Magnesium,,Magnesium - 00927,,,
@@ -60,6 +60,6 @@ Tetrachloroethylene,,Tetrachloroethylene - 34475,,,
 Toluene,,Toluene - 34010,,,
 Total Coliform,,Total Coliform - 31502,,,
 Trichloroethylene,,Trichloroethylene - 39180,,,
-"Wind direction, horizontal",,,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION
-"Wind force, Beaufort scale",,,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED
+"Wind direction, horizontal",,,,WDIR|WIND DIRECTION,Wind Direction
+"Wind force, Beaufort scale",,,,WSPD|WIND SPEED,Wind Speed
 ,,"Phosphorus, Dissolved - 00666",,,

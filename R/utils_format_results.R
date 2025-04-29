@@ -189,7 +189,7 @@ results_to_MassWateR <- function(.data) {
 #' @description
 #' `prep_MA_BRC_results()` is a helper function for [format_results()] that
 #' preformats result data from the Blackstone River Coalition (MA_BRC).
-#' * Adds columns "DATE", "TIME", "SAMPLE_TYPE"
+#' * Adds columns "DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY", "PROJECT_ID"
 #'
 #' @param .data Input Dataframe
 #' @param date_format String. Date format. Uses the same formatting as
@@ -213,7 +213,8 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
         TRUE ~ "Grab"
       )
     ) %>%
-    dplyr::mutate("DEPTH_CATEGORY" = "Surface")
+    dplyr::mutate("DEPTH_CATEGORY" = "Surface") %>%
+    dplyr::mutate("PROJECT_ID" = "BRC")
   return(dat)
 }
 
@@ -225,7 +226,8 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
 #' * Uses "DATE", "TIME" columns to fill "DATE_TIME" column
 #' * uses "SAMPLE_TYPE" column to update "PARAMETER" column
 #' * Adds column "UNIQUE_ID"
-#' * Removes "DATE", "TIME", and "SAMPLE_TYPE" columns
+#' * Removes columns "DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY",
+#' "PROJECT_ID"
 #'
 #' @param .data Dataframe
 #'
@@ -274,7 +276,7 @@ results_to_MA_BRC <- function(.data) {
     dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") %>%
     dplyr::select(
       !dplyr::any_of(
-        c("DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY")
+        c("DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY", "PROJECT_ID")
       )
     )
 
@@ -298,23 +300,38 @@ results_to_MA_BRC <- function(.data) {
 #' @noRd
 prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
   # Add columns
-  if (any(c("Sample Depth", "Sample Depth m") %in% colnames(.data))) {
-    .data <- dplyr::mutate(.data, "Sample Depth Unit" = "m")
-  }
-
   dat <- .data %>%
     dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
+
+  chk <- grepl("Sample Depth", colnames(dat))
+  if (any(chk) & !"Sample Depth Unit" %in% colnames(dat)) {
+    dat <- dplyr::mutate(dat, "Sample Depth Unit" = "m")
+  }
+
+  if ("Sample Type" %in% colnames(dat)) {
+    dat <- dat %>%
+      dplyr::mutate(
+        "Sample Type" = dplyr::if_else(
+          is.na(.data[["Sample Type"]]),
+          "Field Measurement",
+          .data[["Sample Type"]]
+        )
+      )
+  } else {
+    dat <- dplyr::mutate(dat, "Sample Type" = "Field Measurement")
+  }
 
   # Check if table is long, else make long
   if (!"Parameter" %in% colnames(dat)) {
     # Pivot table longer, update parameter & unit names
     keep_col <- c(
-      "SiteID", "Site ID", "Sample ID", "Date", "Time", "Sample Depth",
-      "Sample Depth m", "Sample Depth Unit", "Project", "Sampled By"
+      "SiteID", "Site ID", "Sample ID", "Date", "Time", "Sample Depth_m",
+      "Sample Depth m", "Sample Depth Unit", "Project", "Sampled By",
+      "Sample Type"
     )
 
-    # Set table to numeric before pivot to avoid errors from "BSV" score
+    # Set table to character before pivot to avoid errors from "BSV" score
     dat <- dat %>%
       dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
       tidyr::pivot_longer(
@@ -332,32 +349,13 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
     # Add parameters, units
     dat <- as.data.frame(dat) %>%
       dplyr::mutate(
-        "Unit" = dplyr::case_when(
-          grepl("mg/L", .data$Parameter) ~ "mg/L",
-          grepl("ug/L", .data$Parameter) ~ "ug/L",
-          grepl("FNU", .data$Parameter) ~ "FNU",
-          grepl("psu", .data$Parameter) ~ "psu",
-          grepl("%", .data$Parameter) | .data$Parameter == "Cloud Cover" ~ "%",
-          .data$Parameter == "Wind Speed" ~ "BFT",
-          .data$Parameter == "Wind Direction" ~ "DEG TRUE",
-          .data$Parameter %in% c("Water Depth", "Secchi Depth") ~ "m",
-          .data$Parameter == "pH" ~ "STU",
-          grepl("Temp", .data$Parameter) &
-            grepl("C", .data$Parameter) ~ "deg C",
-          TRUE ~ NA
+        "Unit" = dplyr::if_else(
+          tolower(.data$Parameter) == "ph",
+          "STU",
+          stringr::str_split_i(.data$Parameter, "_", 2)
         )
-      ) %>%
-      dplyr::mutate(
-        "Parameter" = dplyr::case_when(
-          .data$Parameter == "ODO mg/L" ~ "ODO",
-          .data$Parameter == "Sal psu" ~ "Sal",
-          grepl("Chlorophyll", .data$Parameter) ~ "Chlorophyll",
-          grepl("Turbidity", .data$Parameter) ~ "Turbidity",
-          grepl("Temp", .data$Parameter) &
-            grepl("C", .data$Parameter) ~ "Temp",
-          TRUE ~ .data$Parameter
-        )
-      )
+      )%>%
+      dplyr::mutate("Parameter" = stringr::str_split_i(.data$Parameter, "_", 1))
   }
 
   # Calc gap between Sample Date & Analysis Date
@@ -381,11 +379,17 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
   # Add qualifiers
   dat <- dat %>%
     dplyr::mutate(
+      "Parameter" = dplyr::if_else(
+        grepl("total nitrogen mixed forms", tolower(.data$Parameter)),
+        "TN as N",
+        .data$Parameter
+      )
+    ) %>%
+    dplyr::mutate(
       "Qualifier" = dplyr::case_when(
-        .data$Parameter == "Chlorophyll" ~ "J",
-        .data$Parameter == "Secchi Depth" & .data$Result == "BSV" ~ "G",
-        grepl("NITROGEN", .data$Parameter, fixed = TRUE) &
-          .data$temp_gap > 28 ~ "J",
+        tolower(.data$Parameter) == "chlorophyll" ~ "J",
+        tolower(.data$Result) == "bsv" ~ "G",
+        tolower(.data$Parameter) == "tn as n" & .data$temp_gap > 28 ~ "J",
         TRUE ~ NA
       )
     ) %>%

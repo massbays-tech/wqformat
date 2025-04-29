@@ -116,7 +116,8 @@ test_that("prep_MA_BRC_results works", {
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
     "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
-    "DEPTH_CATEGORY" = "Surface"
+    "DEPTH_CATEGORY" = "Surface",
+    "PROJECT_ID" = "BRC"
   )
   df_out[["DATE_TIME"]] <- as.POSIXct(
     df_out[["DATE_TIME"]],
@@ -136,7 +137,8 @@ test_that("results_to_MA_BRC works", {
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
     "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
-    "DEPTH_CATEGORY" = "Surface"
+    "DEPTH_CATEGORY" = "Surface",
+    "PROJECT_ID" = "BRC"
   )
 
   df_out <- data.frame(
@@ -166,11 +168,11 @@ test_that("prep_ME_FOCB_results works", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Cloud Cover" = c(50, 50, 50),
-    "Wind Speed" = c(3, 3, 2),
-    "Wind Direction" = c(120, 150, 180),
-    "Water Depth" = c(10.7, 3.2, NA),
-    "Secchi Depth" = c(1.9, "BSV", NA),
+    "Cloud Cover_%" = c(50, 50, 50),
+    "Wind Speed_BFT" = c(3, 3, 2),
+    "Wind Direction_DEG True" = c(120, 150, 180),
+    "Water Depth_m" = c(10.7, 3.2, NA),
+    "Secchi_m" = c(1.9, "BSV", NA),
     check.names = FALSE
   )
 
@@ -178,14 +180,14 @@ test_that("prep_ME_FOCB_results works", {
     "SiteID" = c("BMR02", "EEB18", "HR2"),
     "Date" = c("05/23/23", "05/23/23", "05/24/23"),
     "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth m" = c(0.2, 0.2, 0),
-    "Temp °C" = c(11.3, 11, 14),
-    "Sal psu" = c(27.5, 28, 28),
-    "ODO mg/L" = c(9.3, 9.3, 8.2),
-    "ODO % sat" = c(100.7, 100.7, 94.9),
+    "Sample Depth_m" = c(0.2, 0.2, 0),
+    "Temperature_Deg C" = c(11.3, 11, 14),
+    "Salinity_PSU" = c(27.5, 28, 28),
+    "Dissolved Oxygen_mg/L" = c(9.3, 9.3, 8.2),
+    "DO Saturation_%" = c(100.7, 100.7, 94.9),
     "pH" = c(7.93, 7.93, 7.82),
-    "Chlorophyll ug/L" = c(1.2, 1.2, 1.4),
-    "Turbidity FNU" = c(2.7, 1.4, 2.4),
+    "Chlorophyll_ug/L" = c(1.2, 1.2, 1.4),
+    "Turbidity_FNU" = c(2.7, 1.4, 2.4),
     check.names = FALSE
   )
 
@@ -222,19 +224,19 @@ test_that("prep_ME_FOCB_results works", {
     ),
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
+    "Sample Type" = "Field Measurement",
     "Parameter" = c(
-      "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth",
-      "Secchi Depth", "Cloud Cover", "Wind Speed", "Wind Direction",
-      "Water Depth", "Secchi Depth", "Cloud Cover", "Wind Speed",
-      "Wind Direction"
+      "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
+      "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
+      "Cloud Cover", "Wind Speed", "Wind Direction"
     ),
     "Result" = c(
       "50", "3", "120", "10.7", "1.9", "50", "3", "150", "3.2", "BSV", "50",
       "2", "180"
     ),
     "Unit" = c(
-      "%", "BFT", "DEG TRUE", "m", "m", "%", "BFT", "DEG TRUE", "m", "m", "%",
-      "BFT", "DEG TRUE"
+      "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
+      "BFT", "DEG True"
     ),
     "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
     check.names = FALSE
@@ -257,25 +259,28 @@ test_that("prep_ME_FOCB_results works", {
       "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
       "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
-    "Sample Depth m" = c(
+    "Sample Depth_m" = c(
       0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
       0, 0, 0, 0, 0, 0
     ),
-    "Sample Depth Unit" = "m",
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
+    "Sample Depth Unit" = "m",
+    "Sample Type" = "Field Measurement",
     "Parameter" = c(
-      "Temp", "Sal", "ODO", "ODO % sat", "pH", "Chlorophyll", "Turbidity",
-      "Temp", "Sal", "ODO", "ODO % sat", "pH", "Chlorophyll", "Turbidity",
-      "Temp", "Sal", "ODO", "ODO % sat", "pH", "Chlorophyll", "Turbidity"
+      "Temperature", "Salinity", "Dissolved Oxygen", "DO Saturation", "pH",
+      "Chlorophyll", "Turbidity", "Temperature", "Salinity", "Dissolved Oxygen",
+      "DO Saturation", "pH", "Chlorophyll", "Turbidity", "Temperature",
+      "Salinity", "Dissolved Oxygen", "DO Saturation", "pH", "Chlorophyll",
+      "Turbidity"
     ),
     "Result" = c(
       11.3, 27.5, 9.3, 100.7, 7.93, 1.2, 2.7, 11, 28, 9.3, 100.7, 7.93, 1.2,
       1.4, 14, 28, 8.2, 94.9, 7.82, 1.4, 2.4
     ),
     "Unit" = c(
-      "deg C", "psu", "mg/L", "%", "STU", "ug/L", "FNU", "deg C", "psu", "mg/L",
-      "%", "STU", "ug/L", "FNU", "deg C", "psu", "mg/L", "%", "STU", "ug/L",
+      "Deg C", "PSU", "mg/L", "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L",
+      "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L", "%", "STU", "ug/L",
       "FNU"
     ),
     "Qualifier" = c(
@@ -290,17 +295,17 @@ test_that("prep_ME_FOCB_results works", {
     "Sample Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
     "Lab" = "UMWL",
     "Analysis Date" = c("2023-07-06", "2023-07-06", "2023-06-07"),
-    "Parameter" =
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
+    "Parameter" = "TN as N",
     "Result" = c(0.22, 0.18, 0.28),
     "Unit" = "MG/L",
     "RL" = 0.1,
     "MDL" = 0.73,
     "Method" = "SM4500NE_2021",
     "Sample Depth m" = 0.2,
-    "Sample Depth Unit" = "m",
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
+    "Sample Depth Unit" = "m",
+    "Sample Type" = "Field Measurement",
     "Qualifier" = c("J", "J", NA),
     check.names = FALSE
   )

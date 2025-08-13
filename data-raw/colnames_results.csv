@@ -1,6 +1,6 @@
 ﻿WQX,MassWateR,WQdashboard,RI_WW,RI_DEM,MA_BRC,ME_DEP,ME_FOCB
 02||Monitoring Location ID,01||Monitoring Location ID,01||Site_ID,01||WW ID,01||Station Name,02||SITE_BRC_CODE,02||SAMPLE_POINT_NAME,01||SiteID|Site ID|Sample ID
-05||Activity Type,02||Activity Type,02||Activity_Type,04||Sample Type,04||Sample Type,SAMPLE_TYPE,08||SAMPLE_TYPE,Sample Type
+05||Activity Type,02||Activity Type,02||Activity_Type,04||Sample Type,04||Sample Type,ACTIVITY_TYPE,09||QC_TYPE,QC Type
 07||Activity Start Date,03||Activity Start Date,03||Date,02||Date of Sample,02||Date,DATE,06||SAMPLE_DATE,02||Sample Date|Date
 08||Activity Start Time,04||Activity Start Time,,03||Time,03||Time,TIME,07||SAMPLE_TIME,03||Sample Time|Time
 10||Activity Depth/Height Measure,05||Activity Depth/Height Measure,04||Depth,06||Depth,06||Depth,,22||SAMPLE_DEPTH,12||Sample Depth_m|Sample Depth m
@@ -19,7 +19,7 @@
 35||Result Comment,18||Result Comment,,21||Comments,21||Comments,,29||SAMPLE_COMMENTS,
 03||Activity ID (CHILD-subset),,,,,,,
 04||Activity ID User Supplied (PARENTs),,,,,,,
-06||Activity Media Name,,,05||Sample Media,05||Sample Media,,,
+06||Activity Media Name,,,05||Sample Media,05||Sample Media,,08||SAMPLE_TYPE,Sample Type
 09||Activity Start Time Zone,,,,,,,
 13||Sample Collection Method Context,,,,,,,
 14||Sample Collection Equipment Name,,,,,,,
@@ -55,7 +55,6 @@
 ,,,,,,03||LAB_SAMPLE_ID,
 ,,,,,,04||SAMPLE_ID,
 ,,,,,,05||ANALYSIS_LAB,04||Lab
-,,,,,,09||QC_TYPE,
 ,,,,,,13||REPORTING_LIMIT,09||RL
 ,,,,,,15||TEST,11||Method
 ,,,,,,16||METER_ID,

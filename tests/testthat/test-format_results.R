@@ -73,7 +73,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
       "12:45", "12:45", "10:22", "10:22", "10:22"
     ),
-    "SAMPLE_TYPE" = "NA",
+    "QC_TYPE" = "NA",
     "PARAMETER_NAME" = c(
       "CLOUD COVER", "WSPD", "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD",
       "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD", "WDIR"
@@ -115,7 +115,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
       "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
       "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
-    "SAMPLE_TYPE" = "NA",
+    "QC_TYPE" = "NA",
     "SAMPLE_DEPTH" = c(
       0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
       0, 0, 0, 0, 0, 0
@@ -153,17 +153,17 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   df_long_DEP <- data.frame(
     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
     "SAMPLE_DATE" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-    "SAMPLE_TYPE" = "NA",
-    "ANALYSIS_LAB" = c("UMWL", "UMWL", "UMWL"),
+    "QC_TYPE" = "NA",
+    "ANALYSIS_LAB" = "UMWL",
     "ANALYSIS_DATE" = c("2023-07-06", "2023-07-06", "2023-06-07"),
-    "PARAMETER_NAME" = c("TN AS N", "TN AS N", "TN AS N"),
+    "PARAMETER_NAME" = "TN AS N",
     "CONCENTRATION" = c(0.22, 0.18, 0.28),
-    "PARAMETER_UNITS" = c("MG/L", "MG/L", "MG/L"),
-    "REPORTING_LIMIT" = c(0.1, 0.1, 0.1),
-    "MDL" = c(0.73, 0.73, 0.73),
-    "TEST" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
-    "SAMPLE_DEPTH" = c(0.2, 0.2, 0.2),
-    "SAMPLE_DEPTH_UNIT" = c("M", "M", "M"),
+    "PARAMETER_UNITS" = "MG/L",
+    "REPORTING_LIMIT" = 0.1,
+    "MDL" = 0.73,
+    "TEST" = "SM4500NE_2021",
+    "SAMPLE_DEPTH" = 0.2,
+    "SAMPLE_DEPTH_UNIT" = "M",
     "LAB_QUALIFIER" = c("J", "J", NA),
     check.names = FALSE
   )
@@ -242,16 +242,6 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   )
 
   # Expected output - MassWateR
-  mwr_col_order <- c(
-    "Monitoring Location ID", "Activity Type", "Activity Start Date",
-    "Activity Start Time", "Activity Depth/Height Measure",
-    "Activity Depth/Height Unit", "Activity Relative Depth Name",
-    "Characteristic Name", "Result Value", "Result Unit", "Quantitation Limit",
-    "QC Reference Value", "Result Measure Qualifier", "Result Attribute",
-    "Sample Collection Method ID", "Project ID", "Local Record ID",
-    "Result Comment"
-  )
-
   df_wide1_mwr <- data.frame(
     "Monitoring Location ID" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
@@ -267,37 +257,41 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
       "12:45", "12:45", "10:22", "10:22", "10:22"
     ),
+    "Activity Depth/Height Measure" = NA,
+    "Activity Depth/Height Unit" = NA,
+    "Activity Relative Depth Name" = NA,
     "Characteristic Name" = c(
-      "Cloud Cover", "Wind Speed", "Wind Direction", "Depth",
-      "Secchi Depth", "Cloud Cover", "Wind Speed", "Wind Direction",
-      "Depth", "Secchi Depth", "Cloud Cover", "Wind Speed",
-      "Wind Direction"
+      "Cloud Cover", "Depth", "Secchi Depth", "Wind Direction", "Wind Speed",
+      "Cloud Cover", "Depth", "Secchi Depth", "Wind Direction", "Wind Speed",
+      "Cloud Cover", "Wind Direction", "Wind Speed"
     ),
     "Result Value" = c(
-      "50", "3", "120", "10.7", "1.9", "50", "3", "150", "3.2", "AQL", "50",
-      "2", "180"
+      "50", "10.7", "1.9", "120", "3",  "50", "3.2", "AQL", "150", "3", "50",
+      "180", "2"
     ),
     "Result Unit" = c(
-      "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
-      "BFT", "DEG True"
+      "%", "m", "m", "DEG True", "BFT", "%", "m", "m", "DEG True", "BFT", "%",
+      "DEG True", "BFT"
     ),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = NA_integer_,
+    "Result Measure Qualifier" = NA_character_,
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "FRIENDS OF CASCO BAY ALL SITES",
+    "Local Record ID" = NA_character_,
+    "Result Comment" = NA_character_,
     check.names = FALSE
   )
   df_wide1_mwr[["Activity Start Date"]] <- as.Date(
     df_wide1_mwr[["Activity Start Date"]]
   )
-  df_wide1_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_wide1_mwr["Result Measure Qualifier"] <- NA_character_
-  df_wide1_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(df_wide1_mwr))
-  df_wide1_mwr[missing_col] <- NA
-  df_wide1_mwr <- df_wide1_mwr[, mwr_col_order]
 
   df_wide2_mwr <- data.frame(
     "Monitoring Location ID" = c(
-      "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18",
-      "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
-      "HR2", "HR2", "HR2", "HR2"
+      "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02",
+      "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18",
+      "HR2", "HR2", "HR2", "HR2", "HR2", "HR2", "HR2"
     ),
     "Activity Type" = "Field Msr/Obs",
     "Activity Start Date" = c(
@@ -308,65 +302,69 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "2023-05-24"
     ),
     "Activity Start Time" = c(
-      "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:45",
-      "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
-      "10:22", "10:22", "10:22", "10:22", "10:22"
+      "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:32",
+      "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "12:45",
+      "10:22", "10:22", "10:22", "10:22", "10:22", "10:22", "10:22"
     ),
     "Activity Depth/Height Measure" = c(
-      0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
-      0, 0, 0, 0, 0, 0
+      0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+      0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2,
+      0, 0, 0, 0, 0, 0, 0
     ),
+    "Activity Depth/Height Unit" = "m",
+    "Activity Relative Depth Name" = NA,
+    # Characteristic Name pattern repeats 3 times
     "Characteristic Name" = c(
-      "Water Temp", "Salinity", "DO", "DO saturation", "pH", "Chl a",
-      "Turbidity", "Water Temp", "Salinity", "DO", "DO saturation", "pH",
-      "Chl a", "Turbidity", "Water Temp", "Salinity", "DO", "DO saturation",
-      "pH", "Chl a", "Turbidity"
+      "Chl a", "DO", "DO saturation", "Salinity", "Turbidity", "Water Temp",
+      "pH"
     ),
     "Result Value" = c(
-      11.3, 27.5, 9.3, 100.7, 7.93, 1.2, 2.7, 11, 28, 9.3, 100.7, 7.93, 1.2,
-      1.4, 14, 28, 8.2, 94.9, 7.82, 1.4, 2.4
+      1.2, 9.3, 100.7, 27.5, 2.7, 11.3, 7.93,
+      1.2, 9.3, 100.7, 28, 1.4, 11, 7.93,
+      1.4, 8.2, 94.9, 28, 2.4, 14, 7.82
     ),
-    "Result Unit" = c(
-      "deg C", "PSU", "mg/l", "%", "None", "ug/l", "FNU", "deg C", "PSU",
-      "mg/l", "%", "None", "ug/l", "FNU", "deg C", "PSU", "mg/l", "%", "None",
-      "ug/l", "FNU"
-    ),
+    # Result Unit pattern repeats 3 times
+    "Result Unit" = c("ug/l", "mg/l", "%", "PSU", "FNU", "deg C", "None"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = NA_integer_,
+    # Result Measure Qualifier Pattern repeats 3 times
+    "Result Measure Qualifier" = c("J", NA, NA, NA, NA, NA, NA),
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "FRIENDS OF CASCO BAY ALL SITES",
+    "Local Record ID" = NA_character_,
+    "Result Comment" = NA_character_,
     check.names = FALSE
   )
   df_wide2_mwr[["Activity Start Date"]] <- as.Date(
     df_wide2_mwr[["Activity Start Date"]]
   )
-  df_wide2_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_wide2_mwr["Activity Depth/Height Unit"] <- "m"
-  df_wide2_mwr["Result Measure Qualifier"] <- NA_character_
-  df_wide2_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(df_wide2_mwr))
-  df_wide2_mwr[missing_col] <- NA
-  df_wide2_mwr <- df_wide2_mwr[, mwr_col_order]
 
   df_long_mwr <- data.frame(
     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
     "Activity Type" = "Field Msr/Obs",
     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-    "Characteristic Name" = c("TN", "TN", "TN"),
+    "Activity Start Time" = NA,
+    "Activity Depth/Height Measure" = 0.2,
+    "Activity Depth/Height Unit" = "m",
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = "TN",
     "Result Value" = c(0.22, 0.18, 0.28),
-    "Result Unit" = c("mg/l", "mg/l", "mg/l"),
-    "Activity Depth/Height Measure" = c(0.2, 0.2, 0.2),
-    "Activity Depth/Height Unit" = c("m", "m", "m"),
-    "Quantitation Limit" = c(0.73, 0.73, 0.73),
+    "Result Unit" = "mg/l",
+    "Quantitation Limit" = 0.73,
+    "QC Reference Value" = NA_integer_,
+    "Result Measure Qualifier" = c("J", "J", NA),
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "FRIENDS OF CASCO BAY ALL SITES",
+    "Local Record ID" = NA_character_,
+    "Result Comment" = NA_character_,
     check.names = FALSE
   )
   df_long_mwr[["Activity Start Date"]] <- as.Date(
     df_long_mwr[["Activity Start Date"]]
   )
-  df_long_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_long_mwr["Result Measure Qualifier"] <- NA_character_
-  df_long_mwr[["QC Reference Value"]] <- NA_integer_
-  missing_col <- setdiff(mwr_col_order, colnames(df_long_mwr))
-  df_long_mwr[missing_col] <- NA
-  df_long_mwr <- df_long_mwr[, mwr_col_order]
 
-  # Test --- ME_FOCB to MassWateR
   # Test warnings
   expect_warning(
     expect_warning(
@@ -401,85 +399,179 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   )
 })
 
-# test_that("format_results converts ME_DEP to MassWateR", {
-#   # Input data - ME_DEP
-#   dep_col_order <- c(
-#     "PROJECT/SITE", "SAMPLE_POINT_NAME", "LAB_SAMPLE_ID", "SAMPLE_ID",
-#     "ANALYSIS_LAB", "SAMPLE_DATE", "SAMPLE_TIME", "SAMPLE_TYPE", "QC_TYPE",
-#     "PARAMETER_NAME", "CONCENTRATION", "LAB_QUALIFIER", "REPORTING_LIMIT",
-#     "PARAMETER_UNITS", "TEST", "METER_ID", "ANALYSIS_DATE", "ANALYSIS_TIME",
-#     "MDL", "RESULT_TYPE_CODE", "LAB_COMMENT", "SAMPLE_DEPTH",
-#     "SAMPLE_DEPTH_UNIT", "SAMPLE_COLLECTION_METHOD", "SAMPLE_LOCATION",
-#     "TREATMENT_STATUS", "PARAMETER_FILTERED", "SAMPLED_BY", "SAMPLE_COMMENTS",
-#     "BATCH_ID", "PREP_DATE", "SAMPLE_DELIVERY_GROUP", "PARAMETER_QUALIFIER",
-#     "VALIDATION_QUALIFIER", "VALIDATION_LEVEL", "VALIDATION_COMMENT",
-#     "VALIDATION_COMMENT_TYPE"
-#   )
-#   df_DEP <- data.frame(
-#     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
-#     "SAMPLE_DATE" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-#     "ANALYSIS_LAB" = c("UMWL", "UMWL", "UMWL"),
-#     "ANALYSIS_DATE" = c("2023-07-06", "2023-07-06", "2023-06-07"),
-#     "PARAMETER_NAME" = c("TN AS N", "TN AS N", "TN AS N"),
-#     "CONCENTRATION" = c(0.22, 0.18, 0.28),
-#     "PARAMETER_UNITS" = c("MG/L", "MG/L", "MG/L"),
-#     "REPORTING_LIMIT" = c(0.1, 0.1, 0.1),
-#     "MDL" = c(0.73, 0.73, 0.73),
-#     "TEST" = c("SM4500NE_2021", "SM4500NE_2021", "SM4500NE_2021"),
-#     "SAMPLE_DEPTH" = c(0.2, 0.2, 0.2),
-#     "SAMPLE_DEPTH_UNIT" = c("M", "M", "M"),
-#     "LAB_QUALIFIER" = c("J", "J", NA),
-#     check.names = FALSE
-#   )
-#   df_DEP$SAMPLE_DATE <- as.Date(df_DEP$SAMPLE_DATE)
-#   df_DEP$ANALYSIS_DATE <- as.Date(df_DEP$ANALYSIS_DATE)
-#   df_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
-#   df_DEP$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
-#   missing_col <- setdiff(dep_col_order, colnames(df_DEP))
-#   df_DEP[missing_col] <- NA
-#   df_DEP <- df_DEP[,dep_col_order]
-#
-#   # Expected output - MassWateR
-#   mwr_col_order <- c(
-#     "Monitoring Location ID", "Activity Type", "Activity Start Date",
-#     "Activity Start Time", "Activity Depth/Height Measure",
-#     "Activity Depth/Height Unit", "Activity Relative Depth Name",
-#     "Characteristic Name", "Result Value", "Result Unit", "Quantitation Limit",
-#     "QC Reference Value", "Result Measure Qualifier", "Result Attribute",
-#     "Sample Collection Method ID", "Project ID", "Local Record ID",
-#     "Result Comment"
-#   )
-#   df_mwr <- data.frame(
-#     "Monitoring Location ID" = c("BMR02", "EEB18", "HR2"),
-#     "Activity Start Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-#     "Characteristic Name" = c("TN", "TN", "TN"),
-#     "Result Value" = c(0.22, 0.18, 0.28),
-#     "Result Unit" = c("mg/l", "mg/l", "mg/l"),
-#     "Activity Depth/Height Measure" = c(0.2, 0.2, 0.2),
-#     "Activity Depth/Height Unit" = c("m", "m", "m"),
-#     "Quantitation Limit" = c(0.73, 0.73, 0.73),
-#     check.names = FALSE
-#   )
-#   df_mwr[["Activity Start Date"]] <- as.Date(df_mwr[["Activity Start Date"]])
-#   df_mwr["Project ID"] <- "FRIENDS OF CASCO BAY ALL SITES"
-#   df_mwr["Result Measure Qualifier"] <- NA_character_
-#   df_mwr["Result Comment"] <- NA_character_
-#   df_mwr[["QC Reference Value"]] <- NA_integer_
-#   missing_col <- setdiff(mwr_col_order, colnames(df_mwr))
-#   df_mwr[missing_col] <- NA
-#   df_mwr <- df_mwr[,mwr_col_order]
-#
-#   # Test - ME_DEP to MassWateR
-#   expect_equal(
-#     suppressMessages(
-#       format_results(df_DEP, "ME_DEP", "MassWateR")
-#     ),
-#     df_mwr
-#   )
-# })
+test_that("format_results converts ME_DEP to MassWateR", {
+  # Input data - ME_DEP
+  df_dep <- data.frame(
+    "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
+    "SAMPLE_POINT_NAME" = c("BMR02", "NMM79", "OBY35"),
+    "LAB_SAMPLE_ID" = c("BMR02 2023", "NMM79 2023", "OBY35 2023"),
+    "SAMPLE_ID" = c("BMR02 2023", "NMM79 2023", "OBY35 2023"),
+    "ANALYSIS_LAB" = "FT",
+    "SAMPLE_DATE" = c("5/23/23", "5/24/23", "5/24/23"),
+    "SAMPLE_TIME" = c("12:32:11 PM", "11:02:03 AM", "11:58:35 AM"),
+    "SAMPLE_DEPTH" = c(0.244, 0.229, 0.037),
+    "SAMPLE_TYPE" = "SW",
+    "QC_TYPE" = "NA",
+    "PARAMETER_NAME" = c("TEMPERATURE", "SALINITY", "CHLOROPHYLL"),
+    "CONCENTRATION" = c(11.315, 27.12, 2.12),
+    "LAB_QUALIFIER" = c(NA, NA, "J"),
+    "REPORTING_LIMIT" = NA,
+    "PARAMETER_UNITS" = c("DEG C", "PPTH", "UG/L"),
+    "TEST" = "MM",
+    "METER_ID" = c("YSI EXO2"),
+    "RESULT_TYPE_CODE" = "PM",
+    "LAB_COMMENT" = NA,
+    "SAMPLE_DEPTH_UNIT" = "M",
+    "SAMPLE_COLLECTION_METHOD" = "IS",
+    "SAMPLE_LOCATION" = c("B", "SH", "SH"),
+    "TREATMENT_STATUS" = "N",
+    "PARAMETER_FITLERED" = c("NA", "NA", "U"),
+    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
+    "SAMPLE_COMMENTS" = NA,
+    "PARAMETER_QUALIFIER" = c(NA, NA, "OPTICAL CHL"),
+    check.names = FALSE
+  )
+
+  # Expected output - MassWateR
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = c("BMR02", "NMM79", "OBY35"),
+    "Activity Type" = "Field Msr/Obs",
+    "Activity Start Date" = c("2023-05-23", "2023-05-24", "2023-05-24"),
+    "Activity Start Time" = c("12:32:11 PM", "11:02:03 AM", "11:58:35 AM"),
+    "Activity Depth/Height Measure" = c(0.244, 0.229, 0.037),
+    "Activity Depth/Height Unit" = "m",
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c("Water Temp", "Salinity", "Chl a"),
+    "Result Value" = c(11.315, 27.12, 2.12),
+    "Result Unit" = c("deg C", "ppth", "ug/l"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = NA_integer_,
+    "Result Measure Qualifier" = c(NA, NA, "J"),
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = "IS",
+    "Project ID" = "FRIENDS OF CASCO BAY ALL SITES",
+    "Local Record ID" = NA_character_,
+    "Result Comment" = NA_character_,
+    check.names = FALSE
+  )
+  df_mwr[["Activity Start Date"]] <- as.Date(df_mwr[["Activity Start Date"]])
+
+  # Test - ME_DEP to MassWateR
+  expect_equal(
+    suppressMessages(
+      format_results(df_dep, "ME_DEP", "MassWateR", date_format = "m/d/y")
+    ),
+    df_mwr
+  )
+})
 
 # Test MASSACHUSETTS ----
+test_that("format_results converts MA_BRC to MassWateR", {
+  # Input, expected output
+  df_brc <- data.frame(
+    "ID" = c(74635, 74639, 74640),
+    "SEID" = 8528,
+    "SITE_BRC_CODE" = "B-02-01-020",
+    "DATE_TIME" = "2018-11-10 01:50",
+    "PARAMETER" = c(
+      "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
+    ),
+    "RESULT" = c(80, .2, .19),
+    "UNITS" = c("%", "mg/L", "mg/L"),
+    "UNIQUE_ID" = c(
+      "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
+      "B-02-01-020_2018-11-10 01:50_NO3R"
+    )
+  )
+
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = "B-02-01-020",
+    "Activity Type" = "Field Msr/Obs",
+    "Activity Start Date" = as.Date("2018-11-10"),
+    "Activity Start Time" = "01:50",
+    "Activity Depth/Height Measure" = NA,
+    "Activity Depth/Height Unit" = NA,
+    "Activity Relative Depth Name" = "Surface",
+    "Characteristic Name" = c("DO saturation", "Ortho P"),
+    "Result Value" = c(80, .2),
+    "Result Unit" = c("%", "mg/l"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = c(NA, .19),
+    "Result Measure Qualifier" = NA_character_,
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "BRC",
+    "Local Record ID" = c(
+      "B-02-01-020_2018-11-10 01:50_DOXY",
+      "B-02-01-020_2018-11-10 01:50_NO3; B-02-01-020_2018-11-10 01:50_NO3R"
+    ),
+    "Result Comment" = NA_character_,
+    check.names = FALSE
+  )
+
+  # Test
+  expect_equal(
+    suppressMessages(
+      format_results(df_brc, "MA_BRC", "MassWateR", date_format = "Y-m-d H:M")
+    ),
+    df_mwr
+  )
+
+})
+
+# test_that("format_results converts MA_BRC to RI_DEM", {
+#   df_brc <- data.frame(
+#     "ID" = c(74635, 74639, 74640),
+#     "SEID" = 8528,
+#     "SITE_BRC_CODE" = "B-02-01-020",
+#     "DATE_TIME" = "2018-11-10 01:50",
+#     "PARAMETER" = c(
+#       "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
+#     ),
+#     "RESULT" = c(80, .2, .19),
+#     "UNITS" = c("%", "mg/L", "mg/L"),
+#     "UNIQUE_ID" = c(
+#       "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
+#       "B-02-01-020_2018-11-10 01:50_NO3R"
+#     )
+#   )
+#
+# })
+
+# test_that("format_results converts MA_BRC to WQdashboard", {
+#   df_brc <- data.frame(
+#     "ID" = c(74635, 74639, 74640),
+#     "SEID" = 8528,
+#     "SITE_BRC_CODE" = "B-02-01-020",
+#     "DATE_TIME" = "2018-11-10 01:50",
+#     "PARAMETER" = c(
+#       "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
+#     ),
+#     "RESULT" = c(80, .2, .19),
+#     "UNITS" = c("%", "mg/L", "mg/L"),
+#     "UNIQUE_ID" = c(
+#       "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
+#       "B-02-01-020_2018-11-10 01:50_NO3R"
+#     )
+#   )
+#
+# })
 
 # Test RHODE ISLAND ----
+# test_that("format_results converts RI_WW to RI_DEM", {
+#
+# })
+#
+# test_that("format_results converts RI_WW to MassWateR", {
+#
+# })
+#
+# test_that("format_results converts RI_WW to WQdashboard", {
+#
+# })
 
-# Test WQDASHBOARD ----
+
+# Test OTHER ----
+# test_that("format_results converts MassWateR to WQdashboard", {
+#
+# })

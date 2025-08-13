@@ -1,20 +1,25 @@
 WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP,ME_FOCB
-Field Msr/Obs,Field Msr/Obs,Grab,Grab,NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE),Field Measurement
-Quality Control Sample-Field Blank,Quality Control Sample-Field Blank,,Field Blank,FB|FIELD BLANK,
-Quality Control Sample-Lab Blank,Quality Control Sample-Lab Blank,Blank,Lab Blank,LB|LAB BLANK,
-Quality Control Sample-Lab Duplicate,Quality Control Sample-Lab Duplicate,Duplicate,,L|LAB DUPLICATE,
+Field Msr/Obs,Field Msr/Obs,Grab,Grab,NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE),Field Measurement|NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)
+Quality Control Field Replicate Msr/Obs,Quality Control Field Replicate Msr/Obs,Replicate,Replicate,D|FIELD DUPLICATE,D|FIELD DUPLICATE
+Quality Control Sample-Field Blank,Quality Control Sample-Field Blank,,Field Blank,FB|FIELD BLANK,FB|FIELD BLANK
+Quality Control Sample-Field Replicate,Quality Control Sample-Field Replicate,,,,
+Quality Control Sample-Lab Blank,Quality Control Sample-Lab Blank,Blank,Lab Blank,LB|LAB BLANK,LB|LAB BLANK
+Quality Control Sample-Lab Duplicate,Quality Control Sample-Lab Duplicate,Duplicate,,L|LAB DUPLICATE,L|LAB DUPLICATE
+Quality Control Sample-Lab Duplicate 2,Quality Control Sample-Lab Duplicate 2,,,,
 Quality Control Sample-Lab Spike,Quality Control Sample-Lab Spike,,,,
+Quality Control Sample-Lab Spike Target,Quality Control Sample-Lab Spike Target,,,,
 Quality Control-Calibration Check,Quality Control-Calibration Check,,,,
+Quality Control-Calibration Check Buffer,Quality Control-Calibration Check Buffer,,,,
 Quality Control-Meter Lab Blank,Quality Control-Meter Lab Blank,,,,
 Quality Control-Meter Lab Duplicate,Quality Control-Meter Lab Duplicate,,,,
+Quality Control-Meter Lab Duplicate 2,Quality Control-Meter Lab Duplicate 2,,,,
 Sample-Routine,Sample-Routine,,,,
 Quality Control Field Replicate Sample-Composite,,Composite,,,
-Quality Control Field Replicate Msr/Obs,,Replicate,Replicate,D|FIELD DUPLICATE,
-Quality Contorl Sample-Lab Control Sample/Blank Spike,,,,LCS|LAB CONTROL SAMPLE,
-Quality Control Sample-Lab Control Sample/Blank Spike Duplicate,,,,LCSD|LAB CONTROL SAMPLE DUPLICATE,
-Quality Control Sample-Lab Matrix Spike,,,,MS|MATRIX SPIKE,
-Quality Control Sample-Lab Matrix Spike Duplicate,,,,MSD|MATRIX SPIKE DUPLICATE,
-Sample-Other,,,,UNK|UNKNOWN,
+Quality Contorl Sample-Lab Control Sample/Blank Spike,,,,LCS|LAB CONTROL SAMPLE,LCS|LAB CONTROL SAMPLE
+Quality Control Sample-Lab Control Sample/Blank Spike Duplicate,,,,LCSD|LAB CONTROL SAMPLE DUPLICATE,LCSD|LAB CONTROL SAMPLE DUPLICATE
+Quality Control Sample-Lab Matrix Spike,,,,MS|MATRIX SPIKE,MS|MATRIX SPIKE
+Quality Control Sample-Lab Matrix Spike Duplicate,,,,MSD|MATRIX SPIKE DUPLICATE,MSD|MATRIX SPIKE DUPLICATE
+Sample-Other,,,,UNK|UNKNOWN,UNK|UNKNOWN
 Field Msr/Obs-Continuous Time Series,,,,,
 Field Msr/Obs-Habitat Assessment,,,,,
 Field Msr/Obs-Incidental,,,,,
@@ -32,20 +37,17 @@ Quality Control Lab Sample Equipment Rinsate Blank,,,,,
 Quality Control Sample-Blind Duplicate,,,,,
 Quality Control Sample-Equipment Blank,,,,,
 Quality Control Sample-Field Ambient Conditions Blank,,,,,
-Quality Control Sample-Field Replicate,,,,,
 Quality Control Sample-Field Spike,,,,,
 Quality Control Sample-Field Surrogate Spike,,,,,
 Quality Control Sample-Inter-lab Split,,,,,
 Quality Control Sample-Lab Continuing Calibration Verification,,,,,
 Quality Control Sample-Lab Control Standard,,,,,
 Quality Control Sample-Lab Control Standard Duplicate,,,,,
-Quality Control Sample-Lab Duplicate 2,,,,,
 Quality Control Sample-Lab Initial Calib Certified Reference Material,,,,,
 Quality Control Sample-Lab Initial Calibration Verification,,,,,
 Quality Control Sample-Lab Re-Analysis,,,,,
 Quality Control Sample-Lab Spike Duplicate,,,,,
 Quality Control Sample-Lab Spike of a Lab Blank,,,,,
-Quality Control Sample-Lab Spike Target,,,,,
 Quality Control Sample-Lab Split,,,,,
 Quality Control Sample-Lab Surrogate Control Standard,,,,,
 Quality Control Sample-Lab Surrogate Control Standard Duplicate,,,,,
@@ -57,8 +59,6 @@ Quality Control Sample-Pre-preservative Blank,,,,,
 Quality Control Sample-Reagent Blank,,,,,
 Quality Control Sample-Reference Sample,,,,,
 Quality Control Sample-Trip Blank,,,,,
-Quality Control-Calibration Check Buffer,,,,,
-Quality Control-Meter Lab Duplicate 2,,,,,
 Quality Control-Negative Control,,,,,
 Sample-Composite With Parents,,,,,
 Sample-Composite Without Parents,,,,,

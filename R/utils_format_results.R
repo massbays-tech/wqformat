@@ -18,10 +18,24 @@ prep_MassWateR_results <- function(.data) {
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
 
   # Transfer QC Reference Value to own row
-  qc_duplicate <- c(
-    "Quality Control Sample-Lab Duplicate",
-    "Quality Control-Meter Lab Duplicate"
+  qc_ref <- c(
+    "Quality Control Sample-Field Replicate",
+    "Quality Control Sample-Lab Duplicate 2",
+    "Quality Control Sample-Lab Spike Target",
+    "Quality Control Field Replicate Msr/Obs",
+    "Quality Control-Meter Lab Duplicate 2",
+    "Quality Control-Calibration Check Buffer"
   )
+  names(qc_ref) <- c(
+    "Sample-Routine",
+    "Quality Control Sample-Lab Duplicate",
+    "Quality Control Sample-Lab Spike",
+    "Field Msr/Obs",
+    "Quality Control-Meter Lab Duplicate",
+    "Quality Control-Calibration Check"
+  )
+
+  qc_duplicate <- c(qc_ref, names(qc_ref))
 
   dat <- .data %>%
     dplyr::mutate(
@@ -46,6 +60,14 @@ prep_MassWateR_results <- function(.data) {
           !is.na(.data[["QC Reference Value"]]),
         .data[["QC Reference Value"]],
         .data[["Result Value"]]
+      )
+    ) %>%
+    dplyr::mutate(
+      "Activity Type" = dplyr::if_else(
+        .data[["Activity Type"]] %in% names(qc_ref) &
+          !is.na(.data[["QC Reference Value"]]),
+        unname(qc_ref[.data[["Activity Type"]]]),
+        .data[["Activity Type"]]
       )
     ) %>%
     dplyr::mutate(
@@ -99,7 +121,7 @@ results_to_MassWateR <- function(.data) {
   .data[["Result Value"]] <- as.character(.data[["Result Value"]])
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
 
-  dat_colnames <- colnames(.data)
+  column_order <- colnames(.data)
 
   # Update qualifiers, result value
   q_under <- rename_var(
@@ -110,12 +132,6 @@ results_to_MassWateR <- function(.data) {
   )
   q_over <- rename_var(
     "Over-Detect",
-    varnames_qualifiers$Flag,
-    varnames_qualifiers$WQX,
-    multiple = TRUE
-  )
-  q_pass <- rename_var(
-    "Pass",
     varnames_qualifiers$Flag,
     varnames_qualifiers$WQX,
     multiple = TRUE
@@ -131,53 +147,167 @@ results_to_MassWateR <- function(.data) {
     ) %>%
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::if_else(
-        .data[["Result Measure Qualifier"]] %in% c(q_under, q_over, q_pass),
+        .data[["Result Measure Qualifier"]] %in% c(q_under, q_over),
         NA,
         .data[["Result Measure Qualifier"]]
       )
     )
 
-  # Transfer QC duplicates to QC Reference Value
-  qc_duplicate <- c(
+  # Check - any rows with duplicate/replicate data?
+  qc_ref <- c(
+    "Sample-Routine",
     "Quality Control Sample-Lab Duplicate",
-    "Quality Control-Meter Lab Duplicate"
+    "Quality Control Sample-Lab Spike",
+    "Field Msr/Obs",
+    "Quality Control-Meter Lab Duplicate",
+    "Quality Control-Calibration Check"
   )
-  group_col <- setdiff(dat_colnames, "Result Value")
+  names(qc_ref) <- c(
+    "Quality Control Sample-Field Replicate",
+    "Quality Control Sample-Lab Duplicate 2",
+    "Quality Control Sample-Lab Spike Target",
+    "Quality Control Field Replicate Msr/Obs",
+    "Quality Control-Meter Lab Duplicate 2",
+    "Quality Control-Calibration Check Buffer"
+  )
 
-  chk <- dat[["Activity Type"]] %in% qc_duplicate &
+  chk <- dat[["Activity Type"]] %in% c(qc_ref, names(qc_ref)) &
     is.na(dat[["QC Reference Value"]])
-  dat1 <- dat[which(chk), ] # data to group
-  dat2 <- dat[which(!chk), ] # data to leave as-is
 
-  dat1 <- dat1 %>%
-    dplyr::group_by_at(group_col) %>%
-    dplyr::summarize(
-      "Result Value" = stringr::str_c(.data[["Result Value"]], collapse = "|"),
-      .groups = "drop"
-    ) %>%
-    dplyr::mutate(
-      "QC Reference Value" = dplyr::if_else(
-        stringr::str_count(.data[["Result Value"]], "\\|") == 1,
-        stringr::str_split_i(.data[["Result Value"]], "\\|", 2),
-        .data[["QC Reference Value"]]
-      )
-    ) %>%
-    dplyr::mutate(
-      "Result Value" = dplyr::if_else(
-        stringr::str_count(.data[["Result Value"]], "\\|") == 1,
-        stringr::str_split_i(.data[["Result Value"]], "\\|", 1),
-        .data[["Result Value"]]
-      )
-    ) %>%
-    tidyr::separate_longer_delim(dplyr::all_of("Result Value"), "|")
+  if (any(chk)) {
+    # Split data in two categories: possible duplicate, leave as-is
+    dat1 <- dat[which(chk), ] # possible duplicate/replicate
+    dat2 <- dat[which(!chk), ] # leave as-is
 
-  dat <- rbind(dat1, dat2)
+    # Prep duplicate data
+    # - Add activity type category
+    # - Sort rows with replicate samples AFTER initial samples
+    dat1 <- dat1 %>%
+      dplyr::mutate(
+        "temp_activity" = dplyr::if_else(
+          .data[["Activity Type"]] %in% names(qc_ref),
+          qc_ref[ .data[["Activity Type"]] ],
+          .data[["Activity Type"]]
+        )
+      ) %>%
+      dplyr::mutate(
+        "temp_rank" = dplyr::if_else(
+          .data[["Activity Type"]] %in% names(qc_ref), 2, 1
+        )
+      ) %>%
+      dplyr::arrange(.data$temp_rank) %>%
+      dplyr::select(!"temp_rank")
+
+    # Check - any groups with more than 3 items? Send rows to dat2
+    group_col <- setdiff(
+      colnames(dat1),
+      c(
+        "Activity Type", "Result Value", "Result Measure Qualifier",
+        "Local Record ID", "Result Comment"
+      )
+    )
+
+    dat_temp <- dat1 %>%
+      dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+      dplyr::add_count()
+
+    chk <- dat_temp$n > 2
+    if (any(chk)) {
+      dat_temp <- dat1[which(chk), ] %>%
+        dplyr::select(!"temp_activity")
+
+      dat1 <- dat1[which(!chk), ]
+      dat2 <- rbind(dat2, dat_temp)
+    }
+
+    # Group/summarize duplicate data
+    if (nrow(dat1) > 0) {
+      dat1 <- dat1 %>%
+        dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+        dplyr::summarize(
+          "Activity Type" = dplyr::first(.data[["Activity Type"]]),
+          "Result Value" = stringr::str_flatten(.data[["Result Value"]], "|"),
+          "Result Measure Qualifier" = stringr::str_flatten(
+            .data[["Result Measure Qualifier"]],
+            collapse = ",",
+            na.rm = TRUE
+          ),
+          "Local Record ID" = stringr::str_flatten(
+            .data[["Local Record ID"]],
+            collapse = "; ",
+            na.rm = TRUE
+          ),
+          "Result Comment" = stringr::str_flatten(
+            .data[["Result Comment"]],
+            collapse = "; ",
+            na.rm = TRUE
+          ),
+          .groups = "drop"
+        ) %>%
+        # Edit concatenated columns to remove duplicate strings
+        dplyr::mutate(
+          "Result Measure Qualifier" = dplyr::if_else(
+            .data[["Result Measure Qualifier"]] %in% c(NA, ""),
+            NA,
+            sapply(
+              .data[["Result Measure Qualifier"]],
+              function(x) str_unique(x),
+              USE.NAMES = FALSE
+            )
+          )
+        ) %>%
+        dplyr::mutate(
+          "Local Record ID" = dplyr::if_else(
+            .data[["Local Record ID"]] %in% c(NA, ""),
+            NA,
+            sapply(
+              .data[["Local Record ID"]],
+              function(x) str_unique(x, "; "),
+              USE.NAMES = FALSE
+            )
+          )
+        ) %>%
+        dplyr::mutate(
+          "Result Comment" = dplyr::if_else(
+            .data[["Result Comment"]] %in% c(NA, ""),
+            NA,
+            sapply(
+              .data[["Result Comment"]],
+              function(x) str_unique(x, "; "),
+              USE.NAMES = FALSE
+            )
+          )
+        ) %>%
+        # Set QC Reference Value, Reference Value
+        dplyr::mutate(
+          "QC Reference Value" = dplyr::if_else(
+            grepl("\\|", .data[["Result Value"]]),
+            stringr::str_split_i(.data[["Result Value"]], "\\|", 2),
+            .data[["QC Reference Value"]]
+          )
+        ) %>%
+        dplyr::mutate(
+          "Result Value" = dplyr::if_else(
+            grepl("\\|", .data[["Result Value"]]),
+            stringr::str_split_i(.data[["Result Value"]], "\\|", 1),
+            .data[["Result Value"]]
+          )
+        ) %>%
+        # Drop extra column
+        dplyr::select(!"temp_activity")
+    }
+
+    # Join data, fix formatting
+    dat <- rbind(dat1, dat2)
+  }
+
+  # Adjust formatting
   dat <- as.data.frame(dat) %>%
     dplyr::arrange(
       .data[["Activity Start Date"]],
       .data[["Activity Start Time"]]
     ) %>%
-    dplyr::select(dplyr::all_of(dat_colnames)) %>%
+    dplyr::select(dplyr::all_of(column_order)) %>%
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
 
@@ -189,7 +319,8 @@ results_to_MassWateR <- function(.data) {
 #' @description
 #' `prep_MA_BRC_results()` is a helper function for [format_results()] that
 #' preformats result data from the Blackstone River Coalition (MA_BRC).
-#' * Adds columns "DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY", "PROJECT_ID"
+#' * Adds columns "DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY", "
+#' PROJECT_ID"
 #'
 #' @param .data Input Dataframe
 #' @param date_format String. Date format. Uses the same formatting as
@@ -206,7 +337,7 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
     dplyr::mutate("DATE" = as.Date(.data$DATE_TIME)) %>%
     dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) %>%
     dplyr::mutate(
-      "SAMPLE_TYPE" = dplyr::case_when(
+      "ACTIVITY_TYPE" = dplyr::case_when(
         grepl("Field Blank", .data$PARAMETER, fixed = TRUE) ~ "Field Blank",
         grepl("Lab Blank", .data$PARAMETER, fixed = TRUE) ~ "Lab Blank",
         grepl("Replicate", .data$PARAMETER, fixed = TRUE) ~ "Replicate",
@@ -224,9 +355,9 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
 #' `results_to_MA_BRC()` is a helper function for [format_results()] that
 #' formats result data for the Blackstone River Coalition (MA_BRC).
 #' * Uses "DATE", "TIME" columns to fill "DATE_TIME" column
-#' * uses "SAMPLE_TYPE" column to update "PARAMETER" column
+#' * uses "ACTIVITY_TYPE" column to update "PARAMETER" column
 #' * Adds column "UNIQUE_ID"
-#' * Removes columns "DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY",
+#' * Removes columns "DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY",
 #' "PROJECT_ID"
 #'
 #' @param .data Dataframe
@@ -241,8 +372,8 @@ results_to_MA_BRC <- function(.data) {
     dplyr::mutate("DATE_TIME" = paste(.data$DATE, .data$TIME)) %>%
     dplyr::mutate(
       "PARAMETER" = dplyr::if_else(
-        .data$SAMPLE_TYPE %in% c("Field Blank", "Lab Blank", "Replicate"),
-        paste(.data$PARAMETER, .data$SAMPLE_TYPE),
+        .data$ACTIVITY_TYPE %in% c("Field Blank", "Lab Blank", "Replicate"),
+        paste(.data$PARAMETER, .data$ACTIVITY_TYPE),
         .data$PARAMETER
       )
     ) %>%
@@ -276,7 +407,7 @@ results_to_MA_BRC <- function(.data) {
     dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") %>%
     dplyr::select(
       !dplyr::any_of(
-        c("DATE", "TIME", "SAMPLE_TYPE", "DEPTH_CATEGORY", "PROJECT_ID")
+        c("DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY", "PROJECT_ID")
       )
     )
 
@@ -309,17 +440,17 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
     dat <- dplyr::mutate(dat, "Sample Depth Unit" = "m")
   }
 
-  if ("Sample Type" %in% colnames(dat)) {
+  if ("QC Type" %in% colnames(dat)) {
     dat <- dat %>%
       dplyr::mutate(
-        "Sample Type" = dplyr::if_else(
-          is.na(.data[["Sample Type"]]),
+        "QC Type" = dplyr::if_else(
+          is.na(.data[["QC Type"]]),
           "Field Measurement",
-          .data[["Sample Type"]]
+          .data[["QC Type"]]
         )
       )
   } else {
-    dat <- dplyr::mutate(dat, "Sample Type" = "Field Measurement")
+    dat <- dplyr::mutate(dat, "QC Type" = "Field Measurement")
   }
 
   # Check if table is long, else make long
@@ -328,7 +459,7 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
     keep_col <- c(
       "SiteID", "Site ID", "Sample ID", "Date", "Time", "Sample Depth_m",
       "Sample Depth m", "Sample Depth Unit", "Project", "Sampled By",
-      "Sample Type"
+      "Sample Type", "QC Type"
     )
 
     # Set table to character before pivot to avoid errors from "BSV" score

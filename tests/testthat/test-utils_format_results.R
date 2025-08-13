@@ -22,21 +22,24 @@ test_that("prep_MassWateR_results works", {
   df_out <- data.frame(
     "Activity Type" = c(
       "Field Msr/Obs",
+      "Quality Control Field Replicate Msr/Obs",
       "Quality Control-Meter Lab Duplicate",
-      "Quality Control-Meter Lab Duplicate",
+      "Quality Control-Meter Lab Duplicate 2",
       "Quality Control Sample-Lab Duplicate",
       "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate"
+      "Quality Control Sample-Lab Duplicate 2"
     ),
     "Activity Start Date" = c(
-      "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-02", "2024-05-04",
-      "2024-05-04"
+      "2024-05-01", "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-02",
+      "2024-05-04", "2024-05-04"
     ),
-    "Activity Start Time" = c("9:00", "8:00", "8:00", "9:00", "10:00", "10:00"),
-    "Characteristic Name" = c("TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
-    "Result Value" = c(12, NA, 6, NA, 15, 16),
-    "Result Measure Qualifier" = c(NA, "DL", NA, "GT", "Q", "Q"),
-    "QC Reference Value" = c(11, NA, NA, NA, NA, NA),
+    "Activity Start Time" = c(
+      "9:00", "9:00", "8:00", "8:00", "9:00", "10:00", "10:00"
+    ),
+    "Characteristic Name" = c("TDN", "TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
+    "Result Value" = c(12, 11, NA, 6, NA, 15, 16),
+    "Result Measure Qualifier" = c(NA, NA, "DL", NA, "GT", "Q", "Q"),
+    "QC Reference Value" = NA_integer_,
     check.names = FALSE
   )
   df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
@@ -46,46 +49,53 @@ test_that("prep_MassWateR_results works", {
 
 test_that("results_to_MassWateR works", {
   df_in <- data.frame(
+    "Monitoring Location ID" = "foo",
     "Activity Type" = c(
+      "Sample-Routine",
+      "Quality Control Field Replicate Msr/Obs",
       "Field Msr/Obs",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate"
+      "Field Msr/Obs",
+      "Field Msr/Obs",
+      "Field Msr/Obs"
     ),
-    "Activity Start Date" = c(
-      "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-02", "2024-05-04",
-      "2024-05-04"
-    ),
-    "Activity Start Time" = c("9:00", "8:00", "8:00", "9:00", "10:00", "10:00"),
-    "Characteristic Name" = c("TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
-    "Result Value" = c(12, NA, 6, NA, 15, 16),
-    "Result Measure Qualifier" = c(NA, "DL", NA, "GT", "Q", "Q"),
-    "QC Reference Value" = c(11, NA, NA, NA, NA, NA),
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = c("8:00", "8:00", "8:00", "9:00", "9:00", "9:00"),
+    "Characteristic Name" = c("TN", "TP", "TP", "TN", "TN", "TN"),
+    "Result Value" = c(1, 2, 3, 4, 5, 6),
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = c(NA, "Q", "Q", "Q", NA, "Q"),
+    "Local Record ID" = c(NA, "foofy", NA, NA, NA, "owl"),
+    "Result Comment" = c(NA, "foo", "bar", NA, NA, NA),
     check.names = FALSE
   )
-  df_in[["Activity Start Date"]] <- as.Date(df_in[["Activity Start Date"]])
 
   df_out <- data.frame(
+    "Monitoring Location ID" = "foo",
     "Activity Type" = c(
+      "Sample-Routine",
       "Field Msr/Obs",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate"
+      "Field Msr/Obs",
+      "Field Msr/Obs",
+      "Field Msr/Obs"
     ),
-    "Activity Start Date" = c(
-      "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-04"
-    ),
-    "Activity Start Time" = c("9:00", "8:00", "9:00", "10:00"),
-    "Characteristic Name" = c("TDN", "TDP", "TDN", "TDP"),
-    "Result Value" = c("12", "BDL", "AQL", "15"),
-    "Result Measure Qualifier" = c(NA, NA, NA, "Q"),
-    "QC Reference Value" = c(11, 6, NA, 16),
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = c("8:00", "8:00", "9:00", "9:00", "9:00"),
+    "Characteristic Name" = c("TN", "TP", "TN", "TN", "TN"),
+    "Result Value" = c(1, 3, 4, 5, 6),
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = c(NA, 2, NA, NA, NA),
+    "Result Measure Qualifier" = c(NA, "Q", "Q", NA, "Q"),
+    "Local Record ID" = c(NA, "foofy", NA, NA, "owl"),
+    "Result Comment" = c(NA, "bar; foo", NA, NA, NA),
     check.names = FALSE
   )
-  df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
 
+  # Test conversion
+  # - Test paired records correctly grouped, even if equivalent but not
+  #   identical activity types
+  # - Test groups of 3 dropped from group
+  # - Test concatenation of select columns (Qualifier, Record ID, Comment)
   expect_equal(results_to_MassWateR(df_in), df_out)
 })
 
@@ -115,7 +125,9 @@ test_that("prep_MA_BRC_results works", {
       "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
-    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
+    "ACTIVITY_TYPE" = c(
+      "Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"
+    ),
     "DEPTH_CATEGORY" = "Surface",
     "PROJECT_ID" = "BRC"
   )
@@ -136,7 +148,9 @@ test_that("results_to_MA_BRC works", {
       "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
     ),
     "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
-    "SAMPLE_TYPE" = c("Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"),
+    "ACTIVITY_TYPE" = c(
+      "Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"
+    ),
     "DEPTH_CATEGORY" = "Surface",
     "PROJECT_ID" = "BRC"
   )
@@ -194,7 +208,7 @@ test_that("prep_ME_FOCB_results works", {
   df_long <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "Sample Type" = c("foo", "bar", NA),
+    "QC Type" = c("foo", "bar", NA),
     "Lab" = "UMWL",
     "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
     "Parameter" =
@@ -225,7 +239,7 @@ test_that("prep_ME_FOCB_results works", {
     ),
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
-    "Sample Type" = "Field Measurement",
+    "QC Type" = "Field Measurement",
     "Parameter" = c(
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
@@ -267,7 +281,7 @@ test_that("prep_ME_FOCB_results works", {
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
     "Sample Depth Unit" = "m",
-    "Sample Type" = "Field Measurement",
+    "QC Type" = "Field Measurement",
     "Parameter" = c(
       "Temperature", "Salinity", "Dissolved Oxygen", "DO Saturation", "pH",
       "Chlorophyll", "Turbidity", "Temperature", "Salinity", "Dissolved Oxygen",
@@ -294,7 +308,7 @@ test_that("prep_ME_FOCB_results works", {
   df_long2 <- data.frame(
     "Site ID" = c("BMR02", "EEB18", "HR2"),
     "Sample Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-    "Sample Type" = c("foo", "bar", "Field Measurement"),
+    "QC Type" = c("foo", "bar", "Field Measurement"),
     "Lab" = "UMWL",
     "Analysis Date" = c("2023-07-06", "2023-07-06", "2023-06-07"),
     "Parameter" = "TN as N",

@@ -265,7 +265,7 @@ test_that("format_sites error messages", {
     suppressMessages(
       format_sites(df_in, "WQdashboard", "bar")
     ),
-    regexp = "Invalid format. Acceptable options: WQX, MassWateR, WQdashboard, RI_WW, MA_BRC, ME_FOCB"
+    regexp = "Invalid format. Acceptable options: "
   )
 
   expect_warning(

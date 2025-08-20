@@ -17,7 +17,7 @@ prep_MassWateR_results <- function(.data) {
   .data[["Result Value"]] <- as.character(.data[["Result Value"]])
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
 
-  # Transfer QC Reference Value to own row
+  # Set variables
   qc_ref <- c(
     "Quality Control Sample-Field Replicate",
     "Quality Control Sample-Lab Duplicate 2",
@@ -35,18 +35,17 @@ prep_MassWateR_results <- function(.data) {
     "Quality Control-Calibration Check"
   )
 
-  qc_duplicate <- c(qc_ref, names(qc_ref))
-
   dat <- .data %>%
+    # Separate QC Reference Value to own row
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
-        .data[["Activity Type"]] %in% qc_duplicate &
-          !is.na(.data[["QC Reference Value"]]),
-        paste0("NA|", .data[["QC Reference Value"]]),
-        .data[["QC Reference Value"]]
+        is.na(.data[["QC Reference Value"]]),
+        NA,
+        paste0("NA|", .data[["QC Reference Value"]])
       )
     ) %>%
     tidyr::separate_longer_delim(dplyr::all_of("QC Reference Value"), "|") %>%
+    # Update new rows
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
         .data[["QC Reference Value"]] == "NA",
@@ -56,10 +55,9 @@ prep_MassWateR_results <- function(.data) {
     ) %>%
     dplyr::mutate(
       "Result Value" = dplyr::if_else(
-        .data[["Activity Type"]] %in% qc_duplicate &
-          !is.na(.data[["QC Reference Value"]]),
-        .data[["QC Reference Value"]],
-        .data[["Result Value"]]
+        is.na(.data[["QC Reference Value"]]),
+        .data[["Result Value"]],
+        .data[["QC Reference Value"]]
       )
     ) %>%
     dplyr::mutate(
@@ -70,13 +68,8 @@ prep_MassWateR_results <- function(.data) {
         .data[["Activity Type"]]
       )
     ) %>%
-    dplyr::mutate(
-      "QC Reference Value" = dplyr::if_else(
-        .data[["Activity Type"]] %in% qc_duplicate,
-        NA,
-        .data[["QC Reference Value"]]
-      )
-    )
+    # Drop QC Reference Value columns
+    dplyr::select(!"QC Reference Value")
 
   # Update qualifiers, result value
   dat <- dat %>%
@@ -94,8 +87,7 @@ prep_MassWateR_results <- function(.data) {
         .data[["Result Value"]]
       )
     ) %>%
-    col_to_numeric("Result Value") %>%
-    col_to_numeric("QC Reference Value")
+    col_to_numeric("Result Value")
 
   return(dat)
 }
@@ -186,7 +178,7 @@ results_to_MassWateR <- function(.data) {
       dplyr::mutate(
         "temp_activity" = dplyr::if_else(
           .data[["Activity Type"]] %in% names(qc_ref),
-          qc_ref[ .data[["Activity Type"]] ],
+          qc_ref[.data[["Activity Type"]]],
           .data[["Activity Type"]]
         )
       ) %>%
@@ -342,6 +334,17 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
         grepl("Lab Blank", .data$PARAMETER, fixed = TRUE) ~ "Lab Blank",
         grepl("Replicate", .data$PARAMETER, fixed = TRUE) ~ "Replicate",
         TRUE ~ "Grab"
+      )
+    ) %>%
+    dplyr::mutate(
+      "PARAMETER" = dplyr::case_when(
+        .data$ACTIVITY_TYPE == "Field Blank" ~
+          gsub(" Field Blank", "", .data$PARAMETER),
+        .data$ACTIVITY_TYPE == "Lab Blank" ~
+          gsub(" Lab Blank", "", .data$PARAMETER),
+        .data$ACTIVITY_TYPE == "Replicate" ~
+          gsub(" Replicate", "", .data$PARAMETER),
+        TRUE ~ .data$PARAMETER
       )
     ) %>%
     dplyr::mutate("DEPTH_CATEGORY" = "Surface") %>%

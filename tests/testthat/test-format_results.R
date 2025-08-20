@@ -266,7 +266,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       "Cloud Cover", "Wind Direction", "Wind Speed"
     ),
     "Result Value" = c(
-      "50", "10.7", "1.9", "120", "3",  "50", "3.2", "AQL", "150", "3", "50",
+      "50", "10.7", "1.9", "120", "3", "50", "3.2", "AQL", "150", "3", "50",
       "180", "2"
     ),
     "Result Unit" = c(
@@ -516,62 +516,588 @@ test_that("format_results converts MA_BRC to MassWateR", {
     ),
     df_mwr
   )
-
 })
 
-# test_that("format_results converts MA_BRC to RI_DEM", {
-#   df_brc <- data.frame(
-#     "ID" = c(74635, 74639, 74640),
-#     "SEID" = 8528,
-#     "SITE_BRC_CODE" = "B-02-01-020",
-#     "DATE_TIME" = "2018-11-10 01:50",
-#     "PARAMETER" = c(
-#       "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
-#     ),
-#     "RESULT" = c(80, .2, .19),
-#     "UNITS" = c("%", "mg/L", "mg/L"),
-#     "UNIQUE_ID" = c(
-#       "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
-#       "B-02-01-020_2018-11-10 01:50_NO3R"
-#     )
-#   )
-#
-# })
+test_that("format_results converts MA_BRC to RI_DEM", {
+  df_brc <- data.frame(
+    "ID" = c(74635, 74639, 74640),
+    "SEID" = 8528,
+    "SITE_BRC_CODE" = "B-02-01-020",
+    "DATE_TIME" = "2018-11-10 01:50",
+    "PARAMETER" = c(
+      "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
+    ),
+    "RESULT" = c(80, .2, .19),
+    "UNITS" = c("%", "mg/L", "mg/L"),
+    "UNIQUE_ID" = c(
+      "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
+      "B-02-01-020_2018-11-10 01:50_NO3R"
+    )
+  )
 
-# test_that("format_results converts MA_BRC to WQdashboard", {
-#   df_brc <- data.frame(
-#     "ID" = c(74635, 74639, 74640),
-#     "SEID" = 8528,
-#     "SITE_BRC_CODE" = "B-02-01-020",
-#     "DATE_TIME" = "2018-11-10 01:50",
-#     "PARAMETER" = c(
-#       "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
-#     ),
-#     "RESULT" = c(80, .2, .19),
-#     "UNITS" = c("%", "mg/L", "mg/L"),
-#     "UNIQUE_ID" = c(
-#       "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
-#       "B-02-01-020_2018-11-10 01:50_NO3R"
-#     )
-#   )
-#
-# })
+  df_dem <- data.frame(
+    "Station Name" = "B-02-01-020",
+    "Date" = as.Date("2018-11-10"),
+    "Time" = "01:50",
+    "Sample Type" = c("Grab", "Grab", "Replicate"),
+    "Sample Media" = NA,
+    "Depth" = NA,
+    "Parameter" = c(
+      "Dissolved Oxygen Percent Saturation - 00301",
+      "Orthophosphate, Dissolved - 00671", "Orthophosphate, Dissolved - 00671"
+    ),
+    "Concentration" = c(80, .2, .19),
+    "Unit" = c("%", "mg/l", "mg/l"),
+    check.names = FALSE
+  )
+  blank_col <- c(
+    "Qualifier Code", "Detection Limit", "Detection Limit Unit",
+    "Quantitation Level", "Quantitation Level Unit", "Lab Name",
+    "Analytical Method Number", "Sediment Particle Size", "Particle Size Unit",
+    "Fish Sample Type", "Fish Taxa", "Comments"
+  )
+  df_dem[blank_col] <- NA
+
+  # Test
+  expect_equal(
+    suppressMessages(
+      format_results(df_brc, "MA_BRC", "RI_DEM", date_format = "Y-m-d H:M")
+    ),
+    df_dem
+  )
+})
+
+test_that("format_results converts MA_BRC to WQdashboard", {
+  df_brc <- data.frame(
+    "ID" = c(74635, 74639, 74640),
+    "SEID" = 8528,
+    "SITE_BRC_CODE" = "B-02-01-020",
+    "DATE_TIME" = "2018-11-10 01:50",
+    "PARAMETER" = c(
+      "Dissolved Oxy Saturation", "Orthophosphate", "Orthophosphate Replicate"
+    ),
+    "RESULT" = c(80, .2, .19),
+    "UNITS" = c("%", "mg/L", "mg/L"),
+    "UNIQUE_ID" = c(
+      "B-02-01-020_2018-11-10 01:50_DOXY", "B-02-01-020_2018-11-10 01:50_NO3",
+      "B-02-01-020_2018-11-10 01:50_NO3R"
+    )
+  )
+
+  df_wqd <- data.frame(
+    "Site_ID" = "B-02-01-020",
+    "Activity_Type" = c(
+      "Field Msr/Obs", "Field Msr/Obs",
+      "Quality Control Field Replicate Msr/Obs"
+    ),
+    "Date" = as.Date("2018-11-10"),
+    "Depth" = NA,
+    "Depth_Unit" = NA,
+    "Depth_Category" = "Surface",
+    "Parameter" = c(
+      "Dissolved oxygen saturation", "Orthophosphate", "Orthophosphate"
+    ),
+    "Result" = c(80, .2, .19),
+    "Result_Unit" = c("%", "mg/L", "mg/L"),
+    "Detection_Limit_Type" = NA,
+    "Detection_Limit" = NA,
+    "Detection_Limit_Unit" = NA,
+    "Qualifier" = NA
+  )
+
+  # Test
+  expect_equal(
+    suppressMessages(
+      format_results(df_brc, "MA_BRC", "WQdashboard", date_format = "Y-m-d H:M")
+    ),
+    df_wqd
+  )
+})
 
 # Test RHODE ISLAND ----
-# test_that("format_results converts RI_WW to RI_DEM", {
-#
-# })
-#
-# test_that("format_results converts RI_WW to MassWateR", {
-#
-# })
-#
-# test_that("format_results converts RI_WW to WQdashboard", {
-#
-# })
+test_that("format_results converts RI_WW to RI_DEM and vice versa", {
+  df_ww <- data.frame(
+    "WW ID" = "WW066",
+    "Date of Sample" = "5/7/2021",
+    "Time" = "12:28:00 PM",
+    "Sample Type" = c("Replicate", "Grab", "Grab"),
+    "Sample Media" = "Water",
+    "Depth" = c(0.5, 0.5, 1),
+    "Parameter" = c(
+      "Enterococci - 31639", "Enterococci - 31639",
+      "Nitrate + Nitrite, Dissolved - 00631"
+    ),
+    "Concentration" = c(1.25, 4.725, 1),
+    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Qualifier Code" = c("U", NA, NA),
+    "Detection Limit" = c(1, 1, 0.015),
+    "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Quantitation Level" = c(1, 1, 0.015),
+    "Quantitation Level Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Lab Name" = "URIWW",
+    "Analytical Method Number" = c(
+      NA, NA, "4500-NO3(F): Nitrate in Water- Automated Cadmium Reduction"
+    ),
+    "Sediment Particle Size" = NA,
+    "Particle Size Unit" = NA,
+    "Fish Sample Type" = NA,
+    "Fish Taxa" = NA,
+    "Comments" = c(NA, NA, "Trilogy"),
+    "Monitoring location" = "Worden Pond",
+    "Watershed" = "Upper Pawcatuck River",
+    "Watershed Code" = "WD",
+    "MONITOR 1" = NA,
+    "MONITOR 2" = NA,
+    check.names = FALSE
+  )
 
+  df_dem <- data.frame(
+    "Station Name" = "WW066",
+    "Date" = as.Date("2021-05-07"),
+    "Time" = "12:28:00 PM",
+    "Sample Type" = c("Replicate", "Grab", "Grab"),
+    "Sample Media" = "Water",
+    "Depth" = c(0.5, 0.5, 1),
+    "Parameter" = c(
+      "Enterococci - 31639", "Enterococci - 31639",
+      "Nitrate + Nitrite, Dissolved - 00631"
+    ),
+    "Concentration" = c(1.25, 4.725, 1),
+    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Qualifier Code" = c("U", NA, NA),
+    "Detection Limit" = c(1, 1, 0.015),
+    "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Quantitation Level" = c(1, 1, 0.015),
+    "Quantitation Level Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Lab Name" = "URIWW",
+    "Analytical Method Number" = c(
+      NA, NA, "4500-NO3(F): Nitrate in Water- Automated Cadmium Reduction"
+    ),
+    "Sediment Particle Size" = NA,
+    "Particle Size Unit" = NA,
+    "Fish Sample Type" = NA,
+    "Fish Taxa" = NA,
+    "Comments" = c(NA, NA, "Trilogy"),
+    check.names = FALSE
+  )
+
+  df_ww2 <- df_ww
+  df_ww2[["Date of Sample"]] <- as.Date("2021-05-07")
+  df_ww2[["Monitoring location"]] <- NA
+  df_ww2[["Watershed"]] <- NA
+  df_ww2[["Watershed Code"]] <- NA
+  df_ww2[["MONITOR 1"]] <- NA
+  df_ww2[["MONITOR 2"]] <- NA
+
+  # Test Watershed Watch to RI DEM
+  expect_equal(
+    suppressMessages(
+      format_results(df_ww, "RI_WW", "RI_DEM", date_format = "m/d/Y")
+    ),
+    df_dem
+  )
+
+  # Test RI DEM back to Watershed Watch
+  expect_equal(
+    suppressMessages(
+      format_results(df_dem, "RI_DEM", "RI_WW")
+    ),
+    df_ww2
+  )
+})
+
+test_that("format_results converts RI_WW to MassWateR", {
+  df_ww <- data.frame(
+    "WW ID" = "WW066",
+    "Date of Sample" = "5/7/2021",
+    "Time" = "12:28:00 PM",
+    "Sample Type" = c("Replicate", "Grab", "Grab"),
+    "Sample Media" = "Water",
+    "Depth" = c(0.5, 0.5, 1),
+    "Parameter" = c(
+      "Enterococci - 31639", "Enterococci - 31639",
+      "Nitrate + Nitrite, Dissolved - 00631"
+    ),
+    "Concentration" = c(1.25, 4.725, 1),
+    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Qualifier Code" = c("U", NA, NA),
+    "Detection Limit" = c(1, 1, 0.015),
+    "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Quantitation Level" = c(1, 1, 0.015),
+    "Quantitation Level Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Lab Name" = "URIWW",
+    "Analytical Method Number" = c(
+      NA, NA, "4500-NO3(F): Nitrate in Water- Automated Cadmium Reduction"
+    ),
+    "Sediment Particle Size" = NA,
+    "Particle Size Unit" = NA,
+    "Fish Sample Type" = NA,
+    "Fish Taxa" = NA,
+    "Comments" = c(NA, NA, "Trilogy"),
+    "Monitoring location" = "Worden Pond",
+    "Watershed" = "Upper Pawcatuck River",
+    "Watershed code" = "WD",
+    "MONITOR 1" = NA,
+    "MONITOR 2" = NA,
+    check.names = FALSE
+  )
+
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = "WW066",
+    "Activity Type" = "Field Msr/Obs",
+    "Activity Start Date" = as.Date("2021-05-07"),
+    "Activity Start Time" = "12:28:00 PM",
+    "Activity Depth/Height Measure" = c(0.5, 1),
+    "Activity Depth/Height Unit" = NA,
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c("Enterococcus", "Nitrate + Nitrite"),
+    "Result Value" = c(4.725, 1),
+    "Result Unit" = c("MPN/100ml", "mg/l"),
+    "Quantitation Limit" = c(1, 0.015),
+    "QC Reference Value" = c("BDL", NA),
+    "Result Measure Qualifier" = NA_character_,
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = NA,
+    "Local Record ID" = NA_character_,
+    "Result Comment" = c(NA, "Trilogy"),
+    check.names = FALSE
+  )
+
+  # Test
+  expect_equal(
+    suppressMessages(
+      format_results(df_ww, "RI_WW", "MassWateR", date_format = "m/d/Y")
+    ),
+    df_mwr
+  )
+})
+
+test_that("format_results converts RI_WW to WQdashboard", {
+  df_ww <- data.frame(
+    "WW ID" = "WW066",
+    "Date of Sample" = "5/7/2021",
+    "Time" = "12:28:00 PM",
+    "Sample Type" = c("Replicate", "Grab", "Grab"),
+    "Sample Media" = "Water",
+    "Depth" = c(0.5, 0.5, 1),
+    "Parameter" = c(
+      "Enterococci - 31639", "Enterococci - 31639",
+      "Nitrate + Nitrite, Dissolved - 00631"
+    ),
+    "Concentration" = c(1.25, 4.725, 1),
+    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Qualifier Code" = c("U", NA, NA),
+    "Detection Limit" = c(1, 1, 0.015),
+    "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Quantitation Level" = c(1, 1, 0.015),
+    "Quantitation Level Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Lab Name" = "URIWW",
+    "Analytical Method Number" = c(
+      NA, NA, "4500-NO3(F): Nitrate in Water- Automated Cadmium Reduction"
+    ),
+    "Sediment Particle Size" = NA,
+    "Particle Size Unit" = NA,
+    "Fish Sample Type" = NA,
+    "Fish Taxa" = NA,
+    "Comments" = c(NA, NA, "Trilogy"),
+    "Monitoring location" = "Worden Pond",
+    "Watershed" = "Upper Pawcatuck River",
+    "Watershed code" = "WD",
+    "MONITOR 1" = NA,
+    "MONITOR 2" = NA,
+    check.names = FALSE
+  )
+
+  df_wqd <- data.frame(
+    "Site_ID" = "WW066",
+    "Activity_Type" = c(
+      "Quality Control Field Replicate Msr/Obs", "Field Msr/Obs",
+      "Field Msr/Obs"
+    ),
+    "Date" = as.Date("2021-05-07"),
+    "Depth" = c(0.5, 0.5, 1),
+    "Depth_Unit" = NA,
+    "Depth_Category" = NA,
+    "Parameter" = c("Enterococcus", "Enterococcus", "Nitrate + Nitrite"),
+    "Result" = c(1.25, 4.725, 1),
+    "Result_Unit" = c("MPN/100mL", "MPN/100mL", "mg/L"),
+    "Detection_Limit_Type" = NA,
+    "Detection_Limit" = c(1, 1, 0.015),
+    "Detection_Limit_Unit" = c("MPN/100mL", "MPN/100mL", "mg/L"),
+    "Qualifier" = c("DL", NA, NA)
+  )
+
+  # Test
+  expect_equal(
+    suppressMessages(
+      format_results(df_ww, "RI_WW", "WQdashboard", date_format = "m/d/Y")
+    ),
+    df_wqd
+  )
+})
 
 # Test OTHER ----
-# test_that("format_results converts MassWateR to WQdashboard", {
-#
-# })
+test_that("format_results converts MassWateR to WQdashboard", {
+  df_mwr <- data.frame(
+    "Monitoring Location ID"	= c("HBS-016", "HBS-016", NA, NA),
+    "Activity Type" = c(
+      "Field Msr/Obs", "Sample-Routine", "Quality Control Sample-Lab Duplicate",
+      "Quality Control-Calibration Check"
+    ),
+    "Activity Start Date" = c(
+      "6/13/2021", "8/15/2021", "5/16/2021", "9/12/2021"
+    ),
+    "Activity Start Time" = c("8:00", "7:40", NA, NA),
+    "Activity Depth/Height Measure"	= c(1, 0.75, NA, NA),
+    "Activity Depth/Height Unit" = c("ft", "ft", NA, NA),
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c(
+      "DO saturation", "TSS", "Nitrate", "Sp Conductance"
+    ),
+    "Result Value" = c(46.8, 5, 0.45, 980),
+    "Result Unit" = c("%", "mg/l", "mg/l", "uS/cm"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = c(7, NA, 0.46, 1000),
+    "Result Measure Qualifier" = c(NA, "Q", NA, NA),
+    "Result Attribute" = c(NA, NA, "K16452-MB3", NA),
+    "Sample Collection Method ID" = c(NA, "Grab-MassWateR", NA, NA),
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = c(NA, "River was very full", NA, NA),
+    check.names = FALSE
+  )
+
+  df_wqd <- data.frame(
+    "Site_ID"	= c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
+    "Activity_Type" = c(
+      "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
+      "Sample-Routine", "Quality Control Sample-Lab Duplicate",
+      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control-Calibration Check",
+      "Quality Control-Calibration Check Buffer"
+    ),
+    "Date" = c(
+      "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
+      "2021-09-12", "2021-09-12"
+    ),
+    "Depth"	= c(1, 1, 0.75, NA, NA, NA, NA),
+    "Depth_Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
+    "Depth_Category" = NA,
+    "Parameter" = c(
+      "Dissolved oxygen saturation", "Dissolved oxygen saturation",
+      "Total suspended solids", "Nitrate", "Nitrate", "Specific conductance",
+      "Specific conductance"
+    ),
+    "Result" = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    "Result_Unit" = c("%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"),
+    "Detection_Limit_Type" = NA,
+    "Detection_Limit" = NA,
+    "Detection_Limit_Unit" = NA,
+    "Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
+    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    check.names = FALSE
+  )
+  df_wqd$Date <- as.Date(df_wqd$Date)
+
+  # Test
+  expect_equal(
+    suppressWarnings(
+      suppressMessages(
+        format_results(
+          df_mwr,
+          "MassWateR", "WQdashboard",
+          drop_extra_col = FALSE,
+          date_format = "m/d/Y"
+        )
+      )
+    ),
+    df_wqd
+  )
+
+  expect_warning(
+    suppressMessages(
+      format_results(
+        df_mwr,
+        "MassWateR", "WQdashboard",
+        drop_extra_col = FALSE,
+        date_format = "m/d/Y"
+      )
+    ),
+    regexp = "Unable to rename 6 columns"
+  )
+})
+
+test_that("format_results converts WQX to WQdashboard and vice versa", {
+  df_wqx <- data.frame(
+    "Project ID" = "TEMPLATE_PCHEM",
+    "Monitoring Location ID" = "ML-06",
+    "Activity ID (CHILD-subset)" = c(
+      "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
+      "ML-06:20170301:1433:FM:WB:"
+    ),
+    "Activity ID User Supplied (PARENTs)" = NA,
+    "Activity Type" = c("Sample-Routine", "Sample-Routine", "Field Msr/Obs"),
+    "Activity Media Name" = "Water",
+    "Activity Start Date" = "3/1/2017",
+    "Activity Start Time" = "14:33",
+    "Activity Start Time Zone" = "MST",
+    "Activity Depth/Height Measure" = NA,
+    "Activity Depth/Height Unit" = NA,
+    "Sample Collection Method ID" = "Grab Sample Method",
+    "Sample Collection Method Context" = NA,
+    "Sample Collection Equipment Name" = "Water Bottle",
+    "Sample Collection Equipment Comment" = NA,
+    "Characteristic Name" = c(
+      "Kjeldahl nitrogen", "Total Nitrogen/Total Phosphorus Ratio (TN:TP)",
+      "Conductivity"
+    ),
+    "Characteristic Name User Supplied" = NA,
+    "Method Speciation" = c("as N", NA, NA),
+    "Result Detection Condition" = c("Not Detected", "Not Detected", NA),
+    "Result Value" = c(NA, NA, 4.3),
+    "Result Unit" = c(NA, NA, "mg/l"),
+    "Result Measure Qualifier" = NA,
+    "Result Sample Fraction" = c("Filtered, lab", NA, NA),
+    "Result Status ID" = "Final",
+    "ResultTemperatureBasis" = NA,
+    "Statistical Base Code" = NA,
+    "ResultTimeBasis" = NA,
+    "Result Value Type" = "Actual",
+    "Result Analytical Method ID" = 120.1,
+    "Result Analytical Method Context" = "USEPA",
+    "Analysis Start Date" = "3/2/2017",
+    "Result Detection/Quantitation Limit Type" = c(
+      "Method Detection Level", "Method Detection Level", NA
+    ),
+    "Result Detection/Quantitation Limit Measure" = c(1.1, 1.1, NA),
+    "Result Detection/Quantitation Limit Unit" = c("mg/l", "mg/l", NA),
+    "Result Comment" = NA,
+    check.names = FALSE
+  )
+
+  df_wqd = data.frame(
+    "Site_ID" = "ML-06",
+    "Activity_Type" = c("Sample-Routine", "Sample-Routine", "Field Msr/Obs"),
+    "Date" = as.Date("2017-03-01"),
+    "Depth" = NA,
+    "Depth_Unit" = NA,
+    "Depth_Category" = NA,
+    "Parameter" = c(
+      "Kjeldahl nitrogen", "Total Nitrogen/Total Phosphorus Ratio (TN:TP)",
+      "Conductivity"
+    ),
+    "Result" = c(NA, NA, 4.3),
+    "Result_Unit" = c(NA, NA, "mg/l"),
+    "Detection_Limit_Type" = c(
+      "Method Detection Level", "Method Detection Level", NA
+    ),
+    "Detection_Limit" = c(1.1, 1.1, NA),
+    "Detection_Limit_Unit" = c("mg/l", "mg/l", NA),
+    "Qualifier" = NA,
+    "Project ID" = "TEMPLATE_PCHEM",
+    "Activity ID (CHILD-subset)" = c(
+      "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
+      "ML-06:20170301:1433:FM:WB:"
+    ),
+    "Activity ID User Supplied (PARENTs)" = NA,
+    "Activity Media Name" = "Water",
+    "Activity Start Time" = "14:33",
+    "Activity Start Time Zone" = "MST",
+    "Sample Collection Method ID" = "Grab Sample Method",
+    "Sample Collection Method Context" = NA,
+    "Sample Collection Equipment Name" = "Water Bottle",
+    "Sample Collection Equipment Comment" = NA,
+    "Characteristic Name User Supplied" = NA,
+    "Method Speciation" = c("as N", NA, NA),
+    "Result Detection Condition" = c("Not Detected", "Not Detected", NA),
+    "Result Sample Fraction" = c("Filtered, lab", NA, NA),
+    "Result Status ID" = "Final",
+    "ResultTemperatureBasis" = NA,
+    "Statistical Base Code" = NA,
+    "ResultTimeBasis" = NA,
+    "Result Value Type" = "Actual",
+    "Result Analytical Method ID" = 120.1,
+    "Result Analytical Method Context" = "USEPA",
+    "Analysis Start Date" = as.Date("2017-03-02"),
+    "Result Comment" = NA,
+    check.names = FALSE
+  )
+
+  df_wqx2 <- df_wqx
+  df_wqx2$Depth_Category <- NA
+  df_wqx2[["Activity Start Date"]] = as.Date("2017-03-01")
+  df_wqx2[["Analysis Start Date"]] = as.Date("2017-03-02")
+
+  # Test WQX to wqdashboard
+  expect_equal(
+    suppressWarnings(
+      suppressMessages(
+        format_results(
+          df_wqx,
+          "WQX", "WQdashboard",
+          drop_extra_col = FALSE,
+          date_format = "m/d/Y"
+        )
+      )
+    ),
+    df_wqd
+  )
+
+  expect_warning(
+    suppressMessages(
+      format_results(
+        df_wqx,
+        "WQX", "WQdashboard",
+        drop_extra_col = FALSE,
+        date_format = "m/d/Y"
+      )
+    ),
+    regexp = "Unable to rename 23 columns"
+  )
+
+  # Test wqdashboard back to WQX
+  expect_equal(
+    suppressWarnings(
+      suppressMessages(
+        format_results(
+          df_wqd,
+          "WQdashboard", "WQX",
+          drop_extra_col = FALSE
+        )
+      )
+    ),
+    df_wqx2
+  )
+
+  expect_warning(
+    suppressMessages(
+      format_results(
+        df_wqd,
+        "WQdashboard", "WQX",
+        drop_extra_col = FALSE
+      )
+    ),
+    regexp = "Unable to rename 1 columns"
+  )
+})
+
+# Test ERROR ----
+test_that("format_results error messages", {
+  df_test <- data.frame(
+    "numbers" = c(1,2,3),
+    "alphabet" = c("A", "B", "C")
+  )
+
+  expect_error(
+    suppressMessages(
+      format_results(df_test, "foobar", "foofy")
+    ),
+    regexp = "Invalid format"
+  )
+})

@@ -39,7 +39,6 @@ test_that("prep_MassWateR_results works", {
     "Characteristic Name" = c("TDN", "TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
     "Result Value" = c(12, 11, NA, 6, NA, 15, 16),
     "Result Measure Qualifier" = c(NA, NA, "DL", NA, "GT", "Q", "Q"),
-    "QC Reference Value" = NA_integer_,
     check.names = FALSE
   )
   df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
@@ -117,10 +116,7 @@ test_that("prep_MA_BRC_results works", {
       "2024-02-04 12:56", "2024-02-05 15:25", "2024-02-06 07:24",
       "2024-02-07 17:30", "2024-03-06 18:20"
     ),
-    "PARAMETER" = c(
-      "Nitrate", "Nitrate Replicate", "E. coli", "E. coli Field Blank",
-      "E. coli Lab Blank"
-    ),
+    "PARAMETER" = c("Nitrate", "Nitrate", "E. coli", "E. coli", "E. coli"),
     "DATE" = c(
       "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
     ),

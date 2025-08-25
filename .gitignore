@@ -11,3 +11,4 @@ data-raw/example_data_ME_FOCB_long-MSORLIEN.csv
 notes
 *.rds
 .lintr
+inst/doc

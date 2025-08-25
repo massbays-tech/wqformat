@@ -111,12 +111,10 @@ fetch_var <- function(in_table, in_format, out_format) {
     new_names <- NA
   }
 
-  return(
-    list(
-      old_names = old_names,
-      new_names = new_names,
-      keep_var = keep_var
-    )
+  list(
+    old_names = old_names,
+    new_names = new_names,
+    keep_var = keep_var
   )
 }
 

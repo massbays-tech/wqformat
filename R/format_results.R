@@ -38,9 +38,9 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 
   # Preformat data ----
   if (in_format == "MassWateR") {
-    df <- prep_MassWateR_results(df)
+    df <- prep_mwr_results(df)
   } else if (in_format == "MA_BRC") {
-    df <- prep_MA_BRC_results(df, date_format, tz)
+    df <- prep_brc_results(df, date_format, tz)
   } else if (in_format == "ME_DEP") {
     df <- df %>%
       concat_columns(
@@ -53,7 +53,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
         concat = TRUE
       )
   } else if (in_format == "ME_FOCB") {
-    df <- prep_ME_FOCB_results(df, date_format)
+    df <- prep_focb_results(df, date_format)
   }
 
   # Update columns ----
@@ -187,9 +187,9 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 
   # Custom format changes -----
   if (out_format == "MassWateR") {
-    df <- results_to_MassWateR(df)
+    df <- results_to_mwr(df)
   } else if (out_format == "MA_BRC") {
-    df <- results_to_MA_BRC(df)
+    df <- results_to_brc(df)
   }
 
   message("Done")

@@ -1,8 +1,8 @@
-#' Preformat result data from MassWateR
+#' Prepare result data from MassWateR
 #'
 #' @description
-#' `prep_MassWateR_results()` is a helper function for [format_results()] that
-#' preformats result data from MassWateR.
+#' `prep_mwr_results()` is a helper function for [format_results()] that
+#' standardizes MassWateR result data.
 #' * Transfers "BDL" and "AQL" values from "Result Value" to "Result Measure
 #' Qualifier".
 #' * Data in "QC Reference Value" is copied to its own row.
@@ -12,7 +12,7 @@
 #' @returns Dataframe matching the standard format used by [format_results()]
 #'
 #' @noRd
-prep_MassWateR_results <- function(.data) {
+prep_mwr_results <- function(.data) {
   # Prep data
   .data[["Result Value"]] <- as.character(.data[["Result Value"]])
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
@@ -88,14 +88,12 @@ prep_MassWateR_results <- function(.data) {
       )
     ) %>%
     col_to_numeric("Result Value")
-
-  return(dat)
 }
 
 #' Results to MassWateR
 #'
 #' @description
-#' `results_to_MassWateR()` is a helper function for [format_results()] that
+#' `results_to_mwr()` is a helper function for [format_results()] that
 #' formats result data for MassWateR.
 #' * Updates "Result Value" and "Result Measure Qualifier" for over-detects and
 #' under-detects
@@ -108,7 +106,7 @@ prep_MassWateR_results <- function(.data) {
 #' @returns Dataframe matching the standard format used by MassWateR
 #'
 #' @noRd
-results_to_MassWateR <- function(.data) {
+results_to_mwr <- function(.data) {
   # Prep data
   .data[["Result Value"]] <- as.character(.data[["Result Value"]])
   .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
@@ -116,18 +114,11 @@ results_to_MassWateR <- function(.data) {
   column_order <- colnames(.data)
 
   # Update qualifiers, result value
-  q_under <- rename_var(
-    "Non-Detect",
-    varnames_qualifiers$Flag,
-    varnames_qualifiers$WQX,
-    multiple = TRUE
+  q_under <- c(
+    "<2B", "2-5B", "BQL", "BRL", "D>T", "DL", "IDL", "K", "LTGTE", "U"
   )
-  q_over <- rename_var(
-    "Over-Detect",
-    varnames_qualifiers$Flag,
-    varnames_qualifiers$WQX,
-    multiple = TRUE
-  )
+
+  q_over <- c("GT", "E", "EE")
 
   dat <- .data %>%
     dplyr::mutate(
@@ -302,15 +293,13 @@ results_to_MassWateR <- function(.data) {
     dplyr::select(dplyr::all_of(column_order)) %>%
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
-
-  return(dat)
 }
 
 #' Preformat result data from the Blackstone River Coalition
 #'
 #' @description
-#' `prep_MA_BRC_results()` is a helper function for [format_results()] that
-#' preformats result data from the Blackstone River Coalition (MA_BRC).
+#' `prep_brc_results()` is a helper function for [format_results()] that
+#' standardizes result data from the Blackstone River Coalition (MA_BRC).
 #' * Adds columns "DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY", "
 #' PROJECT_ID"
 #'
@@ -322,8 +311,8 @@ results_to_MassWateR <- function(.data) {
 #' @returns Dataframe matching the standard format used by [format_results()]
 #'
 #' @noRd
-prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
-                                tz = "America/New_York") {
+prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
+                             tz = "America/New_York") {
   dat <- .data %>%
     col_to_date("DATE_TIME", date_format = date_format, tz = tz) %>%
     dplyr::mutate("DATE" = as.Date(.data$DATE_TIME)) %>%
@@ -355,7 +344,7 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
 #' Results to Blackstone River Coalition
 #'
 #' @description
-#' `results_to_MA_BRC()` is a helper function for [format_results()] that
+#' `results_to_brc()` is a helper function for [format_results()] that
 #' formats result data for the Blackstone River Coalition (MA_BRC).
 #' * Uses "DATE", "TIME" columns to fill "DATE_TIME" column
 #' * uses "ACTIVITY_TYPE" column to update "PARAMETER" column
@@ -370,8 +359,8 @@ prep_MA_BRC_results <- function(.data, date_format = "Y-m-d H:M",
 #' Coalition.
 #'
 #' @noRd
-results_to_MA_BRC <- function(.data) {
-  dat <- .data %>%
+results_to_brc <- function(.data) {
+  .data %>%
     dplyr::mutate("DATE_TIME" = paste(.data$DATE, .data$TIME)) %>%
     dplyr::mutate(
       "PARAMETER" = dplyr::if_else(
@@ -413,15 +402,13 @@ results_to_MA_BRC <- function(.data) {
         c("DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY", "PROJECT_ID")
       )
     )
-
-  return(dat)
 }
 
 #' Preformat result data from Friends of Casco Bay
 #'
 #' @description
-#' `prep_ME_FOCB_results()` is a helper function for [format_results()] that
-#' preformats result data from Friends of Casco Bay (ME_FOCB).
+#' `prep_focb_results()` is a helper function for [format_results()] that
+#' standardizes result data from Friends of Casco Bay (ME_FOCB).
 #' * Adds column "Sample Depth Unit"
 #' * Pivots table from wide to long
 #'
@@ -432,7 +419,7 @@ results_to_MA_BRC <- function(.data) {
 #' @returns Dataframe matching the standard format used by [format_results()]
 #'
 #' @noRd
-prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
+prep_focb_results <- function(.data, date_format = "m/d/y") {
   # Add columns
   dat <- .data %>%
     dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
@@ -528,6 +515,4 @@ prep_ME_FOCB_results <- function(.data, date_format = "m/d/y") {
       )
     ) %>%
     dplyr::select(!"temp_gap")
-
-  return(dat)
 }

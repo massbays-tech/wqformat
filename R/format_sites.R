@@ -31,7 +31,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   # Prep data with nonstandard formats ----
   if (in_format == "MA_BRC") {
-    df <- prep_MA_BRC_sites(df)
+    df <- prep_brc_sites(df)
   }
 
   # Update columns ----
@@ -74,7 +74,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   # Format data with nonstandard formats ----
   if (out_format == "MA_BRC") {
-    df <- sites_to_MA_BRC(df)
+    df <- sites_to_brc(df)
   }
 
   message("Done")

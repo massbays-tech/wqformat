@@ -25,7 +25,7 @@ col_to_numeric <- function(.data, col_name) {
     .data[[col_name]] <- as.numeric(.data[[col_name]])
   }
 
-  return(.data)
+  .data
 }
 
 #' Convert column to date or datetime format

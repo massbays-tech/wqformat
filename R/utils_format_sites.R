@@ -1,7 +1,7 @@
 #' Preformat site data from the Blackstone River Coalition
 #'
 #' @description
-#' `prep_MA_BRC_sites()` is a helper function for [format_sites()] that
+#' `prep_brc_sites()` is a helper function for [format_sites()] that
 #' pre-formats site data from the Blackstone River Coalition (MA_BRC).
 #' * Adds column "STATE" with each site's state
 #' * Adds column "WATER_DEPTH_M", fills with values from "WATER_DEPTH_FT"
@@ -15,7 +15,7 @@
 #' [format_site()]
 #'
 #' @noRd
-prep_MA_BRC_sites <- function(.data) {
+prep_brc_sites <- function(.data) {
   if ("TOWN" %in% colnames(.data)) {
     .data <- .data %>%
       dplyr::mutate(
@@ -52,14 +52,12 @@ prep_MA_BRC_sites <- function(.data) {
         )
       )
   }
-
-  return(.data)
 }
 
 #' Format site data for the Blackstone River Coalition
 #'
 #' @description
-#' `sites_to_MA_BRC()` is a helper function for [format_sites()] that formats
+#' `sites_to_brc()` is a helper function for [format_sites()] that formats
 #' site data for the Blackstone River Coalition (MA_BRC).
 #' * Fills empty values in column "WATER_DEPTH_FT" by converting "WATER_DEPTH_M"
 #' to feet
@@ -73,34 +71,21 @@ prep_MA_BRC_sites <- function(.data) {
 #' used by the Blackstone River Coalition.
 #'
 #' @noRd
-sites_to_MA_BRC <- function(.data) {
-  if (!"WATER_DEPTH_FT" %in% colnames(.data)) {
-    .data$WATER_DEPTH_FT <- NA
-  }
-
-  if ("WATER_DEPTH_M" %in% colnames(.data)) {
-    .data <- .data %>%
-      dplyr::mutate(
-        "WATER_DEPTH_FT" = dplyr::if_else(
-          is.na(as.numeric(.data$WATER_DEPTH_FT)),
-          as.numeric(.data$WATER_DEPTH_M) / 0.3048,
-          .data$WATER_DEPTH_FT
-        )
+sites_to_brc <- function(.data) {
+  .data %>%
+    dplyr::mutate(
+      "WATER_DEPTH_FT" = dplyr::if_else(
+        is.na(as.numeric(.data$WATER_DEPTH_FT)),
+        as.numeric(.data$WATER_DEPTH_M) / 0.3048,
+        .data$WATER_DEPTH_FT
       )
-  }
-
-  if ("CFR" %in% colnames(.data)) {
-    .data <- .data %>%
-      dplyr::mutate(
-        "CFR" = dplyr::case_when(
-          tolower(.data$CFR) == "warmwater" ~ "No",
-          tolower(.data$CFR) == "coldwater" ~ "Yes",
-          TRUE ~ .data$CFR
-        )
+    ) %>%
+    dplyr::mutate(
+      "CFR" = dplyr::case_when(
+        tolower(.data$CFR) == "warmwater" ~ "No",
+        tolower(.data$CFR) == "coldwater" ~ "Yes",
+        TRUE ~ .data$CFR
       )
-  }
-
-  dat <- dplyr::select(.data, !dplyr::any_of(c("STATE", "WATER_DEPTH_M")))
-
-  return(dat)
+    ) %>%
+    dplyr::select(!dplyr::any_of(c("STATE", "WATER_DEPTH_M")))
 }

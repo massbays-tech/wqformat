@@ -1,5 +1,5 @@
 # MassWateR -----
-test_that("prep_MassWateR_results works", {
+test_that("prep_mwr_results works", {
   df_in <- data.frame(
     "Activity Type" = c(
       "Field Msr/Obs",
@@ -43,10 +43,10 @@ test_that("prep_MassWateR_results works", {
   )
   df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
 
-  expect_equal(prep_MassWateR_results(df_in), df_out)
+  expect_equal(prep_mwr_results(df_in), df_out)
 })
 
-test_that("results_to_MassWateR works", {
+test_that("results_to_mwr works", {
   df_in <- data.frame(
     "Monitoring Location ID" = "foo",
     "Activity Type" = c(
@@ -95,11 +95,11 @@ test_that("results_to_MassWateR works", {
   #   identical activity types
   # - Test groups of 3 dropped from group
   # - Test concatenation of select columns (Qualifier, Record ID, Comment)
-  expect_equal(results_to_MassWateR(df_in), df_out)
+  expect_equal(results_to_mwr(df_in), df_out)
 })
 
 # MA_BRC -----
-test_that("prep_MA_BRC_results works", {
+test_that("prep_brc_results works", {
   df_in <- data.frame(
     "DATE_TIME" = c(
       "2024-02-04 12:56", "2024-02-05 15:25", "2024-02-06 7:24",
@@ -133,10 +133,10 @@ test_that("prep_MA_BRC_results works", {
   )
   df_out[["DATE"]] <- as.Date(df_out[["DATE"]])
 
-  expect_equal(prep_MA_BRC_results(df_in), df_out)
+  expect_equal(prep_brc_results(df_in), df_out)
 })
 
-test_that("results_to_MA_BRC works", {
+test_that("results_to_brc works", {
   df <- data.frame(
     "SITE_BRC_CODE" = c(1, 2, 3, 4, 5),
     "PARAMETER" = c("Nitrate", "Nitrate", "E. coli", "E. coli", "E. coli"),
@@ -168,11 +168,11 @@ test_that("results_to_MA_BRC works", {
     )
   )
 
-  expect_equal(results_to_MA_BRC(df), df_out)
+  expect_equal(results_to_brc(df), df_out)
 })
 
 # ME_FOCB ----
-test_that("prep_ME_FOCB_results works", {
+test_that("prep_focb_results works", {
   # Input formats - test data from ME_FOCB in 3 formats
   df_wide1 <- data.frame(
     "SiteID" = c("BMR02", "EEB18", "HR2"),
@@ -324,7 +324,7 @@ test_that("prep_ME_FOCB_results works", {
   df_long2[["Analysis Date"]] <- as.Date(df_long2[["Analysis Date"]])
 
   # Test
-  expect_equal(prep_ME_FOCB_results(df_wide1), df_wide1_b)
-  expect_equal(prep_ME_FOCB_results(df_wide2), df_wide2_b)
-  expect_equal(prep_ME_FOCB_results(df_long), df_long2)
+  expect_equal(prep_focb_results(df_wide1), df_wide1_b)
+  expect_equal(prep_focb_results(df_wide2), df_wide2_b)
+  expect_equal(prep_focb_results(df_long), df_long2)
 })

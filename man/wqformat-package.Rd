@@ -8,6 +8,14 @@
 \description{
 The goal of wqformat is to provide simple R functions to convert common water quality formats to those required for [MassWateR](https://massbays-tech.github.io/MassWateR).
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/massbays-tech/wqformat}
+  \item Report bugs at \url{https://github.com/massbays-tech/wqformat/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Mariel Sorlien \email{msorlien@nbep.org} (\href{https://orcid.org/0000-0001-7102-2918}{ORCID})
 

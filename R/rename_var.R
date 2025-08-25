@@ -74,7 +74,7 @@ rename_all_var <- function(.data, col_name, old_varname, new_varname) {
   }
 
   # Update variable names
-  dat <- .data %>%
+  .data %>%
     dplyr::mutate(
       {{ col_name }} := sapply(
         .data[[col_name]],
@@ -82,8 +82,6 @@ rename_all_var <- function(.data, col_name, old_varname, new_varname) {
         USE.NAMES = FALSE
       )
     )
-
-  return(dat)
 }
 
 #' Check column for invalid variables

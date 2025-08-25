@@ -1,5 +1,5 @@
-# Test prep_MA_BRC_sites----
-test_that("prep_MA_BRC_sites works", {
+# Test prep_brc_sites----
+test_that("prep_brc_sites works", {
   df <- data.frame(
     "TOWN" = c(
       "Worcester", "Uxbridge", "Grafton", "Cumberland", "Lincoln", "Blackstone",
@@ -43,39 +43,26 @@ test_that("prep_MA_BRC_sites works", {
     )
   )
 
-  expect_equal(prep_MA_BRC_sites(df), df_out)
+  expect_equal(prep_brc_sites(df), df_out)
 })
 
-# Test sites_to_MA_BRC ----
-test_that("sites_to_MA_BRC works", {
+# Test sites_to_brc ----
+test_that("sites_to_brc works", {
   df <- data.frame(
     "STATE" = c("MA", "MA", "RI", "MA", "MA", "RI", "MA", "RI"),
     "WATER_DEPTH_M" = c(0.3048, 3.048, 3.6576, NA, NA, 1, 10, 12),
+    "WATER_DEPTH_FT" = c(1, 2, 3, 4, NA, NA, NA, NA),
     "CFR" = c(
       "Coldwater", "Coldwater", "Warmwater", "Warmwater", "Warmwater", NA,
       "Coldwater", "Warmwater"
     )
   )
   df_out <- data.frame(
-    "CFR" = c("Yes", "Yes", "No", "No", "No", NA, "Yes", "No"),
-    "WATER_DEPTH_FT" = c(
-      1, 10, 12, NA, NA, 3.280839895, 32.80839895, 39.3700787402
-    )
-  )
-
-  expect_equal(sites_to_MA_BRC(df), df_out)
-})
-
-test_that("sites_to_MA_BRC defaults to values in WATER_DEPTH_FT", {
-  df <- data.frame(
-    "WATER_DEPTH_M" = c(0.3048, 3.048, 3.6576, NA, NA, 1, 10, 12),
-    "WATER_DEPTH_FT" = c(1, 2, 3, 4, NA, NA, NA, NA)
-  )
-  df_out <- data.frame(
     "WATER_DEPTH_FT" = c(
       1, 2, 3, 4, NA, 3.280839895, 32.80839895, 39.3700787402
-    )
+    ),
+    "CFR" = c("Yes", "Yes", "No", "No", "No", NA, "Yes", "No")
   )
 
-  expect_equal(sites_to_MA_BRC(df), df_out)
+  expect_equal(sites_to_brc(df), df_out)
 })

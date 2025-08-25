@@ -58,7 +58,7 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "VALIDATION_COMMENT_TYPE"
   )
 
-  df_wide1_DEP <- data.frame(
+  df_wide1_dep <- data.frame(
     "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
@@ -91,13 +91,13 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
-  df_wide1_DEP$SAMPLE_DATE <- as.Date(df_wide1_DEP$SAMPLE_DATE)
-  df_wide1_DEP$ANALYSIS_DATE <- as.Date(df_wide1_DEP$ANALYSIS_DATE)
-  missing_col <- setdiff(dep_col_order, colnames(df_wide1_DEP))
-  df_wide1_DEP[missing_col] <- NA
-  df_wide1_DEP <- df_wide1_DEP[, dep_col_order]
+  df_wide1_dep$SAMPLE_DATE <- as.Date(df_wide1_dep$SAMPLE_DATE)
+  df_wide1_dep$ANALYSIS_DATE <- as.Date(df_wide1_dep$ANALYSIS_DATE)
+  missing_col <- setdiff(dep_col_order, colnames(df_wide1_dep))
+  df_wide1_dep[missing_col] <- NA
+  df_wide1_dep <- df_wide1_dep[, dep_col_order]
 
-  df_wide2_DEP <- data.frame(
+  df_wide2_dep <- data.frame(
     "SAMPLE_POINT_NAME" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18",
       "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
@@ -142,15 +142,15 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
-  df_wide2_DEP$SAMPLE_DATE <- as.Date(df_wide2_DEP$SAMPLE_DATE)
-  df_wide2_DEP$ANALYSIS_DATE <- as.Date(df_wide2_DEP$ANALYSIS_DATE)
-  df_wide2_DEP["SAMPLE_DEPTH_UNIT"] <- "M"
-  df_wide2_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
-  missing_col <- setdiff(dep_col_order, colnames(df_wide2_DEP))
-  df_wide2_DEP[missing_col] <- NA
-  df_wide2_DEP <- df_wide2_DEP[, dep_col_order]
+  df_wide2_dep$SAMPLE_DATE <- as.Date(df_wide2_dep$SAMPLE_DATE)
+  df_wide2_dep$ANALYSIS_DATE <- as.Date(df_wide2_dep$ANALYSIS_DATE)
+  df_wide2_dep["SAMPLE_DEPTH_UNIT"] <- "M"
+  df_wide2_dep[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
+  missing_col <- setdiff(dep_col_order, colnames(df_wide2_dep))
+  df_wide2_dep[missing_col] <- NA
+  df_wide2_dep <- df_wide2_dep[, dep_col_order]
 
-  df_long_DEP <- data.frame(
+  df_long_dep <- data.frame(
     "SAMPLE_POINT_NAME" = c("BMR02", "EEB18", "HR2"),
     "SAMPLE_DATE" = c("2023-05-23", "2023-05-23", "2023-05-24"),
     "QC_TYPE" = "NA",
@@ -167,32 +167,32 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
     "LAB_QUALIFIER" = c("J", "J", NA),
     check.names = FALSE
   )
-  df_long_DEP$SAMPLE_DATE <- as.Date(df_long_DEP$SAMPLE_DATE)
-  df_long_DEP$ANALYSIS_DATE <- as.Date(df_long_DEP$ANALYSIS_DATE)
-  df_long_DEP[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
-  df_long_DEP$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
-  missing_col <- setdiff(dep_col_order, colnames(df_long_DEP))
-  df_long_DEP[missing_col] <- NA
-  df_long_DEP <- df_long_DEP[, dep_col_order]
+  df_long_dep$SAMPLE_DATE <- as.Date(df_long_dep$SAMPLE_DATE)
+  df_long_dep$ANALYSIS_DATE <- as.Date(df_long_dep$ANALYSIS_DATE)
+  df_long_dep[["PROJECT/SITE"]] <- "FRIENDS OF CASCO BAY ALL SITES"
+  df_long_dep$SAMPLED_BY <- "FRIENDS OF CASCO BAY"
+  missing_col <- setdiff(dep_col_order, colnames(df_long_dep))
+  df_long_dep[missing_col] <- NA
+  df_long_dep <- df_long_dep[, dep_col_order]
 
   # test ME_FOCB to ME_DEP
   expect_equal(
     suppressMessages(
       format_results(df_wide1, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
-    df_wide1_DEP
+    df_wide1_dep
   )
   expect_equal(
     suppressMessages(
       format_results(df_wide2, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
-    df_wide2_DEP
+    df_wide2_dep
   )
   expect_equal(
     suppressMessages(
       format_results(df_long, "ME_FOCB", "ME_DEP", date_format = "m/d/y")
     ),
-    df_long_DEP
+    df_long_dep
   )
 })
 
@@ -840,7 +840,7 @@ test_that("format_results converts RI_WW to WQdashboard", {
 # Test OTHER ----
 test_that("format_results converts MassWateR to WQdashboard", {
   df_mwr <- data.frame(
-    "Monitoring Location ID"	= c("HBS-016", "HBS-016", NA, NA),
+    "Monitoring Location ID" = c("HBS-016", "HBS-016", NA, NA),
     "Activity Type" = c(
       "Field Msr/Obs", "Sample-Routine", "Quality Control Sample-Lab Duplicate",
       "Quality Control-Calibration Check"
@@ -849,7 +849,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
       "6/13/2021", "8/15/2021", "5/16/2021", "9/12/2021"
     ),
     "Activity Start Time" = c("8:00", "7:40", NA, NA),
-    "Activity Depth/Height Measure"	= c(1, 0.75, NA, NA),
+    "Activity Depth/Height Measure" = c(1, 0.75, NA, NA),
     "Activity Depth/Height Unit" = c("ft", "ft", NA, NA),
     "Activity Relative Depth Name" = NA,
     "Characteristic Name" = c(
@@ -869,7 +869,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
   )
 
   df_wqd <- data.frame(
-    "Site_ID"	= c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
+    "Site_ID" = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
     "Activity_Type" = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",
@@ -881,7 +881,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
       "2021-09-12", "2021-09-12"
     ),
-    "Depth"	= c(1, 1, 0.75, NA, NA, NA, NA),
+    "Depth" = c(1, 1, 0.75, NA, NA, NA, NA),
     "Depth_Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
     "Depth_Category" = NA,
     "Parameter" = c(
@@ -981,7 +981,7 @@ test_that("format_results converts WQX to WQdashboard and vice versa", {
     check.names = FALSE
   )
 
-  df_wqd = data.frame(
+  df_wqd <- data.frame(
     "Site_ID" = "ML-06",
     "Activity_Type" = c("Sample-Routine", "Sample-Routine", "Field Msr/Obs"),
     "Date" = as.Date("2017-03-01"),
@@ -1031,8 +1031,8 @@ test_that("format_results converts WQX to WQdashboard and vice versa", {
 
   df_wqx2 <- df_wqx
   df_wqx2$Depth_Category <- NA
-  df_wqx2[["Activity Start Date"]] = as.Date("2017-03-01")
-  df_wqx2[["Analysis Start Date"]] = as.Date("2017-03-02")
+  df_wqx2[["Activity Start Date"]] <- as.Date("2017-03-01")
+  df_wqx2[["Analysis Start Date"]] <- as.Date("2017-03-02")
 
   # Test WQX to wqdashboard
   expect_equal(
@@ -1090,7 +1090,7 @@ test_that("format_results converts WQX to WQdashboard and vice versa", {
 # Test ERROR ----
 test_that("format_results error messages", {
   df_test <- data.frame(
-    "numbers" = c(1,2,3),
+    "numbers" = c(1, 2, 3),
     "alphabet" = c("A", "B", "C")
   )
 

@@ -96,8 +96,6 @@ rename_col <- function(.data, old_colnames, new_colnames) {
   names(field_subs) <- dat_colnames$old_name
 
   dat <- dplyr::rename_with(dat, ~field_subs, names(field_subs))
-
-  return(dat)
 }
 
 #' Concatenate Columns

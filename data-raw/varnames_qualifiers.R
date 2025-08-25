@@ -1,16 +1,11 @@
 library(readr)
 library(dplyr)
 
-df <- readr::read_csv("data-raw/varnames_qualifiers.csv",
+varnames_qualifiers <- readr::read_csv(
+  "inst/extdata/varnames_qualifiers.csv",
   show_col_types = FALSE
 ) %>%
   dplyr::select_if(function(x) !(all(is.na(x)))) %>% # drop empty columns
-  dplyr::select(!dplyr::any_of("Description"))
-
-# Drop rows with only 1 unique value
-df$temp_count <- apply(df, 1, function(x) length(unique(na.omit(x))))
-varnames_qualifiers <- df %>%
-  dplyr::filter(temp_count > 1) %>%
-  dplyr::select(!temp_count)
+  dplyr::select(!dplyr::any_of(c("Flag", "Description")))
 
 usethis::use_data(varnames_qualifiers, overwrite = TRUE)

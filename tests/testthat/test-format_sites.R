@@ -272,7 +272,7 @@ test_that("format_sites converts WQX to wqdashboard", {
       "Salt Lake", "Berkeley", "Berkeley", "Custer", "Custer", "Salt Lake",
       "Salt Lake", "Salt Lake", "Salt Lake"
     ),
-    State = c("UT", "SC", "WV", "CO", "ID", "UT", "UT",  "UT", "UT"),
+    State = c("UT", "SC", "WV", "CO", "ID", "UT", "UT", "UT", "UT"),
     Watershed = NA,
     Group = NA,
     Location_Type = c(

@@ -36,7 +36,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   # Check - repaired column names?
   chk <- grepl("\\.", colnames(df))
   chk2 <- grepl(" ", colnames(df))
-  if(any(chk) && !any(chk2)) {
+  if (any(chk) && !any(chk2)) {
     name_repair <- TRUE
   } else {
     name_repair <- FALSE

@@ -66,7 +66,7 @@ fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
     in_format <- paste0(in_format, "_1")
 
     in_table <- in_table %>%
-      dplyr::mutate({{in_format}} := .data[[out_format]])
+      dplyr::mutate({{ in_format }} := .data[[out_format]])
   }
 
   # Sort data by out_format; drop ##|| from start of vars if present

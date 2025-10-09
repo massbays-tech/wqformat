@@ -91,7 +91,9 @@ test_that("prep_mwr_results works", {
 test_that("results_to_mwr works", {
   # Test example data
   df_in <- data.frame(
-    "Monitoring Location ID" = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
+    "Monitoring Location ID" = c(
+      "HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA
+    ),
     "Activity Type" = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",

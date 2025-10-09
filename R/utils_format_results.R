@@ -94,7 +94,7 @@ prep_mwr_results <- function(.data, name_repair = FALSE) {
     ) %>%
     col_to_numeric("Result.Value")
 
-  if(!name_repair) {
+  if (!name_repair) {
     colnames(dat) <- gsub("\\.", " ", colnames(dat))
     colnames(dat) <- gsub("Depth Height", "Depth/Height", colnames(dat))
   }
@@ -349,7 +349,7 @@ prep_wqx_results <- function(.data, name_repair = FALSE) {
       )
     )
 
-  if(!name_repair) {
+  if (!name_repair) {
     dat <- dat %>%
       dplyr::rename(
         "Result Detection Condition" = "Result.Detection.Condition",
@@ -377,7 +377,7 @@ prep_wqx_results <- function(.data, name_repair = FALSE) {
 #' @noRd
 results_to_wqx <- function(.data) {
   # Update Result Detection Condition
-  dat <- .data %>%
+  .data %>%
     dplyr::mutate(
       "Result Detection Condition" = dplyr::case_when(
         !is.na(.data[["Result Detection Condition"]]) ~

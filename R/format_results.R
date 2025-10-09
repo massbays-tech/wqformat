@@ -42,7 +42,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   # Check - repaired column names?
   chk <- grepl("\\.", colnames(df))
   chk2 <- grepl(" ", colnames(df))
-  if(any(chk) && !any(chk2)) {
+  if (any(chk) && !any(chk2)) {
     name_repair <- TRUE
   } else {
     name_repair <- FALSE
@@ -155,8 +155,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     unit_col in c(
       "Result Unit", "Activity Depth/Height Unit",
       "Result Detection/Quantitation Limit Unit"
-      )
-    ) {
+    )
+  ) {
     col_name <- rename_var(
       in_var = unit_col,
       old_varname = col_sub$old_names,

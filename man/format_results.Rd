@@ -17,10 +17,10 @@ format_results(
 \item{df}{Input dataframe.}
 
 \item{in_format, out_format}{String. Desired input and output formats.
-Possible inputs:
+Not case sensitive. Accepted formats:
 * WQX
 * MassWateR
-* WQdashboard
+* wqdashboard
 * RI_WW (Rhode Island Watershed Watch)
 * RI_DEM (Rhode Island DEM)
 * MA_BRC (Blackstone River Coalition)

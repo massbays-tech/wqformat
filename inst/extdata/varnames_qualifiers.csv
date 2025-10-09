@@ -1,18 +1,18 @@
-﻿WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP,ME_FOCB,Flag,Description
+﻿wqx,masswater,ri_dem,ma_brc,me_dep,me_focb,Flag,Description
 GT,AQL,Z,,G,G,Over-Detect,The listed result is greater than the upper quantitation limit for either the analytical method or the meter used for the measurement. Equivalent to the Legacy STORET Remark Code of L: Actual Value is known to be greater than the value given.
-DL,BDL,U,,UJH,UJH,Non-Detect,Not Detected: The analyte was not detected at a level >= to the Method Detection Limit for the analysis.
+DL,BDL,U,,,,Non-Detect,Not Detected: The analyte was not detected at a level >= to the Method Detection Limit for the analysis.
 Q,Q,,101|107,R,R,Suspect,The result did not pass the lab quality checks and there was an insufficient amount of the sample for re-analysis.
 J-R,,I,,,,Suspect,Approximate value result is below the reporting level but greater than the method detection limit
 NRR,,N,,,,Suspect,"No Result Reported, other"
-B,,V,,B|JB,B|JB,Suspect,"Detection in blank, Analyte found in sample and associated blank"
+B,,V,,B|JB|B*,B|JB|B*,Suspect,"Detection in blank, Analyte found in sample and associated blank"
 RP,,,102,,,Pass,value reported is preferred
 R,,,108,,,Suspect,Rejected: The sample results are unusable due to the quality of the data generated because certain criteria were not met. The analyte may or may not be present in the sample. 
 FFD,,,103|105,,,Suspect,"Field Duplicate, failed"
 FLD,,,104|106,,,Suspect,Failed. Lab duplicate not acceptable.
-AR,,,,*|B*|J*,*|B*|J*,Suspect,counts outside acceptable range
+AR,,,,*|J*,*|J*,Suspect,counts outside acceptable range
 DI,,,,D,D,Pass,Dilution required
 J,,,,J,J,Pass,Estimated: The analyte was positively identified and the associated numerical value is the approximate concentration of the analyte in the sample.
-BQL,,,,U|UJ,U|UJ,Non-Detect,Below Quantitation Limit
+BQL,,,,U|UJ|UJH,U|UJ|UJH,Non-Detect,Below Quantitation Limit
 $,,,,,,Suspect,Incorrect sample container
 &,,,,,,Pass,biological organism established as dominant
 (,,,,,,Suspect,blank greater than the sample-specific Critical Level

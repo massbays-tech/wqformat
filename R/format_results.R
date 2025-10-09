@@ -4,10 +4,10 @@
 #'
 #' @param df Input dataframe.
 #' @param in_format,out_format String. Desired input and output formats.
-#' Possible inputs:
+#' Not case sensitive. Accepted formats:
 #' * WQX
 #' * MassWateR
-#' * WQdashboard
+#' * wqdashboard
 #' * RI_WW (Rhode Island Watershed Watch)
 #' * RI_DEM (Rhode Island DEM)
 #' * MA_BRC (Blackstone River Coalition)
@@ -24,9 +24,12 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   message("Reformatting data...")
 
   # Check inputs ----
+  in_format <- tolower(in_format)
+  out_format <- tolower(out_format)
+
   target_formats <- c(
-    "WQX", "MassWateR", "WQdashboard", "RI_WW", "RI_DEM", "MA_BRC", "ME_DEP",
-    "ME_FOCB"
+    "wqx", "masswater", "wqdashboard", "ri_ww", "ri_dem", "ma_brc", "me_dep",
+    "me_focb"
   )
   chk <- c(in_format, out_format) %in% target_formats
   if (any(!chk)) {
@@ -36,12 +39,23 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     )
   }
 
+  # Check - repaired column names?
+  chk <- grepl("\\.", colnames(df))
+  chk2 <- grepl(" ", colnames(df))
+  if(any(chk) && !any(chk2)) {
+    name_repair <- TRUE
+  } else {
+    name_repair <- FALSE
+  }
+
   # Preformat data ----
-  if (in_format == "MassWateR") {
-    df <- prep_mwr_results(df)
-  } else if (in_format == "MA_BRC") {
+  if (in_format == "masswater") {
+    df <- prep_mwr_results(df, name_repair)
+  } else if (in_format == "wqx") {
+    df <- prep_wqx_results(df, name_repair)
+  } else if (in_format == "ma_brc") {
     df <- prep_brc_results(df, date_format, tz)
-  } else if (in_format == "ME_DEP") {
+  } else if (in_format == "me_dep") {
     df <- df %>%
       concat_columns(
         c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
@@ -52,12 +66,12 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
         "SAMPLE_COMMENTS",
         concat = TRUE
       )
-  } else if (in_format == "ME_FOCB") {
+  } else if (in_format == "me_focb") {
     df <- prep_focb_results(df, date_format)
   }
 
   # Update columns ----
-  var_names <- fetch_var(colnames_results, in_format, out_format)
+  var_names <- fetch_var(colnames_results, in_format, out_format, name_repair)
   df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns
@@ -85,7 +99,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Update variables ----
-  col_sub <- fetch_var(colnames_results, "WQX", out_format)
+  col_sub <- fetch_var(colnames_results, "wqx", out_format)
 
   # Format dates
   for (date_col in c("Activity Start Date", "Analysis Start Date")) {
@@ -100,19 +114,25 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Check - in_format and out_format using same variables?
-  if (in_format == "WQdashboard") {
-    in_format <- "WQX"
-  } else if (in_format == "RI_WW") {
-    in_format <- "RI_DEM"
+  in_var <- in_format
+  if (in_format == "wqdashboard") {
+    in_var <- "wqx"
+  } else if (in_format == "ri_ww") {
+    in_var <- "ri_dem"
   }
 
-  if (out_format == "WQdashboard") {
-    out_format <- "WQX"
-  } else if (out_format == "RI_WW") {
-    out_format <- "RI_DEM"
+  out_var <- out_format
+  if (out_format == "wqdashboard") {
+    out_var <- "wqx"
+  } else if (out_format == "ri_ww") {
+    out_var <- "ri_dem"
   }
 
-  if (in_format == out_format) {
+  if (in_var == out_var && out_format == "wqx") {
+    df <- results_to_wqx(df)
+    message("Done")
+    return(df)
+  } else if (in_var == out_var) {
     message("Done")
     return(df)
   }
@@ -124,17 +144,19 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    param <- fetch_var(varnames_parameters, in_format, out_format)
+    param <- fetch_var(varnames_parameters, in_var, out_var)
     df <- rename_all_var(df, col_name, param$old_names, param$new_names)
     warn_invalid_var(df, col_name, param$keep_var)
   }
 
   # Rename units
-  unit_name <- fetch_var(varnames_units, in_format, out_format)
-  for (unit_col in c(
-    "Result Unit", "Activity Depth/Height Unit",
-    "Result Detection/Quantitation Limit Unit"
-  )) {
+  unit_name <- fetch_var(varnames_units, in_var, out_var)
+  for (
+    unit_col in c(
+      "Result Unit", "Activity Depth/Height Unit",
+      "Result Detection/Quantitation Limit Unit"
+      )
+    ) {
     col_name <- rename_var(
       in_var = unit_col,
       old_varname = col_sub$old_names,
@@ -154,13 +176,13 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    in_qual <- in_format
-    out_qual <- out_format
+    in_qual <- in_var
+    out_qual <- out_var
 
-    if (in_format == "MassWateR") {
-      in_qual <- "WQX"
-    } else if (out_format == "MassWateR") {
-      out_qual <- "WQX"
+    if (in_format == "masswater") {
+      in_qual <- "wqx"
+    } else if (out_format == "masswater") {
+      out_qual <- "wqx"
     }
 
     qual <- fetch_var(varnames_qualifiers, in_qual, out_qual)
@@ -176,7 +198,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   )
   if (col_name %in% colnames(df)) {
     atype <- try(
-      fetch_var(varnames_activity, in_format, out_format),
+      fetch_var(varnames_activity, in_var, out_var),
       silent = TRUE
     )
     if (!inherits(atype, "try-error")) {
@@ -186,9 +208,11 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Custom format changes -----
-  if (out_format == "MassWateR") {
+  if (out_format == "masswater") {
     df <- results_to_mwr(df)
-  } else if (out_format == "MA_BRC") {
+  } else if (out_format == "wqx") {
+    df <- results_to_wqx(df)
+  } else if (out_format == "ma_brc") {
     df <- results_to_brc(df)
   }
 

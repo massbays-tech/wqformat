@@ -1,4 +1,4 @@
-﻿WQX,MassWateR,WQdashboard,RI_DEM,RI_WW,MA_BRC,ME_DEP,ME_FOCB
+wqx,masswater,wqdashboard,ri_dem,ri_ww,ma_brc,me_dep,me_focb
 01||Monitoring Location ID,01||Monitoring Location ID,01||Site_ID,,02||WW_Station,02||BRC_CODE,,01||Site ID
 02||Monitoring Location Name,02||Monitoring Location Name,02||Site_Name,,05||Site_DESCR,03||SITE_NAME,,02||Station_Name
 03||Monitoring Location Type ,,10||Location_Type,,04||WB_Type,,,

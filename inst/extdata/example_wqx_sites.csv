@@ -1,0 +1,10 @@
+Monitoring Location ID,Monitoring Location Name,Monitoring Location Type ,Tribal Land Indicator (Yes/No),Tribal Land Name,Monitoring Location Latitude (DD.DDDD) ,Monitoring Location Longitude (-DDD.DDDD),Monitoring Location Source Map Scale ,Monitoring Location Horizontal Collection Method,Monitoring Location Horizontal Coordinate Reference System,State Code,Monitoring Location County Name,County Code (Auto-Generated),HUC 8,HUC 12
+ML-01,Template ML 1,Spring,No,,40.594,-111.72,24000,Interpolation-Map,NAD27,UT,Salt Lake,035,,
+ML-02,Template ML 2,River/Stream,No,,40.594,-111.72,,GPS-Unspecified,NAD83,SC,Berkeley,015,,
+ML-03,Template ML 3,River/Stream,No,,40.527,-111.755,,GPS-Unspecified,NAD83,WV,Berkeley,003,,
+ML-04,Template ML 4,Spring,No,,40.657,-111.77,12000,Interpolation-Map,NAD27,CO,Custer,027,,
+ML-05,Template ML 5,River/Stream,No,,40.522,-112.149,,GPS-Unspecified,NAD83,ID,Custer,037,,
+ML-06,Template ML 6,River/Stream,No,,40.765,-111.848,,GPS-Unspecified,NAD83,UT,Salt Lake,035,,
+ML-07,Template ML 7,River/Stream,No,,40.771,-111.892,,GPS-Unspecified,NAD83,UT,Salt Lake,035,,
+ML-08,Template ML 8,River/Stream,No,,40.779,-112.099,,GPS-Unspecified,NAD83,UT,Salt Lake,035,,
+ML-09,Template ML 9,River/Stream,No,,40.598,-111.685,,GPS-Unspecified,NAD83,UT,Salt Lake,035,,

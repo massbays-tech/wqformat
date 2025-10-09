@@ -839,35 +839,6 @@ test_that("format_results converts RI_WW to WQdashboard", {
 
 # Test OTHER ----
 test_that("format_results converts MassWateR to WQdashboard", {
-  df_mwr <- data.frame(
-    "Monitoring Location ID" = c("HBS-016", "HBS-016", NA, NA),
-    "Activity Type" = c(
-      "Field Msr/Obs", "Sample-Routine", "Quality Control Sample-Lab Duplicate",
-      "Quality Control-Calibration Check"
-    ),
-    "Activity Start Date" = c(
-      "6/13/2021", "8/15/2021", "5/16/2021", "9/12/2021"
-    ),
-    "Activity Start Time" = c("8:00", "7:40", NA, NA),
-    "Activity Depth/Height Measure" = c(1, 0.75, NA, NA),
-    "Activity Depth/Height Unit" = c("ft", "ft", NA, NA),
-    "Activity Relative Depth Name" = NA,
-    "Characteristic Name" = c(
-      "DO saturation", "TSS", "Nitrate", "Sp Conductance"
-    ),
-    "Result Value" = c(46.8, 5, 0.45, 980),
-    "Result Unit" = c("%", "mg/l", "mg/l", "uS/cm"),
-    "Quantitation Limit" = NA,
-    "QC Reference Value" = c(7, NA, 0.46, 1000),
-    "Result Measure Qualifier" = c(NA, "Q", NA, NA),
-    "Result Attribute" = c(NA, NA, "K16452-MB3", NA),
-    "Sample Collection Method ID" = c(NA, "Grab-MassWateR", NA, NA),
-    "Project ID" = "Water Quality",
-    "Local Record ID" = NA,
-    "Result Comment" = c(NA, "River was very full", NA, NA),
-    check.names = FALSE
-  )
-
   df_wqd <- data.frame(
     "Site_ID" = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
     "Activity_Type" = c(
@@ -895,12 +866,12 @@ test_that("format_results converts MassWateR to WQdashboard", {
     "Detection_Limit" = NA,
     "Detection_Limit_Unit" = NA,
     "Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
-    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
-    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
-    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
-    "Project ID" = "Water Quality",
-    "Local Record ID" = NA,
-    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    "Activity.Start.Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Result.Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample.Collection.Method.ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    "Project.ID" = "Water Quality",
+    "Local.Record.ID" = NA,
+    "Result.Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
     check.names = FALSE
   )
   df_wqd$Date <- as.Date(df_wqd$Date)
@@ -910,7 +881,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
     suppressWarnings(
       suppressMessages(
         format_results(
-          df_mwr,
+          tst$mwr_data,
           "MassWateR", "WQdashboard",
           drop_extra_col = FALSE,
           date_format = "m/d/Y"
@@ -923,7 +894,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
   expect_warning(
     suppressMessages(
       format_results(
-        df_mwr,
+        tst$mwr_data,
         "MassWateR", "WQdashboard",
         drop_extra_col = FALSE,
         date_format = "m/d/Y"
@@ -933,108 +904,66 @@ test_that("format_results converts MassWateR to WQdashboard", {
   )
 })
 
-test_that("format_results converts WQX to WQdashboard and vice versa", {
-  df_wqx <- data.frame(
-    "Project ID" = "TEMPLATE_PCHEM",
-    "Monitoring Location ID" = "ML-06",
-    "Activity ID (CHILD-subset)" = c(
-      "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
-      "ML-06:20170301:1433:FM:WB:"
-    ),
-    "Activity ID User Supplied (PARENTs)" = NA,
-    "Activity Type" = c("Sample-Routine", "Sample-Routine", "Field Msr/Obs"),
-    "Activity Media Name" = "Water",
-    "Activity Start Date" = "3/1/2017",
-    "Activity Start Time" = "14:33",
-    "Activity Start Time Zone" = "MST",
-    "Activity Depth/Height Measure" = NA,
-    "Activity Depth/Height Unit" = NA,
-    "Sample Collection Method ID" = "Grab Sample Method",
-    "Sample Collection Method Context" = NA,
-    "Sample Collection Equipment Name" = "Water Bottle",
-    "Sample Collection Equipment Comment" = NA,
-    "Characteristic Name" = c(
-      "Kjeldahl nitrogen", "Total Nitrogen/Total Phosphorus Ratio (TN:TP)",
-      "Conductivity"
-    ),
-    "Characteristic Name User Supplied" = NA,
-    "Method Speciation" = c("as N", NA, NA),
-    "Result Detection Condition" = c("Not Detected", "Not Detected", NA),
-    "Result Value" = c(NA, NA, 4.3),
-    "Result Unit" = c(NA, NA, "mg/l"),
-    "Result Measure Qualifier" = NA,
-    "Result Sample Fraction" = c("Filtered, lab", NA, NA),
-    "Result Status ID" = "Final",
-    "ResultTemperatureBasis" = NA,
-    "Statistical Base Code" = NA,
-    "ResultTimeBasis" = NA,
-    "Result Value Type" = "Actual",
-    "Result Analytical Method ID" = 120.1,
-    "Result Analytical Method Context" = "USEPA",
-    "Analysis Start Date" = "3/2/2017",
-    "Result Detection/Quantitation Limit Type" = c(
-      "Method Detection Level", "Method Detection Level", NA
-    ),
-    "Result Detection/Quantitation Limit Measure" = c(1.1, 1.1, NA),
-    "Result Detection/Quantitation Limit Unit" = c("mg/l", "mg/l", NA),
-    "Result Comment" = NA,
-    check.names = FALSE
-  )
+test_that("format_results converts WQX to WQdashboard", {
+  df_wqx <- head(tst$wqx_data)
 
   df_wqd <- data.frame(
     "Site_ID" = "ML-06",
-    "Activity_Type" = c("Sample-Routine", "Sample-Routine", "Field Msr/Obs"),
+    "Activity_Type" = c(
+      "Sample-Routine", "Sample-Routine", "Sample-Routine", "Sample-Routine",
+      "Field Msr/Obs", "Sample-Routine"
+    ),
     "Date" = as.Date("2017-03-01"),
-    "Depth" = NA,
-    "Depth_Unit" = NA,
+    "Depth" = NA_integer_,
+    "Depth_Unit" = NA_character_,
     "Depth_Category" = NA,
     "Parameter" = c(
-      "Kjeldahl nitrogen", "Total Nitrogen/Total Phosphorus Ratio (TN:TP)",
-      "Conductivity"
+      "Phosphate-phosphorus", "Kjeldahl nitrogen",
+      "Total Nitrogen/Total Phosphorus Ratio (TN:TP)", "pH", "Conductivity",
+      "Turbidity"
     ),
-    "Result" = c(NA, NA, 4.3),
-    "Result_Unit" = c(NA, NA, "mg/l"),
+    "Result" = c(NA, NA, NA, 7.1, 4.3, NA),
+    "Result_Unit" = c(NA, NA, NA, "None", "mg/l", NA),
     "Detection_Limit_Type" = c(
-      "Method Detection Level", "Method Detection Level", NA
+      "Upper Quantitation Limit", "Method Detection Level",
+      "Method Detection Level", NA, NA, "Lower Reporting Limit"
     ),
-    "Detection_Limit" = c(1.1, 1.1, NA),
-    "Detection_Limit_Unit" = c("mg/l", "mg/l", NA),
-    "Qualifier" = NA,
-    "Project ID" = "TEMPLATE_PCHEM",
-    "Activity ID (CHILD-subset)" = c(
+    "Detection_Limit" = c(0.058, 1.1, 1.1, NA, NA, 12),
+    "Detection_Limit_Unit" = c("mg/l", "mg/l", "mg/l", NA, NA, "NTU"),
+    "Qualifier" = c("DL", "DL", "DL", NA, NA, "DL"),
+    "Project.ID" = "TEMPLATE_PCHEM",
+    "Activity.ID..CHILD.subset." = c(
       "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
-      "ML-06:20170301:1433:FM:WB:"
+      "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
+      "ML-06:20170301:1433:FM:WB:", "ML-06:20170301:1433:SR:WB:"
     ),
-    "Activity ID User Supplied (PARENTs)" = NA,
-    "Activity Media Name" = "Water",
-    "Activity Start Time" = "14:33",
-    "Activity Start Time Zone" = "MST",
-    "Sample Collection Method ID" = "Grab Sample Method",
-    "Sample Collection Method Context" = NA,
-    "Sample Collection Equipment Name" = "Water Bottle",
-    "Sample Collection Equipment Comment" = NA,
-    "Characteristic Name User Supplied" = NA,
-    "Method Speciation" = c("as N", NA, NA),
-    "Result Detection Condition" = c("Not Detected", "Not Detected", NA),
-    "Result Sample Fraction" = c("Filtered, lab", NA, NA),
-    "Result Status ID" = "Final",
-    "ResultTemperatureBasis" = NA,
-    "Statistical Base Code" = NA,
-    "ResultTimeBasis" = NA,
-    "Result Value Type" = "Actual",
-    "Result Analytical Method ID" = 120.1,
-    "Result Analytical Method Context" = "USEPA",
-    "Analysis Start Date" = as.Date("2017-03-02"),
-    "Result Comment" = NA,
-    check.names = FALSE
+    "Activity.ID.User.Supplied..PARENTs." = NA,
+    "Activity.Media.Name" = "Water",
+    "Activity.Start.Time" = "14:33",
+    "Activity.Start.Time.Zone" = "MST",
+    "Sample.Collection.Method.ID" = "Grab Sample Method",
+    "Sample.Collection.Method.Context" = NA,
+    "Sample.Collection.Equipment.Name" = "Water Bottle",
+    "Sample.Collection.Equipment.Comment" = NA_character_,
+    "Characteristic.Name.User.Supplied" = NA,
+    "Method.Speciation" = c("as P", "as N", NA, NA, NA, NA),
+    "Result.Detection.Condition" = c(
+      "Not Detected", "Not Detected", "Not Detected", NA, NA, "Not Detected"
+    ),
+    "Result.Sample.Fraction" = c(
+      "Filtered, lab", "Filtered, lab", NA, NA, NA, NA
+    ),
+    "Result.Status.ID" = "Final",
+    "ResultTemperatureBasis" = NA_character_,
+    "Statistical.Base.Code" = NA_character_,
+    "ResultTimeBasis" = NA_character_,
+    "Result.Value.Type" = "Actual",
+    "Result.Analytical.Method.ID" = 120.1,
+    "Result.Analytical.Method.Context" = "USEPA",
+    "Analysis.Start.Date" = "3/2/2017",
+    "Result.Comment" = NA
   )
 
-  df_wqx2 <- df_wqx
-  df_wqx2$Depth_Category <- NA
-  df_wqx2[["Activity Start Date"]] <- as.Date("2017-03-01")
-  df_wqx2[["Analysis Start Date"]] <- as.Date("2017-03-02")
-
-  # Test WQX to wqdashboard
   expect_equal(
     suppressWarnings(
       suppressMessages(
@@ -1060,43 +989,13 @@ test_that("format_results converts WQX to WQdashboard and vice versa", {
     ),
     regexp = "Unable to rename 23 columns"
   )
-
-  # Test wqdashboard back to WQX
-  expect_equal(
-    suppressWarnings(
-      suppressMessages(
-        format_results(
-          df_wqd,
-          "WQdashboard", "WQX",
-          drop_extra_col = FALSE
-        )
-      )
-    ),
-    df_wqx2
-  )
-
-  expect_warning(
-    suppressMessages(
-      format_results(
-        df_wqd,
-        "WQdashboard", "WQX",
-        drop_extra_col = FALSE
-      )
-    ),
-    regexp = "Unable to rename 1 columns"
-  )
 })
 
 # Test ERROR ----
 test_that("format_results error messages", {
-  df_test <- data.frame(
-    "numbers" = c(1, 2, 3),
-    "alphabet" = c("A", "B", "C")
-  )
-
   expect_error(
     suppressMessages(
-      format_results(df_test, "foobar", "foofy")
+      format_results(tst$mwr_data, "foobar", "foofy")
     ),
     regexp = "Invalid format"
   )

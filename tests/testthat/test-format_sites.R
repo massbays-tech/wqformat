@@ -213,100 +213,157 @@ test_that("format_sites converts RI_WW", {
 })
 
 # Other ----
-test_that("format_sites to WQX", {
-  df_test <- data.frame(
-    "Site_ID" = c("RI01", "MA01", "ME01"),
-    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Latitude" = c(41.82897, 42.31481, 43.66218),
-    "Longitude" = c(-71.41924, -71.03931, -70.27354),
-    "State" = c("RI", "MA", "ME")
-  )
-
-  expect_equal(
-    suppressMessages(
-      format_sites(df_test, "WQdashboard", "WQX")
+test_that("format_sites converts MassWateR to wqdashboard", {
+  df_wqd <- data.frame(
+    Site_ID = c("ABT-010", "ABT-144", "SUD-086"),
+    Site_Name = c(
+      "477 Lowell Rd, Concord", "Rte 62, Stow", "River Rd, Wayland"
     ),
-    data.frame(
-      "Monitoring Location ID" = c("RI01", "MA01", "ME01"),
-      "Monitoring Location Name" = c("NBEP", "MassBays", "Casco Bay"),
-      "Monitoring Location Type" = NA,
-      "Tribal Land Indicator (Yes/No)" = NA,
-      "Tribal Land Name" = NA,
-      "Monitoring Location Latitude (DD.DDDD)" = c(
-        41.82897, 42.31481, 43.66218
-      ),
-      "Monitoring Location Longitude (-DDD.DDDD)" = c(
-        -71.41924, -71.03931, -70.27354
-      ),
-      "Monitoring Location Source Map Scale" = NA,
-      "Monitoring Location Horizontal Collection Method" = NA,
-      "Monitoring Location Horizontal Coordinate Reference System" = NA,
-      "State Code" = c("RI", "MA", "ME"),
-      "Monitoring Location County Name" = NA,
-      "County Code (Auto-Generated)" = NA,
-      "HUC 8" = NA,
-      "HUC 12" = NA,
-      check.names = FALSE
-    )
-  )
-})
-
-test_that("format_sites error messages", {
-  df_wqdashboard <- data.frame(
-    "Site_ID" = c("RI01", "MA01", "ME01"),
-    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Latitude" = c(41.82897, 42.31481, 43.66218),
-    "Longitude" = c(-71.41924, -71.03931, -70.27354),
-    "Town" = c("Providence", "Boston", "Portland"),
-    "State" = c("RI", "MA", "ME")
-  )
-
-  expect_error(
-    suppressMessages(
-      format_sites(df_in, "WQdashboard", "bar")
-    ),
-    regexp = "Invalid format. Acceptable options: "
-  )
-
-  expect_warning(
-    suppressMessages(
-      format_sites(
-        df_wqdashboard,
-        "WQdashboard",
-        "MassWateR",
-        drop_extra_col = FALSE
-      )
-    ),
-    regexp = "\tUnable to rename 2 columns: Town, State"
-  )
-})
-
-
-test_that("format_sites extra options", {
-  df_me_focb <- data.frame(
-    "Site ID" = c("RI01", "MA01", "ME01"),
-    "Station_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Town" = c("Providence", "Boston", "Portland"),
-    "X" = c(-71.41924, -71.03931, -70.27354),
-    "Y" = c(41.82897, 42.31481, 43.66218),
-    "Category" = c("Freshwater", "Saltwater", "Saltwater"),
-    check.names = FALSE
+    Latitude = c(42.47037, 42.404519, 42.37398),
+    Longitude = c(-71.362579, -71.526349, -71.381739),
+    Town = NA,
+    County = NA,
+    State = NA_character_,
+    Watershed = NA,
+    Group = NA,
+    Location_Type = NA,
+    Surface_Depth = NA,
+    Midwater_Depth = NA,
+    Near_Bottom_Depth = NA,
+    Bottom_Depth = NA,
+    Location.Group = c("Lower Assabet", "Upper Assabet", NA)
   )
 
   expect_equal(
     suppressWarnings(
       suppressMessages(
-        format_sites(df_me_focb, "ME_FOCB", "MassWateR", drop_extra_col = FALSE)
+        format_sites(
+          tst$mwr_sites,
+          "MassWateR",
+          "WQdashboard",
+          drop_extra_col = FALSE
+        )
       )
     ),
-    data.frame(
-      "Monitoring Location ID" = c("RI01", "MA01", "ME01"),
-      "Monitoring Location Name" = c("NBEP", "MassBays", "Casco Bay"),
-      "Monitoring Location Latitude" = c(41.82897, 42.31481, 43.66218),
-      "Monitoring Location Longitude" = c(-71.41924, -71.03931, -70.27354),
-      "Location Group" = c("Freshwater", "Saltwater", "Saltwater"),
-      "Town" = c("Providence", "Boston", "Portland"),
-      check.names = FALSE
-    )
+    df_wqd
+  )
+})
+
+test_that("format_sites converts WQX to wqdashboard", {
+  df_wqd <- data.frame(
+    Site_ID = c(
+      "ML-01", "ML-02", "ML-03", "ML-04", "ML-05", "ML-06", "ML-07", "ML-08",
+      "ML-09"
+    ),
+    Site_Name = c(
+      "Template ML 1", "Template ML 2", "Template ML 3", "Template ML 4",
+      "Template ML 5", "Template ML 6", "Template ML 7", "Template ML 8",
+      "Template ML 9"
+    ),
+    Latitude = c(
+      40.594, 40.594, 40.527, 40.657, 40.522, 40.765, 40.771, 40.779, 40.598
+    ),
+    Longitude = c(
+      -111.72, -111.72, -111.755, -111.77, -112.149, -111.848, -111.892,
+      -112.099, -111.685
+    ),
+    Town = NA,
+    County = c(
+      "Salt Lake", "Berkeley", "Berkeley", "Custer", "Custer", "Salt Lake",
+      "Salt Lake", "Salt Lake", "Salt Lake"
+    ),
+    State = c("UT", "SC", "WV", "CO", "ID", "UT", "UT",  "UT", "UT"),
+    Watershed = NA,
+    Group = NA,
+    Location_Type = c(
+      "Spring", "River/Stream", "River/Stream", "Spring", "River/Stream",
+      "River/Stream", "River/Stream", "River/Stream", "River/Stream"
+    ),
+    Surface_Depth = NA,
+    Midwater_Depth = NA,
+    Near_Bottom_Depth = NA,
+    Bottom_Depth = NA,
+    Tribal.Land.Indicator..Yes.No. = "No",
+    Tribal.Land.Name = NA,
+    Monitoring.Location.Source.Map.Scale = c(
+      24000, NA, NA, 12000, NA, NA, NA, NA, NA
+    ),
+    Monitoring.Location.Horizontal.Collection.Method = c(
+      "Interpolation-Map", "GPS-Unspecified", "GPS-Unspecified",
+      "Interpolation-Map", "GPS-Unspecified", "GPS-Unspecified",
+      "GPS-Unspecified", "GPS-Unspecified", "GPS-Unspecified"
+    ),
+    Monitoring.Location.Horizontal.Coordinate.Reference.System = c(
+      "NAD27", "NAD83", "NAD83", "NAD27", "NAD83", "NAD83", "NAD83", "NAD83",
+      "NAD83"
+    ),
+    County.Code..Auto.Generated. = c(35, 15, 3, 27, 37, 35, 35, 35, 35),
+    HUC.8 = NA,
+    HUC.12 = NA
+  )
+
+  expect_equal(
+    suppressWarnings(
+      suppressMessages(
+        format_sites(
+          tst$wqx_sites,
+          "WQX",
+          "wqdashboard",
+          drop_extra_col = FALSE
+        )
+      )
+    ),
+    df_wqd
+  )
+})
+
+test_that("format_sites to WQX updates state names", {
+  df_wqd <- data.frame(
+    "Site_ID" = c("RI01", "MA01", "ME01"),
+    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
+    "Latitude" = c(41.82897, 42.31481, 43.66218),
+    "Longitude" = c(-71.41924, -71.03931, -70.27354),
+    "State" = c("Rhode Island", "Massachusetts", "Maine")
+  )
+
+  df_wqx <- suppressMessages(
+    format_sites(df_wqd, "wqdashboard", "wqx")
+  )
+
+  expect_equal(
+    df_wqx[["State Code"]],
+    c("RI", "MA", "ME")
+  )
+})
+
+# Error messages -----
+
+test_that("format_sites error messages", {
+  # Invalid in_format or out_format
+  expect_error(
+    suppressMessages(
+      format_sites(tst$mwr_sites, "MassWateR", "bar")
+    ),
+    regexp = "Invalid format. Acceptable options: "
+  )
+
+  expect_error(
+    suppressMessages(
+      format_sites(tst$mwr_sites, "foo", "WQX")
+    ),
+    regexp = "Invalid format. Acceptable options: "
+  )
+
+  # Can't rename column
+  expect_warning(
+    suppressMessages(
+      format_sites(
+        tst$mwr_sites,
+        "MassWateR",
+        "WQdashboard",
+        drop_extra_col = FALSE
+      )
+    ),
+    regexp = "\tUnable to rename 1 columns: Location.Group"
   )
 })

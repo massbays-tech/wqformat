@@ -18,6 +18,9 @@
 #' @param in_table Dataframe.
 #' @param in_format,out_format String. Column names for the input format
 #' (`in_format`) and output format (`out_format`).
+#' @param name_repair Boolean. If TRUE, converts all `in_format` variables to
+#' syntactically valid names by replacing all non alphanumeric or "_" characters
+#' with periods. Default FALSE.
 #'
 #' @returns List containing three items: `old_names`, `new_names`, and
 #' `keep_var`
@@ -28,29 +31,25 @@
 #' Matching pairs between `in_format` and `out_format` are kept.
 #'
 #' @noRd
-fetch_var <- function(in_table, in_format, out_format) {
+fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
   # Check input values
   chk <- inherits(in_table, "data.frame")
   if (!chk) {
     stop("in_table must be a dataframe")
   }
 
-  chk <- in_format %in% colnames(in_table)
-  chk2 <- out_format %in% colnames(in_table)
-  if (!chk && !chk2) {
+  chk <- c(in_format, out_format) %in% colnames(in_table)
+  if (any(!chk)) {
     stop(
-      "Invalid in_format and out_format. Acceptable formats: ",
+      "Invalid in_format or out_format. Acceptable formats: ",
       paste(colnames(in_table), collapse = ", ")
     )
-  } else if (!chk) {
+  }
+
+  chk <- is.na(in_table[[out_format]])
+  if (all(chk)) {
     stop(
-      "Invalid in_format. Acceptable formats: ",
-      paste(colnames(in_table), collapse = ", ")
-    )
-  } else if (!chk2) {
-    stop(
-      "Invalid out_format. Acceptable formats: ",
-      paste(colnames(in_table), collapse = ", ")
+      "out_format is blank"
     )
   }
 
@@ -61,6 +60,14 @@ fetch_var <- function(in_table, in_format, out_format) {
     dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
     dplyr::filter(!is.na(.data[[out_format]])) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
+
+  # If in_format == out_format, duplicate col
+  if (in_format == out_format) {
+    in_format <- paste0(in_format, "_1")
+
+    in_table <- in_table %>%
+      dplyr::mutate({{in_format}} := .data[[out_format]])
+  }
 
   # Sort data by out_format; drop ##|| from start of vars if present
   in_table <- in_table %>%
@@ -98,8 +105,22 @@ fetch_var <- function(in_table, in_format, out_format) {
     # Drop rows where in_format is NA
     dplyr::filter(!is.na(.data[[in_format]])) %>%
     # If in_format includes alternate vars, split to multiple rows
-    tidyr::separate_longer_delim({{ in_format }}, "|") %>%
-    # Drop rows where in_format == out_format
+    tidyr::separate_longer_delim({{ in_format }}, "|")
+
+  # If name_repair is TRUE, update in_format
+  if (name_repair) {
+    in_table <- in_table %>%
+      dplyr::mutate(
+        {{ in_format }} := dplyr::if_else(
+          is.na(.data[[in_format]]),
+          NA,
+          make.names(.data[[in_format]])
+        )
+      )
+  }
+
+  # Drop rows where in_format == out_format
+  in_table <- in_table %>%
     dplyr::filter(.data[[in_format]] != .data[[out_format]])
 
   # Save var

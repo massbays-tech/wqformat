@@ -1,52 +1,150 @@
 # MassWateR -----
 test_that("prep_mwr_results works", {
+  # Test example data
+  df_out <- data.frame(
+    Monitoring.Location.ID = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
+    Activity.Type = c(
+      "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
+      "Sample-Routine", "Quality Control Sample-Lab Duplicate",
+      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control-Calibration Check",
+      "Quality Control-Calibration Check Buffer"
+    ),
+    Activity.Start.Date = c(
+      "6/13/2021", "6/13/2021", "8/15/2021", "5/16/2021", "5/16/2021",
+      "9/12/2021", "9/12/2021"
+    ),
+    Activity.Start.Time = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    Activity.Depth.Height.Measure = c(1, 1, 0.75, NA, NA, NA, NA),
+    Activity.Depth.Height.Unit = c("ft", "ft", "ft", NA, NA, NA, NA),
+    Activity.Relative.Depth.Name = NA,
+    Characteristic.Name = c(
+      "DO saturation", "DO saturation", "TSS", "Nitrate", "Nitrate",
+      "Sp Conductance", "Sp Conductance"
+    ),
+    Result.Value = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    Result.Unit = c("%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"),
+    Quantitation.Limit = NA,
+    Result.Measure.Qualifier = c(NA, NA, "Q", NA, NA, NA, NA),
+    Result.Attribute = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    Sample.Collection.Method.ID = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    Project.ID = "Water Quality",
+    Local.Record.ID = NA,
+    Result.Comment = c(NA, NA, "River was very full", NA, NA, NA, NA)
+  )
+
+  expect_equal(
+    prep_mwr_results(tst$mwr_data, name_repair = TRUE),
+    df_out
+  )
+
+  # Additional test - BDL, AQL values
   df_in <- data.frame(
+    "Monitoring Location ID" = "HBS-016",
+    "Activity Type" = c("Field Msr/Obs", "Sample-Routine"),
+    "Activity Start Date" = c("6/13/2021", "8/15/2021"),
+    "Activity Start Time" = c("8:00", "7:40"),
+    "Activity Depth/Height Measure" = c(1, 0.75),
+    "Activity Depth/Height Unit" = "ft",
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c("DO saturation", "TSS"),
+    "Result Value" = c("BDL", "AQL"),
+    "Result Unit" = c("%", "mg/l"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = NA,
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = NA,
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    "Monitoring Location ID" = "HBS-016",
+    "Activity Type" = c("Field Msr/Obs", "Sample-Routine"),
+    "Activity Start Date" = c("6/13/2021", "8/15/2021"),
+    "Activity Start Time" = c("8:00", "7:40"),
+    "Activity Depth/Height Measure" = c(1, 0.75),
+    "Activity Depth/Height Unit" = "ft",
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c("DO saturation", "TSS"),
+    "Result Value" = NA_integer_,
+    "Result Unit" = c("%", "mg/l"),
+    "Quantitation Limit" = NA,
+    "Result Measure Qualifier" = c("DL", "GT"),
+    "Result Attribute" = NA,
+    "Sample Collection Method ID" = NA,
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = NA,
+    check.names = FALSE
+  )
+
+  expect_equal(
+    prep_mwr_results(df_in),
+    df_out
+  )
+})
+
+test_that("results_to_mwr works", {
+  # Test example data
+  df_in <- data.frame(
+    "Monitoring Location ID" = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
     "Activity Type" = c(
-      "Field Msr/Obs",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate"
+      "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
+      "Sample-Routine", "Quality Control Sample-Lab Duplicate",
+      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control-Calibration Check",
+      "Quality Control-Calibration Check Buffer"
     ),
     "Activity Start Date" = c(
-      "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-04"
+      "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
+      "2021-09-12", "2021-09-12"
     ),
-    "Activity Start Time" = c("9:00", "8:00", "9:00", "10:00"),
-    "Characteristic Name" = c("TDN", "TDP", "TDN", "TDP"),
-    "Result Value" = c("12", "BDL", "AQL", "15"),
-    "Result Measure Qualifier" = c(NA, NA, NA, "Q"),
-    "QC Reference Value" = c(11, 6, NA, 16),
+    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Activity Depth/Height Measure" = c(1, 1, 0.75, NA, NA, NA, NA),
+    "Activity Depth/Height Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c(
+      "DO saturation", "DO saturation", "TSS", "Nitrate", "Nitrate",
+      "Sp Conductance", "Sp Conductance"
+    ),
+    "Result Value" = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    "Result Unit" = c("%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"),
+    "Quantitation Limit" = NA,
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
+    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
     check.names = FALSE
   )
   df_in[["Activity Start Date"]] <- as.Date(df_in[["Activity Start Date"]])
 
-  df_out <- data.frame(
-    "Activity Type" = c(
-      "Field Msr/Obs",
-      "Quality Control Field Replicate Msr/Obs",
-      "Quality Control-Meter Lab Duplicate",
-      "Quality Control-Meter Lab Duplicate 2",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate 2"
-    ),
-    "Activity Start Date" = c(
-      "2024-05-01", "2024-05-01", "2024-05-02", "2024-05-02", "2024-05-02",
-      "2024-05-04", "2024-05-04"
-    ),
-    "Activity Start Time" = c(
-      "9:00", "9:00", "8:00", "8:00", "9:00", "10:00", "10:00"
-    ),
-    "Characteristic Name" = c("TDN", "TDN", "TDP", "TDP", "TDN", "TDP", "TDP"),
-    "Result Value" = c(12, 11, NA, 6, NA, 15, 16),
-    "Result Measure Qualifier" = c(NA, NA, "DL", NA, "GT", "Q", "Q"),
-    check.names = FALSE
+  df_out <- tst$mwr_data
+  df_out$Activity.Start.Date <- as.Date(
+    df_out$Activity.Start.Date,
+    format = "%m/%d/%Y"
   )
-  df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
+  df_out$Local.Record.ID <- NA_character_
+  df_out <- df_out[order(df_out$Activity.Start.Date), ]
+  rownames(df_out) <- NULL
+  colnames(df_out) <- gsub("\\.", " ", colnames(df_out))
+  colnames(df_out) <- gsub("Depth Height", "Depth/Height", colnames(df_out))
 
-  expect_equal(prep_mwr_results(df_in), df_out)
-})
+  expect_equal(
+    results_to_mwr(df_in),
+    df_out
+  )
 
-test_that("results_to_mwr works", {
+  # Test edge cases
+  # - Groups of 3 dropped NOT grouped
+  # - Concatenate select columns (Qualifier, Record ID, Comment)
+
   df_in <- data.frame(
     "Monitoring Location ID" = "foo",
     "Activity Type" = c(
@@ -90,12 +188,56 @@ test_that("results_to_mwr works", {
     check.names = FALSE
   )
 
-  # Test conversion
-  # - Test paired records correctly grouped, even if equivalent but not
-  #   identical activity types
-  # - Test groups of 3 dropped from group
-  # - Test concatenation of select columns (Qualifier, Record ID, Comment)
   expect_equal(results_to_mwr(df_in), df_out)
+})
+
+# WQX -----
+test_that("prep_wqx_results works", {
+  # Set var
+  out_qual <- c(
+    "DL", "DL", "DL", NA, NA, "DL", "DL", "DL", "H", "H", "H", "H", "DL",
+    "DL", "BQL", "DL", "DL", "DL", "DL", "DL", "DL", "DL", "BQL", "GT", "DL",
+    "DL", "DL", "DL", NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+    NA, "NRR", "NRR", "NRR", "NRR", NA, NA, NA, NA
+  )
+
+  # Test - with name repair
+  df_wqx <- tst$wqx_data %>%
+    prep_wqx_results(name_repair = TRUE)
+
+  expect_equal(
+    df_wqx$Result.Measure.Qualifier,
+    out_qual
+  )
+
+  # Test - no name repair
+  df_wqx <- tst$wqx_data
+  colnames(df_wqx) <- gsub("\\.", " ", colnames(df_wqx))
+  df_wqx <- prep_wqx_results(df_wqx)
+
+  expect_equal(
+    df_wqx[["Result Measure Qualifier"]],
+    out_qual
+  )
+})
+
+test_that("results_to_wqx works", {
+  # Modify WQX sample data so it uses proper column names, has more qualifiers
+  df_wqx <- tst$wqx_data
+  colnames(df_wqx) <- gsub("\\.", " ", colnames(df_wqx))
+  df_wqx[["Result Measure Qualifier"]] <- c(
+    "DL", "DL", "DL", NA, NA, "DL", "DL", "DL", "H", "H", "H", "H", "DL",
+    "DL", "2-5B", "DL", "DL", "DL", "DL", "DL", "DL", "DL", "D>T", "GT", "DL",
+    "DL", "DL", "DL", NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+    NA, "NRR", "NRR", "NRR", "NRR", NA, NA, NA, NA
+  )
+
+  # Create sample input dataset with "Result Detection Condition" set to NA
+  df_in <- df_wqx
+  df_in[["Result Detection Condition"]] <- NA
+
+  # Test - "Result Detection Condition" updates appropriately?
+  expect_equal(results_to_wqx(df_in), df_wqx)
 })
 
 # MA_BRC -----

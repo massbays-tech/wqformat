@@ -1,4 +1,4 @@
-WQX,MassWateR,RI_DEM,MA_BRC,ME_DEP,ME_FOCB
+wqx,masswater,ri_dem,ma_brc,me_dep,me_focb
 Field Msr/Obs,Field Msr/Obs,Grab,Grab,NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE),Field Measurement|NA|NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)
 Quality Control Field Replicate Msr/Obs,Quality Control Field Replicate Msr/Obs,Replicate,Replicate,D|FIELD DUPLICATE,D|FIELD DUPLICATE
 Quality Control Sample-Field Blank,Quality Control Sample-Field Blank,,Field Blank,FB|FIELD BLANK,FB|FIELD BLANK

@@ -1,0 +1,5 @@
+﻿Monitoring Location ID,Activity Type,Activity Start Date,Activity Start Time,Activity Depth/Height Measure,Activity Depth/Height Unit,Activity Relative Depth Name,Characteristic Name,Result Value,Result Unit,Quantitation Limit,QC Reference Value,Result Measure Qualifier,Result Attribute,Sample Collection Method ID,Project ID,Local Record ID,Result Comment
+HBS-016,Field Msr/Obs,6/13/2021,8:00,1,ft,,DO saturation,46.8,%,,7,,,,Water Quality,,
+HBS-016,Sample-Routine,8/15/2021,7:40,0.75,ft,,TSS,5,mg/l,,,Q,,Grab-MassWateR,Water Quality,,River was very full
+,Quality Control Sample-Lab Duplicate,5/16/2021,,,,,Nitrate,0.45,mg/l,,0.46,,K16452-MB3,,Water Quality,,
+,Quality Control-Calibration Check,9/12/2021,,,,,Sp Conductance,980,uS/cm,,1000,,,,Water Quality,,

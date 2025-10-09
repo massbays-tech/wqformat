@@ -3,11 +3,11 @@
 #' @description Converts water quality site data between different formats.
 #'
 #' @param df Input dataframe.
-#' @param in_format,out_format String. Desired input and output formats.
-#' Possible inputs:
+#' @param in_format,out_format String. Desired input and output formats. Not
+#' case sensitive. Accepted formats:
 #' * WQX
 #' * MassWateR
-#' * WQdashboard
+#' * wqdashboard
 #' * RI_WW (Rhode Island Watershed Watch)
 #' * MA_BRC (Blackstone River Coalition)
 #' * ME_FOCB (Friends of Casco Bay)
@@ -19,8 +19,12 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   message("Reformatting data...")
 
   # Check inputs ----
-  target_formats <-
-    c("WQX", "MassWateR", "WQdashboard", "RI_WW", "MA_BRC", "ME_FOCB")
+  in_format <- tolower(in_format)
+  out_format <- tolower(out_format)
+
+  target_formats <- c(
+    "wqx", "masswater", "wqdashboard", "ri_ww", "ma_brc", "me_focb"
+  )
   chk <- c(in_format, out_format) %in% target_formats
   if (any(!chk)) {
     stop(
@@ -29,13 +33,22 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     )
   }
 
+  # Check - repaired column names?
+  chk <- grepl("\\.", colnames(df))
+  chk2 <- grepl(" ", colnames(df))
+  if(any(chk) && !any(chk2)) {
+    name_repair <- TRUE
+  } else {
+    name_repair <- FALSE
+  }
+
   # Prep data with nonstandard formats ----
-  if (in_format == "MA_BRC") {
+  if (in_format == "ma_brc") {
     df <- prep_brc_sites(df)
   }
 
   # Update columns ----
-  var_names <- fetch_var(colnames_sites, in_format, out_format)
+  var_names <- fetch_var(colnames_sites, in_format, out_format, name_repair)
   df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns
@@ -66,14 +79,14 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   }
 
   # Update variables ----
-  if (out_format == "WQX" && "State Code" %in% colnames(df)) {
+  if (out_format == "wqx") {
     df <- col_to_state(df, "State Code")
-  } else if (out_format == "WQdashboard" && "State" %in% colnames(df)) {
+  } else if (out_format == "wqdashboard") {
     df <- col_to_state(df, "State")
   }
 
   # Format data with nonstandard formats ----
-  if (out_format == "MA_BRC") {
+  if (out_format == "ma_brc") {
     df <- sites_to_brc(df)
   }
 

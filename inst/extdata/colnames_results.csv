@@ -1,4 +1,4 @@
-﻿WQX,MassWateR,WQdashboard,RI_WW,RI_DEM,MA_BRC,ME_DEP,ME_FOCB
+﻿wqx,masswater,wqdashboard,ri_ww,ri_dem,ma_brc,me_dep,me_focb
 02||Monitoring Location ID,01||Monitoring Location ID,01||Site_ID,01||WW ID,01||Station Name,02||SITE_BRC_CODE,02||SAMPLE_POINT_NAME,01||SiteID|Site ID|Sample ID
 05||Activity Type,02||Activity Type,02||Activity_Type,04||Sample Type,04||Sample Type,ACTIVITY_TYPE,09||QC_TYPE,QC Type
 07||Activity Start Date,03||Activity Start Date,03||Date,02||Date of Sample,02||Date,DATE,06||SAMPLE_DATE,02||Sample Date|Date

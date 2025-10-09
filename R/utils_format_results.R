@@ -8,14 +8,19 @@
 #' * Data in "QC Reference Value" is copied to its own row.
 #'
 #' @param .data Dataframe
+#' @param name_repair Set to TRUE if column names have undergone name repair
+#' (eg all spaces replaces with periods). Default FALSE.
 #'
 #' @returns Dataframe matching the standard format used by [format_results()]
 #'
 #' @noRd
-prep_mwr_results <- function(.data) {
+prep_mwr_results <- function(.data, name_repair = FALSE) {
   # Prep data
-  .data[["Result Value"]] <- as.character(.data[["Result Value"]])
-  .data[["QC Reference Value"]] <- as.character(.data[["QC Reference Value"]])
+  if (!name_repair) {
+    colnames(.data) <- make.names(colnames(.data))
+  }
+  .data$Result.Value <- as.character(.data$Result.Value)
+  .data$QC.Reference.Value <- as.character(.data$QC.Reference.Value)
 
   # Set variables
   qc_ref <- c(
@@ -38,56 +43,63 @@ prep_mwr_results <- function(.data) {
   dat <- .data %>%
     # Separate QC Reference Value to own row
     dplyr::mutate(
-      "QC Reference Value" = dplyr::if_else(
-        is.na(.data[["QC Reference Value"]]),
+      "QC.Reference.Value" = dplyr::if_else(
+        is.na(.data$QC.Reference.Value),
         NA,
-        paste0("NA|", .data[["QC Reference Value"]])
+        paste0("NA|", .data$QC.Reference.Value)
       )
     ) %>%
-    tidyr::separate_longer_delim(dplyr::all_of("QC Reference Value"), "|") %>%
+    tidyr::separate_longer_delim(dplyr::all_of("QC.Reference.Value"), "|") %>%
     # Update new rows
     dplyr::mutate(
-      "QC Reference Value" = dplyr::if_else(
-        .data[["QC Reference Value"]] == "NA",
+      "QC.Reference.Value" = dplyr::if_else(
+        .data$QC.Reference.Value == "NA",
         NA,
-        .data[["QC Reference Value"]]
+        .data$QC.Reference.Value
       )
     ) %>%
     dplyr::mutate(
-      "Result Value" = dplyr::if_else(
-        is.na(.data[["QC Reference Value"]]),
-        .data[["Result Value"]],
-        .data[["QC Reference Value"]]
+      "Result.Value" = dplyr::if_else(
+        is.na(.data$QC.Reference.Value),
+        .data$Result.Value,
+        .data$QC.Reference.Value
       )
     ) %>%
     dplyr::mutate(
-      "Activity Type" = dplyr::if_else(
-        .data[["Activity Type"]] %in% names(qc_ref) &
-          !is.na(.data[["QC Reference Value"]]),
-        unname(qc_ref[.data[["Activity Type"]]]),
-        .data[["Activity Type"]]
+      "Activity.Type" = dplyr::if_else(
+        .data$Activity.Type %in% names(qc_ref) &
+          !is.na(.data$QC.Reference.Value),
+        unname(qc_ref[.data$Activity.Type]),
+        .data$Activity.Type
       )
     ) %>%
     # Drop QC Reference Value columns
-    dplyr::select(!"QC Reference Value")
+    dplyr::select(!"QC.Reference.Value")
 
   # Update qualifiers, result value
   dat <- dat %>%
     dplyr::mutate(
-      "Result Measure Qualifier" = dplyr::case_when(
-        .data[["Result Value"]] == "BDL" ~ "DL",
-        .data[["Result Value"]] == "AQL" ~ "GT",
-        TRUE ~ .data[["Result Measure Qualifier"]]
+      "Result.Measure.Qualifier" = dplyr::case_when(
+        .data$Result.Value == "BDL" ~ "DL",
+        .data$Result.Value == "AQL" ~ "GT",
+        TRUE ~ .data$Result.Measure.Qualifier
       )
     ) %>%
     dplyr::mutate(
-      "Result Value" = dplyr::if_else(
-        .data[["Result Value"]] %in% c("BDL", "AQL"),
+      "Result.Value" = dplyr::if_else(
+        .data$Result.Value %in% c("BDL", "AQL"),
         NA,
-        .data[["Result Value"]]
+        .data$Result.Value
       )
     ) %>%
-    col_to_numeric("Result Value")
+    col_to_numeric("Result.Value")
+
+  if(!name_repair) {
+    colnames(dat) <- gsub("\\.", " ", colnames(dat))
+    colnames(dat) <- gsub("Depth Height", "Depth/Height", colnames(dat))
+  }
+
+  dat
 }
 
 #' Results to MassWateR
@@ -295,6 +307,95 @@ results_to_mwr <- function(.data) {
     col_to_numeric("QC Reference Value")
 }
 
+#' Prepare result data from WQX
+#'
+#' @description
+#' `prep_wqx_results()` is a helper function for [format_results()] that
+#' standardizes WQX result data.
+#' * Uses "Result Detection Condition" to update "Result Measure Qualifier"
+#'
+#' @param .data Dataframe
+#' @param name_repair Set to TRUE if column names have undergone name repair
+#' (eg all spaces replaces with periods). Default FALSE.
+#'
+#' @returns Dataframe matching the standard format used by [format_results()]
+#'
+#' @noRd
+prep_wqx_results <- function(.data, name_repair = FALSE) {
+  # Prep data
+  if (!name_repair) {
+    .data <- .data %>%
+      dplyr::rename(
+        "Result.Detection.Condition" = "Result Detection Condition",
+        "Result.Measure.Qualifier" = "Result Measure Qualifier",
+        "Result.Value" = "Result Value"
+      )
+  }
+
+  # Update qualifiers
+  dat <- .data %>%
+    dplyr::mutate(
+      "Result.Measure.Qualifier" = dplyr::case_when(
+        !is.na(.data$Result.Measure.Qualifier) ~ .data$Result.Measure.Qualifier,
+        .data$Result.Detection.Condition %in%
+          c("Detected Not Quantified", "Present Below Quantification Limit") ~
+          "BQL",
+        .data$Result.Detection.Condition == "Not Reported" ~ "NRR",
+        .data$Result.Detection.Condition ==
+          "Present Above Quantification Limit" ~ "GT",
+        .data$Result.Detection.Condition == "Not Detected" ~ "DL",
+        .data$Result.Detection.Condition == "Trace" ~ "TR",
+        TRUE ~ NA
+      )
+    )
+
+  if(!name_repair) {
+    dat <- dat %>%
+      dplyr::rename(
+        "Result Detection Condition" = "Result.Detection.Condition",
+        "Result Measure Qualifier" = "Result.Measure.Qualifier",
+        "Result Value" = "Result.Value"
+      )
+  }
+
+  dat
+}
+
+#' Results to WQX
+#'
+#' @description
+#' `results_to_wqx()` is a helper function for [format_results()] that
+#' formats result data for WQX
+#' * Uses "Result Measure Qualifier" to update "Result Detection Condition"
+#'
+#' @param .data Dataframe
+#'
+#' @inheritParams format_results
+#'
+#' @returns Dataframe matching the standard format used by WQX
+#'
+#' @noRd
+results_to_wqx <- function(.data) {
+  # Update Result Detection Condition
+  dat <- .data %>%
+    dplyr::mutate(
+      "Result Detection Condition" = dplyr::case_when(
+        !is.na(.data[["Result Detection Condition"]]) ~
+          .data[["Result Detection Condition"]],
+        .data[["Result Measure Qualifier"]] %in% c("2-5B", "D>T") ~
+          "Detected Not Quantified",
+        .data[["Result Measure Qualifier"]] == "NRR" ~ "Not Reported",
+        .data[["Result Measure Qualifier"]] == "GT" ~
+          "Present Above Quantification Limit",
+        .data[["Result Measure Qualifier"]] == "DL" ~ "Not Detected",
+        .data[["Result Measure Qualifier"]] == "BQL" ~
+          "Present Below Quantification Limit",
+        .data[["Result Measure Qualifier"]] == "TR" ~ "Trace",
+        TRUE ~ NA
+      )
+    )
+}
+
 #' Preformat result data from the Blackstone River Coalition
 #'
 #' @description
@@ -424,6 +525,8 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
   dat <- .data %>%
     dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
+
+  colnames(dat) <- gsub("\\.", " ", colnames(dat))
 
   chk <- grepl("Sample Depth", colnames(dat))
   if (any(chk) && !"Sample Depth Unit" %in% colnames(dat)) {

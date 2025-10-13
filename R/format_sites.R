@@ -80,9 +80,9 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   # Update variables ----
   if (out_format == "wqx") {
-    df <- col_to_state(df, "State Code")
+    df <- state_to_abb(df, "State Code")
   } else if (out_format == "wqdashboard") {
-    df <- col_to_state(df, "State")
+    df <- state_to_abb(df, "State")
   }
 
   # Format data with nonstandard formats ----

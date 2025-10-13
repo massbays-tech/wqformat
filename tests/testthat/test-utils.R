@@ -1,3 +1,4 @@
+# Test fetch_var ----
 test_that("fetch_var works", {
   df <- data.frame(
     col1 = c("01||A", "03||B|C", "D|E", "F", "02||G", NA),
@@ -86,7 +87,6 @@ test_that("fetch_var error messages", {
     col2 = NA
   )
 
-  # Check errors ----
   expect_error(
     fetch_var("foo", "col1", "col2"),
     regexp = "in_table must be a dataframe"
@@ -101,6 +101,54 @@ test_that("fetch_var error messages", {
   )
 })
 
+# test rename_var -----
+test_that("rename_var works", {
+  expect_equal(
+    rename_var("cat", c("cat", "dog"), c("kitten", "puppy")),
+    "kitten"
+  )
+  expect_equal(
+    rename_var(1, c(1, 2), c(11, 22)),
+    11
+  )
+
+  # Test multiple out values
+  in_list <- c("cat", "dog", "cat")
+  out_list <- c("kitten", "puppy", "kitty")
+
+  expect_equal(
+    rename_var("cat", in_list, out_list),
+    "kitten"
+  )
+  expect_equal(
+    rename_var("cat", in_list, out_list, multiple = TRUE),
+    c("kitten", "kitty")
+  )
+})
+
+test_that("rename_var handles NA values appropriately", {
+  expect_error(
+    rename_var("dog", c(NA, "dog"), c("kitten", "puppy")),
+    regexp = "old_varname and new_varname must not contain NA values"
+  )
+  expect_equal(
+    rename_var(NA, c("cat", "dog"), c("kitten", "puppy")),
+    NA
+  )
+  expect_error(
+    rename_var(NA, c(NA, "dog"), c("kitten", "puppy")),
+    regexp = "old_varname and new_varname must not contain NA values"
+  )
+})
+
+test_that("rename_var sends error messages", {
+  expect_error(
+    rename_var("dog", c("bird", "cat", "dog"), c("kitten", "puppy")),
+    regexp = "old_varname and new_varname must be the same length"
+  )
+})
+
+# Test str_unique ----
 test_that("str_unique works", {
   expect_equal(
     str_unique("foo,bar, foo , bar, f o o"),

@@ -1,15 +1,16 @@
 #' Rename columns
 #'
 #' @description
-#' `rename_col()` renames columns by substituting values from `new_colnames` for
-#' values from `old_colnames`.
+#' `rename_col()` renames dataframe columns by using a paired list to replace
+#' `old_colnames` with `new_colnames`. If no match is found for an existing
+#' column name, it is left as-is.
 #'
 #' @param .data Dataframe
 #' @param old_colnames,new_colnames List. Columns listed in `old_colnames` will
 #' be renamed to match paired name in `new_colnames`. `old_colnames` and
 #' `new_colnames` must be the same length and in the same order.
 #'
-#' @seealso [concat_columns]
+#' @seealso [concat_col]
 #'
 #' @returns Dataframe with updated column names.
 rename_col <- function(.data, old_colnames, new_colnames) {
@@ -49,7 +50,7 @@ rename_col <- function(.data, old_colnames, new_colnames) {
       target_col <- dat_temp$old_name
 
       # Add new column, set to first non-NA value from old columns
-      dat <- concat_columns(dat, target_col, val)
+      dat <- concat_col(dat, target_col, val)
 
       # Drop redundant conversions from dat_colnames
       dat_colnames <- dplyr::filter(dat_colnames, .data$new_name != val)
@@ -101,7 +102,7 @@ rename_col <- function(.data, old_colnames, new_colnames) {
 #' Concatenate Columns
 #'
 #' @description
-#' `concat_columns()` combines values from multiple columns.
+#' `concat_col()` combines values from multiple columns.
 #' * If `concat` is `TRUE`, the output column will include the concatenated
 #' data from all the input columns.
 #' * If `concat` is `FALSE`, the output column will contain the first non-`NA`
@@ -126,7 +127,7 @@ rename_col <- function(.data, old_colnames, new_colnames) {
 #' data from all the input columns.
 #' * If `concat` is `FALSE`, the output column will contain the first non-`NA`
 #' value from the input columns.
-concat_columns <- function(.data, in_colnames, out_colname, concat = FALSE) {
+concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
   if (!out_colname %in% colnames(.data)) {
     .data[[out_colname]] <- NA
   }
@@ -188,6 +189,122 @@ concat_columns <- function(.data, in_colnames, out_colname, concat = FALSE) {
         .data[[out_colname]]
       )
     )
+
+  return(dat)
+}
+
+#' Convert column to numeric format
+#'
+#' @description
+#' If all values in column are numbers, `col_to_numeric()` converts column type
+#' to numeric.
+#'
+#' @param .data Dataframe.
+#' @param col_name String. Column name.
+#'
+#' @seealso [col_to_date]
+#'
+#' @returns
+#' If all values are numeric, converts column to numeric and returns dataframe.
+#' If there are any non-numeric values, leaves column as-is and returns
+#' dataframe.
+col_to_numeric <- function(.data, col_name) {
+  if (is.numeric(.data[[col_name]])) {
+    return(.data)
+  }
+
+  typ <- .data[col_name]
+  chk <- !is.na(suppressWarnings(mapply(as.numeric, typ))) | is.na(typ)
+
+  if (all(chk)) {
+    .data[[col_name]] <- as.numeric(.data[[col_name]])
+  }
+
+  .data
+}
+
+#' Convert column to date or datetime format
+#'
+#' @description
+#' `col_to_date` converts column to date or datetime format.
+#'
+#' @param .data Dataframe.
+#' @param date_col String. Name of date column.
+#' @param date_format String. Date format. Uses the same formatting as
+#' [lubridate::parse_date_time()]. Default value "m/d/Y".
+#' @param tz String. Specifies the timezone used to parse dates. Uses system
+#' timezone as default.
+#' @param datetime Boolean. If `TRUE`, returns column in datetime format. If
+#' `FALSE`, returns column in date format. Default `FALSE`.
+#'
+#' @seealso [col_to_numeric]
+#'
+#' @return
+#' Converts column to date or datetime and returns dataframe
+col_to_date <- function(.data, date_col, date_format = "m/d/Y",
+                        tz = Sys.timezone(), datetime = FALSE) {
+  if (!date_col %in% colnames(.data)) {
+    stop(date_col, " is not a valid column")
+  }
+
+  chk <- inherits(.data[[date_col]], c("Date", "POSIXt"))
+  if (chk) {
+    return(.data)
+  }
+
+  chk <- is.na(.data[[date_col]])
+  if (all(chk)) {
+    .data[[date_col]] <- as.Date(.data[[date_col]])
+    return(.data)
+  }
+
+  if (date_format %in% c("", " ", NA)) {
+    stop("Date format is missing", call. = FALSE)
+  }
+
+  date_var <- c(
+    "Om", "Op", "OS", "a", "A", "b", "B", "d", "j", "q", "m", "U", "w", "W",
+    "y", "Y", "H", "I", "M", "p", "S", "r", "R", "T", "z"
+  )
+  chk_var <- gsub("[^a-zA-Z]", "", date_format)
+  chk_var <- gsub(paste(unlist(date_var), collapse = "|"), "", chk_var)
+
+  if (chk_var != "") {
+    stop("date_format contains invalid variables: ", chk_var, call. = FALSE)
+  }
+
+  chk <- is.na(.data[[date_col]])
+
+  dat <- .data %>%
+    dplyr::mutate(
+      {{ date_col }} := lubridate::parse_date_time(
+        as.character(.data[[date_col]]),
+        date_format,
+        tz = tz,
+        quiet = TRUE
+      )
+    )
+
+  if (!datetime) {
+    dat[[date_col]] <- as.Date(dat[[date_col]])
+  }
+
+  chk2 <- !is.na(dat[[date_col]])
+  chk <- chk | chk2
+
+  if (all(!chk2)) {
+    stop(
+      'Date does not match format "', date_format, '"',
+      call. = FALSE
+    )
+  } else if (any(!chk)) {
+    rws <- which(!chk)
+    stop(
+      "Date is improperly formatted in rows: ",
+      paste(rws, collapse = ", "),
+      call. = FALSE
+    )
+  }
 
   return(dat)
 }

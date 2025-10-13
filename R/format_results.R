@@ -57,11 +57,11 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     df <- prep_brc_results(df, date_format, tz)
   } else if (in_format == "me_dep") {
     df <- df %>%
-      concat_columns(
+      concat_col(
         c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
         "LAB_QUALIFIER"
       ) %>%
-      concat_columns(
+      concat_col(
         c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
         "SAMPLE_COMMENTS",
         concat = TRUE
@@ -145,7 +145,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   )
   if (col_name %in% colnames(df)) {
     param <- fetch_var(varnames_parameters, in_var, out_var)
-    df <- rename_all_var(df, col_name, param$old_names, param$new_names)
+    df <- update_var(df, col_name, param$old_names, param$new_names)
     warn_invalid_var(df, col_name, param$keep_var)
   }
 
@@ -164,7 +164,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     )
     if (col_name %in% colnames(df)) {
       df <- df %>%
-        rename_all_var(col_name, unit_name$old_names, unit_name$new_names)
+        update_var(col_name, unit_name$old_names, unit_name$new_names)
       warn_invalid_var(df, col_name, unit_name$keep_var)
     }
   }
@@ -186,7 +186,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     }
 
     qual <- fetch_var(varnames_qualifiers, in_qual, out_qual)
-    df <- rename_all_var(df, col_name, qual$old_names, qual$new_names)
+    df <- update_var(df, col_name, qual$old_names, qual$new_names)
     warn_invalid_var(df, col_name, qual$keep_var)
   }
 
@@ -202,7 +202,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
       silent = TRUE
     )
     if (!inherits(atype, "try-error")) {
-      df <- rename_all_var(df, col_name, atype$old_names, atype$new_names)
+      df <- update_var(df, col_name, atype$old_names, atype$new_names)
       warn_invalid_var(df, col_name, atype$keep_var)
     }
   }

@@ -415,7 +415,12 @@ results_to_wqx <- function(.data) {
 prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
                              tz = "America/New_York") {
   dat <- .data %>%
-    col_to_date("DATE_TIME", date_format = date_format, tz = tz) %>%
+    col_to_date(
+      "DATE_TIME",
+      date_format = date_format,
+      tz = tz,
+      datetime = TRUE
+    ) %>%
     dplyr::mutate("DATE" = as.Date(.data$DATE_TIME)) %>%
     dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) %>%
     dplyr::mutate(

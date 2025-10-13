@@ -14,6 +14,23 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Overview
+
+## Package Installation
+
 ```{r setup}
 library(wqformat)
 ```
+
+
+## Data Inputs
+
+### Accepted Formats
+
+For instructions on converting data to/from a different format, check the [custom formats vignette](custom_format.html). 
+
+## Converting Data
+
+### Site Data
+
+### Result Data

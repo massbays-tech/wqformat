@@ -139,11 +139,54 @@ fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
   )
 }
 
+#' Rename variable
+#'
+#' @description
+#' `rename_var()` uses a paired list (`old_varname`, `new_varname`) to generate
+#' a list of name substitutions and update the input variable. If no match
+#' found, leaves input variable as-is. Helper function for [update_var()].
+#'
+#' @param in_var String. Variable to update.
+#' @param old_varname,new_varname List. List old variable names in `old_varname`
+#' and new variable names in `new_varname`. `old_varname` and `new_varname` are
+#' a paired list, therefor they must be the same length and in the same order.
+#' @param multiple Boolean. If `TRUE`, will return all matches for
+#' `in_var`. If `FALSE`, only returns the first match. Default `FALSE`.
+#'
+#' @seealso [update_var]
+#'
+#' @return String. If substitution found, provides updated variable name.
+#' Otherwise returns input variable.
+#'
+#' @noRd
+rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
+  if (!in_var %in% old_varname) {
+    return(in_var)
+  }
+
+  chk <- c(is.na(old_varname), is.na(new_varname))
+  if (any(chk)) {
+    stop("old_varname and new_varname must not contain NA values")
+  } else if (length(old_varname) != length(new_varname)) {
+    stop("old_varname and new_varname must be the same length")
+  }
+
+  names(new_varname) <- old_varname
+  x <- new_varname[names(new_varname) == in_var]
+  names(x) <- NULL
+
+  if (!multiple && length(x) > 1) {
+    x <- x[1]
+  }
+
+  return(x)
+}
+
 #' Drop duplicate values from string
 #'
 #' @description
 #' `str_unique()` drops duplicate values from string. Helper function for
-#' [concat_columns()].
+#' [concat_col()].
 #'
 #' @param x String.
 #' @param delim Delimiter used to separate items in string. Default ",".

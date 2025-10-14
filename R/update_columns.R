@@ -13,6 +13,8 @@
 #' @seealso [concat_col]
 #'
 #' @returns Dataframe with updated column names.
+#'
+#' @export
 rename_col <- function(.data, old_colnames, new_colnames) {
   dat <- .data
 
@@ -127,6 +129,8 @@ rename_col <- function(.data, old_colnames, new_colnames) {
 #' data from all the input columns.
 #' * If `concat` is `FALSE`, the output column will contain the first non-`NA`
 #' value from the input columns.
+#'
+#' @export
 concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
   if (!out_colname %in% colnames(.data)) {
     .data[[out_colname]] <- NA
@@ -208,6 +212,8 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
 #' If all values are numeric, converts column to numeric and returns dataframe.
 #' If there are any non-numeric values, leaves column as-is and returns
 #' dataframe.
+#'
+#' @export
 col_to_numeric <- function(.data, col_name) {
   if (is.numeric(.data[[col_name]])) {
     return(.data)
@@ -241,6 +247,8 @@ col_to_numeric <- function(.data, col_name) {
 #'
 #' @return
 #' Converts column to date or datetime and returns dataframe
+#'
+#' @export
 col_to_date <- function(.data, date_col, date_format = "m/d/Y",
                         tz = Sys.timezone(), datetime = FALSE) {
   if (!date_col %in% colnames(.data)) {

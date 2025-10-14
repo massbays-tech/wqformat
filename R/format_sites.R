@@ -15,6 +15,8 @@
 #' @inheritParams format_results
 #'
 #' @returns Updated dataframe.
+#'
+#' @export
 format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   message("Reformatting data...")
 

@@ -15,6 +15,8 @@
 #'
 #' @return Dataframe with updated variables in target column. If no
 #' substitutions found, returns original dataframe.
+#'
+#' @export
 update_var <- function(.data, col_name, old_varname, new_varname) {
   # Check inputs
   chk <- col_name %in% colnames(.data)
@@ -56,6 +58,8 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
 #' @seealso [update_var]
 #'
 #' @return Updated dataframe.
+#'
+#' @export
 warn_invalid_var <- function(dat, col_name, varlist) {
   chk <- col_name %in% colnames(dat)
   if (!chk) {
@@ -87,6 +91,8 @@ warn_invalid_var <- function(dat, col_name, varlist) {
 #' @returns
 #' Updated dataframe where all state names in `state_col` have been converted
 #' to abbreviations.
+#'
+#' @export
 state_to_abb <- function(.data, state_col) {
   chk <- .data[[state_col]] %in% c(
     NA, datasets::state.abb, datasets::state.name
@@ -122,6 +128,8 @@ state_to_abb <- function(.data, state_col) {
 #' @returns
 #' Updated dataframe where all state abbreviations in `state_col` have been
 #' converted to names.
+#'
+#' @export
 abb_to_state <- function(.data, state_col) {
   chk <- .data[[state_col]] %in% c(
     NA, datasets::state.abb, datasets::state.name

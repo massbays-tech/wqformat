@@ -19,6 +19,8 @@
 #' @inheritParams col_to_date
 #'
 #' @returns Updated dataframe.
+#'
+#' @export
 format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
                            tz = Sys.timezone(), drop_extra_col = TRUE) {
   message("Reformatting data...")

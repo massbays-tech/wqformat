@@ -273,7 +273,7 @@ results_to_mwr <- function(.data) {
             )
           )
         ) %>%
-        # Set QC Reference Value, Reference Value
+        # Set QC Reference Value, Result Value
         dplyr::mutate(
           "QC Reference Value" = dplyr::if_else(
             grepl("\\|", .data[["Result Value"]]),

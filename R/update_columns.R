@@ -205,6 +205,8 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
 #'
 #' @param .data Dataframe.
 #' @param col_name String. Column name.
+#' @param silent Boolean. If TRUE, does not provide warning if unable to set
+#' column to numeric. If FALSE, provides warning. Default TRUE.
 #'
 #' @seealso [col_to_date]
 #'
@@ -214,7 +216,7 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
 #' dataframe.
 #'
 #' @export
-col_to_numeric <- function(.data, col_name) {
+col_to_numeric <- function(.data, col_name, silent = TRUE) {
   if (is.numeric(.data[[col_name]])) {
     return(.data)
   }
@@ -224,6 +226,8 @@ col_to_numeric <- function(.data, col_name) {
 
   if (all(chk)) {
     .data[[col_name]] <- as.numeric(.data[[col_name]])
+  } else if (!silent) {
+    warning("Unable to convert ", col_name, " to numeric")
   }
 
   .data

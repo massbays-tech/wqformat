@@ -1,6 +1,6 @@
-#' Format site data
+#' Format site metadata
 #'
-#' @description Converts water quality site data between different formats.
+#' @description Converts water quality site metadata between different formats.
 #'
 #' @param df Input dataframe.
 #' @param in_format,out_format String. Desired input and output formats. Not

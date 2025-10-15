@@ -16,21 +16,63 @@ knitr::opts_chunk$set(
 
 ## Overview
 
+The wqformat R package converts water quality data to several different formats. It is primarily designed to format water quality data for [MassWateR](https://massbays-tech.github.io/MassWateR/) and wqdashboard, but it can be used for [custom conversions](#custom) as well.
+
+The package is created in collaboration with the [Massachusetts Bays National Estuary Partnership](https://massbays.org/) with funding from an EPA Exchange Network Grant (Grant No. ).
+
 ## Package Installation
+
+Install the package as follows:
 
 ```{r setup}
 library(wqformat)
 ```
 
-
 ## Data Inputs
 
-### Accepted Formats
+wqformat accepts two types of data: **water quality results** and **site metadata**. Before using wqformat, double check all column names and variables for typos or other errors; wqformat provides informative error messages, but will not work correctly if things are misspelled.
 
-For instructions on converting data to/from a different format, check the [custom formats vignette](custom_format.html). 
+wqformat will:
 
-## Converting Data
+-   Rename columns
+-   Update variable names
 
-### Site Data
+wqformat will not:
 
-### Result Data
+-   Check for QAQC errors
+-   Add data to empty columns \*
+
+\* Exception: `format_results()` and `format_sites()` fill out several empty columns for select conversions
+
+## Converting Standard Formats {#standard}
+
+By default, wqformat accepts eight different formats, listed below. Converting data between accepted formats is a simple process: use `format_results()` to format water quality results and `format_sites()` to format site metadata.
+
+| Format                     | Code        | Water Quality Results | Site Metadata |
+|---------------------|-----------------|:---------------:|:---------------:|
+| Blackstone River Coalition | MA_BRC      |           x           |       x       |
+| Friends of Casco Bay       | ME_FOCB     |           x           |       x       |
+| Maine DEP                  | ME_DEP      |           x           |               |
+| MassWateR                  | MassWateR   |           x           |       x       |
+| Rhode Island DEM           | RI_DEM      |           x           |               |
+| URI Watershed Watch        | RI_WW       |           x           |       x       |
+| wqdashboard                | wqdashboard |           x           |       x       |
+| WQX                        | WQX         |           x           |       x       |
+
+: Accepted Formats
+
+## Converting Custom Formats {#custom}
+
+wqformat includes a series of helper functions to convert data to or from a custom format.
+
+### Update Columns
+
+To adjust column names, use `rename_col()` and `concat_col()`.
+
+To change a column type, use `col_to_numeric()` or `col_to_date()`.
+
+### Update Variables
+
+To update the variables in a column, use `update_var()`. To check for typos or other errors, use `warn_invalid_var()`.
+
+If a column contains state names, use `state_to_abb()` or `abb_to_state()` to format all states as abbreviations or full names respectively.

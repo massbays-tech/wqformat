@@ -183,6 +183,22 @@ test_that("col_to_numeric works", {
   )
 })
 
+test_that("col_to_numeric error message", {
+  df_in <- data.frame(
+    "col1" = c("1", "2", "4"),
+    "col2" = c("A", "5", "6")
+  )
+
+  expect_silent(
+    col_to_numeric(df_in, "col1", FALSE)
+  )
+
+  expect_warning(
+    col_to_numeric(df_in, "col2", FALSE),
+    regexp = "Unable to convert col2 to numeric"
+  )
+})
+
 # Test col_to_date() ----
 test_that("col_to_date works", {
   df_in <- data.frame(

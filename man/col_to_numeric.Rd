@@ -4,12 +4,15 @@
 \alias{col_to_numeric}
 \title{Convert column to numeric format}
 \usage{
-col_to_numeric(.data, col_name)
+col_to_numeric(.data, col_name, silent = TRUE)
 }
 \arguments{
 \item{.data}{Dataframe.}
 
 \item{col_name}{String. Column name.}
+
+\item{silent}{Boolean. If TRUE, does not provide warning if unable to set
+column to numeric. If FALSE, provides warning. Default TRUE.}
 }
 \value{
 If all values are numeric, converts column to numeric and returns dataframe.

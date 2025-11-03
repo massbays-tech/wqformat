@@ -16,42 +16,38 @@
 #'
 #' @noRd
 prep_brc_sites <- function(.data) {
-  if ("TOWN" %in% colnames(.data)) {
-    .data <- .data %>%
-      dplyr::mutate(
-        "STATE" = dplyr::case_when(
-          .data$TOWN %in% c(
-            "Burrillville", "Central Falls", "Cumberland", "Glocester",
-            "Lincoln", "North Smithfield", "Pawtucket", "Scituate", "Woonsocket"
-          ) ~ "RI",
-          .data$TOWN %in% c(
-            "Attleboro", "Auburn", "Bellingham", "Blackstone", "Boylston",
-            "Douglas", "Franklin", "Grafton", "Holden", "Hopedale", "Leicester",
-            "Mendon", "Milford", "Millbury", "Millville", "North Attleborough",
-            "Northbridge", "Oxford", "Paxton", "Plainville", "Shrewsbury",
-            "Smithfield", "Sutton", "Upton", "Uxbridge", "Webster",
-            "West Boylston", "Westborough", "Worcester", "Wrentham"
-          ) ~ "MA",
-          TRUE ~ NA
-        )
-      )
+  if (!"WATER_DEPTH_FT" %in% colnames(.data)) {
+    .data$WATER_DEPTH_FT <- NA
   }
 
-  if ("WATER_DEPTH_FT" %in% colnames(.data)) {
-    .data <- .data %>%
-      dplyr::mutate("WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048)
-  }
-
-  if ("CFR" %in% colnames(.data)) {
-    .data <- .data %>%
-      dplyr::mutate(
-        "CFR" = dplyr::case_when(
-          tolower(.data$CFR) == "no" ~ "Warmwater",
-          tolower(.data$CFR) == "yes" ~ "Coldwater",
-          TRUE ~ .data$CFR
-        )
+  .data <- .data %>%
+    dplyr::mutate(
+      "STATE" = dplyr::case_when(
+        .data$TOWN %in% c(
+          "Burrillville", "Central Falls", "Cumberland", "Glocester", "Lincoln",
+          "North Smithfield", "Pawtucket", "Scituate", "Woonsocket"
+        ) ~ "RI",
+        .data$TOWN %in% c(
+          "Attleboro", "Auburn", "Bellingham", "Blackstone", "Boylston",
+          "Douglas", "Franklin", "Grafton", "Holden", "Hopedale", "Leicester",
+          "Mendon", "Milford", "Millbury", "Millville", "North Attleborough",
+          "Northbridge", "Oxford", "Paxton", "Plainville", "Shrewsbury",
+          "Smithfield", "Sutton", "Upton", "Uxbridge", "Webster",
+          "West Boylston", "Westborough", "Worcester", "Wrentham"
+        ) ~ "MA",
+        TRUE ~ NA
       )
-  }
+    ) %>%
+    dplyr::mutate(
+      "WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048
+    ) %>%
+    dplyr::mutate(
+      "CFR" = dplyr::case_when(
+        tolower(.data$CFR) == "no" ~ "Warmwater",
+        tolower(.data$CFR) == "yes" ~ "Coldwater",
+        TRUE ~ .data$CFR
+      )
+    )
 }
 
 #' Format site data for the Blackstone River Coalition

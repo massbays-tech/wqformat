@@ -16,5 +16,14 @@ tst <- list(
   wqx_data = read.csv(
     system.file("extdata/example_wqx_data.csv", package = "wqformat"),
     na.strings = c("NA", "NaN", "", " ")
+  ),
+  # Blackstone River Coalition site, result data
+  ma_brc_sites = read.csv(
+    system.file("extdata/example_ma_brc_sites.csv", package = "wqformat"),
+    na.strings = c("NA", "NaN", "", " ")
+  ),
+  ma_brc_data = read.csv(
+    system.file("extdata/example_ma_brc_data.csv", package = "wqformat"),
+    na.strings = c("NA", "NaN", "", " ")
   )
 )

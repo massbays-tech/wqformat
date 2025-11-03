@@ -2,7 +2,7 @@
 % Please edit documentation in R/format_sites.R
 \name{format_sites}
 \alias{format_sites}
-\title{Format site data}
+\title{Format site metadata}
 \usage{
 format_sites(df, in_format, out_format, drop_extra_col = TRUE)
 }
@@ -25,5 +25,5 @@ converted to `out_format`. Default `TRUE`.}
 Updated dataframe.
 }
 \description{
-Converts water quality site data between different formats.
+Converts water quality site metadata between different formats.
 }

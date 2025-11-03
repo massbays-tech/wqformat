@@ -51,7 +51,7 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
 #' `warn_invalid_var()` checks if the input column contains any variables that
 #' aren't included in `varlist`.
 #'
-#' @param dat Dataframe
+#' @param df Dataframe
 #' @param col_name String. Column name.
 #' @param varlist List. List of acceptable variable names.
 #'
@@ -60,13 +60,13 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
 #' @return Updated dataframe.
 #'
 #' @export
-warn_invalid_var <- function(dat, col_name, varlist) {
-  chk <- col_name %in% colnames(dat)
+warn_invalid_var <- function(df, col_name, varlist) {
+  chk <- col_name %in% colnames(df)
   if (!chk) {
     stop("col_name not in dataframe")
   }
 
-  x <- unique(dat[[col_name]])
+  x <- unique(df[[col_name]])
   y <- setdiff(x, varlist)
   y <- y[!is.na(y)]
 

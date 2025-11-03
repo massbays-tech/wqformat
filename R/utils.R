@@ -1,84 +1,60 @@
-#' Fetch variable name substitutions
+#' List variable name substitutions
 #'
 #' @description
-#' `fetch_var()` generates a list of name substitutions. Helper function for
-#' [format_results()] and [format_sites()].
+#' `fetch_var()` is a helper function for [format_results()] and
+#' [format_sites()]. It is designed to check various built-in lookup tables and
+#' return a paired, ordered list of variable name substitutions in addition to
+#' a list of all acceptable output variables.
 #'
-#' @section How in_table is interpreted:
-#' * Each column is sorted alphabetically. If variables need to be listed in a
-#' specific order, then append ##|| (eg "01||") to the start of the variable.
-#' Numbers must be exactly two digits. If variable contains "||", then the first
-#' four letters for the variable will be dropped after alphabetizing but
-#' before further processing.
-#' * Multiple variable names can be listed in a cell with the delimiter "|".
-#' All variable names for `in_format` will be included in the output. Only the
-#' first variable in an `out_format` cell will be included.
-#' * Formatted cell example: 01||var1|var2|var3
+#' @section Formatting notes:
+#' * The out_format column is sorted alphabetically. To change the sort order,
+#' append `##||` (eg `01||`) to the start of the cell. Numbers must be exactly
+#' two digits.
+#' * When listing multiple column names, use the delimiter `|`. All column names
+#' listed under `in_format` will be included, but `out_format` only includes
+#' the **first** column name listed in each cell.
+#' * Formatted cell example: 01||col1|col2|col3
 #'
-#' @param in_table Dataframe.
-#' @param in_format,out_format String. Column names for the input format
-#' (`in_format`) and output format (`out_format`).
-#' @param name_repair Boolean. If TRUE, converts all `in_format` variables to
-#' syntactically valid names by replacing all non alphanumeric or "_" characters
-#' with periods. Default FALSE.
+#' @param df Dataframe.
+#' @param in_format,out_format String. Column names for the input
+#' (`in_format`) and output formats (`out_format`).
+#' @param name_repair Boolean. If `TRUE`, converts all `in_format` variables to
+#' syntactically valid names. Default `FALSE`
+#' @param limit_var Boolean. If `TRUE`, `keep_var` only includes the first,
+#' default variable for each row in `out_format`. If `FALSE`, `keep_var`
+#' includes both default and alternate values listed in `out_format`. Default
+#' `FALSE`.
 #'
 #' @returns List containing three items: `old_names`, `new_names`, and
 #' `keep_var`
 #' * `old_names` and `new_names` are paired lists. They contain name
-#' substitutions derived from the `in_format` and `out_format` columns. Matching
-#' pairs between `in_format` and `out_format` are removed.
+#' substitutions derived from the `in_format` and `out_format` columns.
 #' * `keep_var` is a list of unique variables in the `out_format` column.
-#' Matching pairs between `in_format` and `out_format` are kept.
 #'
 #' @noRd
-fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
+fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
+                     limit_var = FALSE) {
   # Check input values
-  chk <- inherits(in_table, "data.frame")
-  if (!chk) {
-    stop("in_table must be a dataframe")
-  }
-
-  chk <- c(in_format, out_format) %in% colnames(in_table)
+  chk <- c(in_format, out_format) %in% colnames(df)
   if (any(!chk)) {
     stop(
-      "Invalid in_format or out_format. Acceptable formats: ",
-      paste(colnames(in_table), collapse = ", ")
+      "Invalid in_format or out_format. Acceptable values: ",
+      paste(colnames(df), collapse = ", ")
     )
   }
 
-  chk <- is.na(in_table[[out_format]])
+  chk <- is.na(df[[out_format]])
   if (all(chk)) {
-    stop(
-      "out_format is blank"
-    )
+    stop("out_format is blank")
   }
 
-  # Create matched list of old names, new names
-  # Drop rows where out_format is NA
-  # Convert all columns to character to prevent errors from numeric variables
-  in_table <- in_table %>%
+  # Trim, prep data
+  df <- df %>%
     dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
     dplyr::filter(!is.na(.data[[out_format]])) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character))
-
-  # If in_format == out_format, duplicate col
-  if (in_format == out_format) {
-    in_format <- paste0(in_format, "_1")
-
-    in_table <- in_table %>%
-      dplyr::mutate({{ in_format }} := .data[[out_format]])
-  }
-
-  # Sort data by out_format; drop ##|| from start of vars if present
-  in_table <- in_table %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
     dplyr::arrange(.data[[out_format]]) %>%
-    dplyr::mutate(
-      {{ in_format }} := dplyr::if_else(
-        grepl("||", .data[[in_format]], fixed = TRUE),
-        substring(.data[[in_format]], 5),
-        .data[[in_format]]
-      )
-    ) %>%
+    # Drop ##|| from start of out_format
     dplyr::mutate(
       {{ out_format }} := dplyr::if_else(
         grepl("||", .data[[out_format]], fixed = TRUE),
@@ -87,29 +63,53 @@ fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
       )
     )
 
-  # Remove alternate out_format variables
-  in_table <- in_table %>%
+  # Set keep var
+  keep_var <- unique_var(df, out_format, limit_var = limit_var)
+
+  # If in_format == out_format, duplicate col, else trim/prep in_format
+  if (in_format == out_format) {
+    in_format <- paste0(in_format, "_1")
+
+    df <- df %>%
+      dplyr::mutate({{ in_format }} := .data[[out_format]])
+  } else {
+    df <- df %>%
+      dplyr::filter(!is.na(.data[[in_format]])) %>%
+      # Drop ##|| from start of in_format
+      dplyr::mutate(
+        {{ in_format }} := dplyr::if_else(
+          grepl("||", .data[[in_format]], fixed = TRUE),
+          substring(.data[[in_format]], 5),
+          .data[[in_format]]
+        )
+      )
+  }
+
+  # Check - is dataframe empty?
+  if (nrow(df) == 0) {
+    return(
+      list(
+        old_names = NA,
+        new_names = NA,
+        keep_var = keep_var
+      )
+    )
+  }
+
+  # Drop extra out_format vars, split extra in_format vars
+  df <- df %>%
     dplyr::mutate(
       {{ out_format }} := dplyr::if_else(
         grepl("|", .data[[out_format]], fixed = TRUE),
         stringr::str_split_i(.data[[out_format]], "\\|", 1),
         .data[[out_format]]
       )
-    )
-
-  # Set keep_var
-  keep_var <- in_table[[out_format]]
-
-  # Tidy data
-  in_table <- in_table %>%
-    # Drop rows where in_format is NA
-    dplyr::filter(!is.na(.data[[in_format]])) %>%
-    # If in_format includes alternate vars, split to multiple rows
+    ) %>%
     tidyr::separate_longer_delim({{ in_format }}, "|")
 
   # If name_repair is TRUE, update in_format
   if (name_repair) {
-    in_table <- in_table %>%
+    df <- df %>%
       dplyr::mutate(
         {{ in_format }} := dplyr::if_else(
           is.na(.data[[in_format]]),
@@ -120,13 +120,13 @@ fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
   }
 
   # Drop rows where in_format == out_format
-  in_table <- in_table %>%
+  df <- df %>%
     dplyr::filter(.data[[in_format]] != .data[[out_format]])
 
   # Save var
-  if (nrow(in_table) > 0) {
-    old_names <- in_table[[in_format]]
-    new_names <- in_table[[out_format]]
+  if (nrow(df) > 0) {
+    old_names <- df[[in_format]]
+    new_names <- df[[out_format]]
   } else {
     old_names <- NA
     new_names <- NA
@@ -138,6 +138,57 @@ fetch_var <- function(in_table, in_format, out_format, name_repair = FALSE) {
     keep_var = keep_var
   )
 }
+
+#' List unique values in column
+#'
+#' @description
+#' `unique_var()` generates a list of unique variables in a column. Helper
+#' function for [swap_col()], [swap_var()], and [format_mwr_results()].
+#'
+#' @param .data Dataframe.
+#' @param col_name String. Name of column in dataframe.
+#' @param delim String. Delimiter. Used to split variables in a cell. Default
+#' value `|`.
+#' @param limit_var If `TRUE`, `keep_var` only includes the first
+#' variable in each cell. If `FALSE`, `keep_var` includes all variables listed
+#' in each cell. Default `FALSE`.
+#'
+#' @returns List of unique variables in the selected column.
+#'
+#' @noRd
+unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
+  chk <- col_name %in% colnames(.data)
+  if (!chk) {
+    stop("col_name is invalid")
+  }
+
+  # Tidy data
+  dat <- .data %>%
+    dplyr::filter(!is.na(.data[[col_name]]))
+
+  if (nrow(dat) == 0) {
+    return(NA)
+  }
+
+  if (limit_var) {
+    delim2 <- paste0("\\", delim)
+
+    dat <- dat %>%
+      dplyr::mutate(
+        {{ col_name }} := dplyr::if_else(
+          grepl(delim, .data[[col_name]], fixed = TRUE),
+          stringr::str_split_i(.data[[col_name]], delim2, 1),
+          .data[[col_name]]
+        )
+      )
+  } else {
+    dat <- dat %>%
+      tidyr::separate_longer_delim({{ col_name }}, delim)
+  }
+
+  unique(dat[[col_name]])
+}
+
 
 #' Rename variable
 #'

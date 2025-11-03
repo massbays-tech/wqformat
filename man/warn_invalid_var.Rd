@@ -4,10 +4,10 @@
 \alias{warn_invalid_var}
 \title{Check column for invalid variables}
 \usage{
-warn_invalid_var(dat, col_name, varlist)
+warn_invalid_var(df, col_name, varlist)
 }
 \arguments{
-\item{dat}{Dataframe}
+\item{df}{Dataframe}
 
 \item{col_name}{String. Column name.}
 

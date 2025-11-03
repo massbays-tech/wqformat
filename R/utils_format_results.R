@@ -102,6 +102,191 @@ prep_mwr_results <- function(.data, name_repair = FALSE) {
   dat
 }
 
+#' Add QC Reference Value to MassWateR result data
+#'
+#' @description
+#' `add_qc_ref()` is a helper function for [results_to_mwr()] that
+#' transfers duplicate values to "QC Reference Value"
+#'
+#' @param .data Dataframe
+#'
+#' @returns Updated dataframe where rows with duplicate samples have been
+#' removed, and their values transferred to the "QC Reference Value" column in
+#' the matching row.
+#'
+#' @noRd
+add_qc_ref <- function(.data) {
+  # Set variables
+  dat <- .data
+  qc_ref <- c(
+    "Sample-Routine",
+    "Quality Control Sample-Lab Duplicate",
+    "Quality Control Sample-Lab Spike",
+    "Field Msr/Obs",
+    "Quality Control-Meter Lab Duplicate",
+    "Quality Control-Calibration Check"
+  )
+  names(qc_ref) <- c(
+    "Quality Control Sample-Field Replicate",
+    "Quality Control Sample-Lab Duplicate 2",
+    "Quality Control Sample-Lab Spike Target",
+    "Quality Control Field Replicate Msr/Obs",
+    "Quality Control-Meter Lab Duplicate 2",
+    "Quality Control-Calibration Check Buffer"
+  )
+
+  # Check - any rows with duplicate/replicate data?
+  chk <- dat[["Activity Type"]] %in% c(qc_ref, names(qc_ref)) &
+    is.na(dat[["QC Reference Value"]])
+
+  if (all(!chk)) {
+    return(.data) # no duplicates, return original data
+  }
+
+  # Split data in two categories: possible duplicates, leave as-is
+  dat1 <- dat[which(chk), ] # possible duplicate/replicate
+  dat2 <- dat[which(!chk), ] # leave as-is
+
+  # Prep duplicate data
+  # - Add activity type category
+  # - Sort rows with replicate samples AFTER initial samples
+  dat1 <- dat1 %>%
+    dplyr::mutate(
+      "temp_activity" = dplyr::if_else(
+        .data[["Activity Type"]] %in% names(qc_ref),
+        qc_ref[.data[["Activity Type"]]],
+        .data[["Activity Type"]]
+      )
+    ) %>%
+    dplyr::mutate(
+      "temp_rank" = dplyr::if_else(
+        .data[["Activity Type"]] %in% names(qc_ref), 2, 1
+      )
+    ) %>%
+    dplyr::arrange(.data$temp_rank) %>%
+    dplyr::select(!"temp_rank")
+
+  # Group data, check for paired data
+  group_col <- setdiff(
+    colnames(dat1),
+    c(
+      "Activity Type", "Result Value", "Result Measure Qualifier",
+      "Local Record ID", "Result Comment"
+    )
+  )
+
+  dat_temp <- dat1 %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+    dplyr::add_count()
+
+  chk <- dat_temp$n == 2
+  chk2 <- dat_temp$n > 2
+
+  if (any(chk2)) {
+    warning(
+      "More than two matching samples found. Check rows ",
+      paste(which(chk2), collapse=", ")
+    )
+  }
+
+  if (all(!chk)) {
+    return(.data) # no pairs found, return original data
+  } else if (any(!chk)) {
+    # send non-pairs to dat2
+    dat_temp <- dat1[which(!chk), ] %>%
+      dplyr::select(!"temp_activity")
+    dat2 <- rbind(dat2, dat_temp)
+
+    # set dat1 to true pairs
+    dat1 <- dat1[which(chk), ]
+  }
+
+  # Combine duplicate rows
+  dat1 <- dat1 %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+    dplyr::summarize(
+      "Activity Type" = dplyr::first(.data[["Activity Type"]]),
+      "Result Value" = stringr::str_flatten(.data[["Result Value"]], "|"),
+      "Result Measure Qualifier" = stringr::str_flatten(
+        .data[["Result Measure Qualifier"]],
+        collapse = ",",
+        na.rm = TRUE
+      ),
+      "Local Record ID" = stringr::str_flatten(
+        .data[["Local Record ID"]],
+        collapse = "; ",
+        na.rm = TRUE
+      ),
+      "Result Comment" = stringr::str_flatten(
+        .data[["Result Comment"]],
+        collapse = "; ",
+        na.rm = TRUE
+      ),
+      .groups = "drop"
+    ) %>%
+    # Edit concatenated columns to remove duplicate strings
+    dplyr::mutate(
+      "Result Measure Qualifier" = dplyr::if_else(
+        .data[["Result Measure Qualifier"]] %in% c(NA, ""),
+        NA,
+        sapply(
+          .data[["Result Measure Qualifier"]],
+          function(x) str_unique(x),
+          USE.NAMES = FALSE
+        )
+      )
+    ) %>%
+    dplyr::mutate(
+      "Local Record ID" = dplyr::if_else(
+        .data[["Local Record ID"]] %in% c(NA, ""),
+        NA,
+        sapply(
+          .data[["Local Record ID"]],
+          function(x) str_unique(x, "; "),
+          USE.NAMES = FALSE
+        )
+      )
+    ) %>%
+    dplyr::mutate(
+      "Result Comment" = dplyr::if_else(
+        .data[["Result Comment"]] %in% c(NA, ""),
+        NA,
+        sapply(
+          .data[["Result Comment"]],
+          function(x) str_unique(x, "; "),
+          USE.NAMES = FALSE
+        )
+      )
+    ) %>%
+    # Set QC Reference Value, Result Value
+    dplyr::mutate(
+      "QC Reference Value" = dplyr::if_else(
+        grepl("\\|", .data[["Result Value"]]),
+        stringr::str_split_i(.data[["Result Value"]], "\\|", 2),
+        .data[["QC Reference Value"]]
+      )
+    ) %>%
+    dplyr::mutate(
+      "Result Value" = dplyr::if_else(
+        grepl("\\|", .data[["Result Value"]]),
+        stringr::str_split_i(.data[["Result Value"]], "\\|", 1),
+        .data[["Result Value"]]
+      )
+    ) %>%
+    # Drop extra column
+    dplyr::select(!"temp_activity")
+
+  # Join data, fix formatting
+  dat <- rbind(dat1, dat2)
+
+  # Adjust formatting
+  dat <- as.data.frame(dat) %>%
+    dplyr::arrange(
+      .data[["Activity Start Date"]],
+      .data[["Activity Start Time"]]
+    )
+}
+
 #' Results to MassWateR
 #'
 #' @description
@@ -112,8 +297,6 @@ prep_mwr_results <- function(.data, name_repair = FALSE) {
 #' * Transfers duplicate values to "QC Reference Value"
 #'
 #' @param .data Dataframe
-#'
-#' @inheritParams format_results
 #'
 #' @returns Dataframe matching the standard format used by MassWateR
 #'
@@ -148,160 +331,11 @@ results_to_mwr <- function(.data) {
       )
     )
 
-  # Check - any rows with duplicate/replicate data?
-  qc_ref <- c(
-    "Sample-Routine",
-    "Quality Control Sample-Lab Duplicate",
-    "Quality Control Sample-Lab Spike",
-    "Field Msr/Obs",
-    "Quality Control-Meter Lab Duplicate",
-    "Quality Control-Calibration Check"
-  )
-  names(qc_ref) <- c(
-    "Quality Control Sample-Field Replicate",
-    "Quality Control Sample-Lab Duplicate 2",
-    "Quality Control Sample-Lab Spike Target",
-    "Quality Control Field Replicate Msr/Obs",
-    "Quality Control-Meter Lab Duplicate 2",
-    "Quality Control-Calibration Check Buffer"
-  )
-
-  chk <- dat[["Activity Type"]] %in% c(qc_ref, names(qc_ref)) &
-    is.na(dat[["QC Reference Value"]])
-
-  if (any(chk)) {
-    # Split data in two categories: possible duplicate, leave as-is
-    dat1 <- dat[which(chk), ] # possible duplicate/replicate
-    dat2 <- dat[which(!chk), ] # leave as-is
-
-    # Prep duplicate data
-    # - Add activity type category
-    # - Sort rows with replicate samples AFTER initial samples
-    dat1 <- dat1 %>%
-      dplyr::mutate(
-        "temp_activity" = dplyr::if_else(
-          .data[["Activity Type"]] %in% names(qc_ref),
-          qc_ref[.data[["Activity Type"]]],
-          .data[["Activity Type"]]
-        )
-      ) %>%
-      dplyr::mutate(
-        "temp_rank" = dplyr::if_else(
-          .data[["Activity Type"]] %in% names(qc_ref), 2, 1
-        )
-      ) %>%
-      dplyr::arrange(.data$temp_rank) %>%
-      dplyr::select(!"temp_rank")
-
-    # Check - any groups with more than 3 items? Send rows to dat2
-    group_col <- setdiff(
-      colnames(dat1),
-      c(
-        "Activity Type", "Result Value", "Result Measure Qualifier",
-        "Local Record ID", "Result Comment"
-      )
-    )
-
-    dat_temp <- dat1 %>%
-      dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
-      dplyr::add_count()
-
-    chk <- dat_temp$n > 2
-    if (any(chk)) {
-      dat_temp <- dat1[which(chk), ] %>%
-        dplyr::select(!"temp_activity")
-
-      dat1 <- dat1[which(!chk), ]
-      dat2 <- rbind(dat2, dat_temp)
-    }
-
-    # Group/summarize duplicate data
-    if (nrow(dat1) > 0) {
-      dat1 <- dat1 %>%
-        dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
-        dplyr::summarize(
-          "Activity Type" = dplyr::first(.data[["Activity Type"]]),
-          "Result Value" = stringr::str_flatten(.data[["Result Value"]], "|"),
-          "Result Measure Qualifier" = stringr::str_flatten(
-            .data[["Result Measure Qualifier"]],
-            collapse = ",",
-            na.rm = TRUE
-          ),
-          "Local Record ID" = stringr::str_flatten(
-            .data[["Local Record ID"]],
-            collapse = "; ",
-            na.rm = TRUE
-          ),
-          "Result Comment" = stringr::str_flatten(
-            .data[["Result Comment"]],
-            collapse = "; ",
-            na.rm = TRUE
-          ),
-          .groups = "drop"
-        ) %>%
-        # Edit concatenated columns to remove duplicate strings
-        dplyr::mutate(
-          "Result Measure Qualifier" = dplyr::if_else(
-            .data[["Result Measure Qualifier"]] %in% c(NA, ""),
-            NA,
-            sapply(
-              .data[["Result Measure Qualifier"]],
-              function(x) str_unique(x),
-              USE.NAMES = FALSE
-            )
-          )
-        ) %>%
-        dplyr::mutate(
-          "Local Record ID" = dplyr::if_else(
-            .data[["Local Record ID"]] %in% c(NA, ""),
-            NA,
-            sapply(
-              .data[["Local Record ID"]],
-              function(x) str_unique(x, "; "),
-              USE.NAMES = FALSE
-            )
-          )
-        ) %>%
-        dplyr::mutate(
-          "Result Comment" = dplyr::if_else(
-            .data[["Result Comment"]] %in% c(NA, ""),
-            NA,
-            sapply(
-              .data[["Result Comment"]],
-              function(x) str_unique(x, "; "),
-              USE.NAMES = FALSE
-            )
-          )
-        ) %>%
-        # Set QC Reference Value, Result Value
-        dplyr::mutate(
-          "QC Reference Value" = dplyr::if_else(
-            grepl("\\|", .data[["Result Value"]]),
-            stringr::str_split_i(.data[["Result Value"]], "\\|", 2),
-            .data[["QC Reference Value"]]
-          )
-        ) %>%
-        dplyr::mutate(
-          "Result Value" = dplyr::if_else(
-            grepl("\\|", .data[["Result Value"]]),
-            stringr::str_split_i(.data[["Result Value"]], "\\|", 1),
-            .data[["Result Value"]]
-          )
-        ) %>%
-        # Drop extra column
-        dplyr::select(!"temp_activity")
-    }
-
-    # Join data, fix formatting
-    dat <- rbind(dat1, dat2)
-  }
+  # Transfer duplicate samples to QC Reference Value
+  dat <- add_qc_ref(dat)
 
   # Adjust formatting
-  dat <- as.data.frame(dat) %>%
-    dplyr::arrange(
-      .data[["Activity Start Date"]],
-      .data[["Activity Start Time"]]
-    ) %>%
+  dat <- dat %>%
     dplyr::select(dplyr::all_of(column_order)) %>%
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
@@ -421,7 +455,7 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
       tz = tz,
       datetime = TRUE
     ) %>%
-    dplyr::mutate("DATE" = as.Date(.data$DATE_TIME)) %>%
+    dplyr::mutate("DATE" = as.Date(.data$DATE_TIME, tz = tz)) %>%
     dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) %>%
     dplyr::mutate(
       "ACTIVITY_TYPE" = dplyr::case_when(

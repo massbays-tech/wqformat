@@ -48,95 +48,76 @@ test_that("format_sites converts ME_FOCB", {
 })
 
 # Massachusetts ----
-test_that("format_sites converts MA_BRC", {
-  df_brc <- data.frame(
-    "SITE_NUMBER" = c(1, 2),
-    "BRC_CODE" = c("RI01", "MA01"),
-    "SITE_NAME" = c("NBEP", "BRC"),
-    "WATERBODY_NAME" = c("Woonasquatucket River", "Blackstone River"),
-    "ZONE" = c(NA, "Headwaters"),
-    "SITE_DESCR" = "lorem ipsum",
-    "LATITUDE" = c(41.82897, 42.26034),
-    "LONGITUDE" = c(-71.41924, -71.80386),
-    "WATERSHED" = c("Woonasquatucket River", "Tatnuck Brook-Blackstone River"),
-    "TOWN" = c("Providence", "Worcester"),
-    "CFR" = "No",
-    "HUC12_NUM" = c("010900040502", "010900030102"),
-    "HUC_NAME" = c("Woonasquatucket River", "Tatnuck Brook-Blackstone River"),
-    "DIRECTIONS" = "dolor sit amet",
-    "JUSTIFICATION" = "consectetur adipiscing elit",
-    "STATUS" = "Active",
-    "CONDUCTIVITY_USCM" = NA,
-    "WATER_DEPTH_FT" = 1
+test_that("format_sites converts MA_BRC to MassWateR", {
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = c(
+      "A-06-01-010", "A-06-01-020", "B-01-01-020", "B-01-01-010", "A-01-01-010"
+    ),
+    "Monitoring Location Name" = c(
+      "Esta Brook", "Shore Dr.",
+      "Intersection of 146A and Balm of Life Spring Road", "South St.",
+      "Jewish Community Center"
+    ),
+    "Monitoring Location Latitude" = c(
+      42.31425, 42.304617, 42.02896, 42.01908, 42.29549
+    ),
+    "Monitoring Location Longitude" = c(
+      -71.82114, -71.81665, -71.60853, -71.61399, -71.83817
+    ),
+    "Location Group" = c(
+      "Headwaters", "Headwaters", "Mid-Reach", "Mid-Reach", "Headwaters"
+    ),
+    check.names = FALSE
   )
 
-  df_wqdashboard <- data.frame(
-    "Site_ID" = c("RI01", "MA01"),
-    "Site_Name" = c("NBEP", "BRC"),
-    "Latitude" = c(41.82897, 42.26034),
-    "Longitude" = c(-71.41924, -71.80386),
-    "Town" = c("Providence", "Worcester"),
+  expect_equal(
+    suppressMessages(
+      format_sites(tst$ma_brc_sites, "MA_BRC", "MassWateR")
+    ),
+    df_mwr
+  )
+})
+
+test_that("format_sites converts MA_BRC to wqdashboard", {
+  df_wqd <- data.frame(
+    "Site_ID" = c(
+      "A-06-01-010", "A-06-01-020", "B-01-01-020", "B-01-01-010", "A-01-01-010"
+    ),
+    "Site_Name" = c(
+      "Esta Brook", "Shore Dr.",
+      "Intersection of 146A and Balm of Life Spring Road", "South St.",
+      "Jewish Community Center"
+    ),
+    "Latitude" = c(
+      42.31425, 42.304617, 42.02896, 42.01908, 42.29549
+    ),
+    "Longitude" = c(
+      -71.82114, -71.81665, -71.60853, -71.61399, -71.83817
+    ),
+    "Town" = c("Worcester", "Worcester", "Uxbridge", "Uxbridge", "Worcester"),
     "County" = NA,
-    "State" = c(NA, "MA"),
+    "State" = "MA",
     "Watershed" = c(
-      "Woonasquatucket River",
+      "Tatnuck Brook-Blackstone River", "Tatnuck Brook-Blackstone River",
+      "Emerson Brook-Blackstone River", "Emerson Brook-Blackstone River",
       "Tatnuck Brook-Blackstone River"
     ),
-    "Group" = "Warmwater",
+    "Group" = c(
+      "Warmwater", "Coldwater", "Coldwater", "Coldwater", "Warmwater"
+    ),
     "Location_Type" = NA,
     "Surface_Depth" = NA,
     "Midwater_Depth" = NA,
     "Near_Bottom_Depth" = NA,
-    "Bottom_Depth" = 0.3048
+    "Bottom_Depth" = NA_integer_
   )
 
   # Test from BRC
   expect_equal(
     suppressMessages(
-      format_sites(df_brc, "MA_BRC", "MassWateR")
+      format_sites(tst$ma_brc_sites, "MA_BRC", "wqdashboard")
     ),
-    data.frame(
-      "Monitoring Location ID" = c("RI01", "MA01"),
-      "Monitoring Location Name" = c("NBEP", "BRC"),
-      "Monitoring Location Latitude" = c(41.82897, 42.26034),
-      "Monitoring Location Longitude" = c(-71.41924, -71.80386),
-      "Location Group" = c(NA, "Headwaters"),
-      check.names = FALSE
-    )
-  )
-
-  expect_equal(
-    suppressMessages(
-      format_sites(df_brc, "MA_BRC", "WQdashboard")
-    ),
-    df_wqdashboard
-  )
-
-  # Test to BRC
-  expect_equal(
-    suppressMessages(
-      format_sites(df_wqdashboard, "WQdashboard", "MA_BRC")
-    ),
-    df_brc <- data.frame(
-      "SITE_NUMBER" = NA,
-      "BRC_CODE" = c("RI01", "MA01"),
-      "SITE_NAME" = c("NBEP", "BRC"),
-      "WATERBODY_NAME" = NA,
-      "ZONE" = NA,
-      "SITE_DESCR" = NA,
-      "LATITUDE" = c(41.82897, 42.26034),
-      "LONGITUDE" = c(-71.41924, -71.80386),
-      "WATERSHED" = NA,
-      "TOWN" = c("Providence", "Worcester"),
-      "CFR" = "No",
-      "HUC12_NUM" = NA,
-      "HUC_NAME" = c("Woonasquatucket River", "Tatnuck Brook-Blackstone River"),
-      "DIRECTIONS" = NA,
-      "JUSTIFICATION" = NA,
-      "STATUS" = NA,
-      "CONDUCTIVITY_USCM" = NA,
-      "WATER_DEPTH_FT" = 1
-    )
+    df_wqd
   )
 })
 
@@ -333,6 +314,31 @@ test_that("format_sites to WQX updates state names", {
   expect_equal(
     df_wqx[["State Code"]],
     c("RI", "MA", "ME")
+  )
+})
+
+test_that("format_sites to MA_BRC updates CFR, WATER_DEPTH_FT", {
+  df_wqd <- data.frame(
+    "Site_ID" = c("RI01", "MA01", "ME01"),
+    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
+    "Latitude" = c(41.82897, 42.31481, 43.66218),
+    "Longitude" = c(-71.41924, -71.03931, -70.27354),
+    "Group" = c("Warmwater", "Warmwater", "Coldwater"),
+    "Bottom_Depth" = c(NA, 0.3048, 1)
+  )
+
+  df_brc <- suppressMessages(
+    format_sites(df_wqd, "wqdashboard", "ma_brc")
+  )
+
+  expect_equal(
+    df_brc$CFR,
+    c("No", "No", "Yes")
+  )
+
+  expect_equal(
+    df_brc$WATER_DEPTH_FT,
+    c(NA, 1, 3.28083990)
   )
 })
 

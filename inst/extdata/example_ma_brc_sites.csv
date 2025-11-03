@@ -1,0 +1,6 @@
+ID,SITE_NUMBER,BRC_CODE,SITE_NAME,WATERBODY_NAME,ZONE,SITE_DESCR,LATITUDE,LONGITUDE,WATERSHED,TOWN,CFR,HUC12_NUM,HUC_NAME,DIRECTIONS,JUSTIFICATION,STATUS,CONDUCTIVITY_USCM,WATER_DEPTH_FT
+1,AB010,A-06-01-010,Esta Brook,Ararat Brook,Headwaters,NA,42.31425,-71.82114,Mill Brook,Worcester,No,10900030102,Tatnuck Brook-Blackstone River,NA,NA,NA,NA,NA
+2,AB020,A-06-01-020,Shore Dr.,Ararat Brook,Headwaters,NA,42.304617,-71.81665,Mill Brook,Worcester,Yes,10900030102,Tatnuck Brook-Blackstone River,NA,Ararat Brook Inlet of Indian Lake,NA,NA,NA
+3,BCB020,B-01-01-020,Intersection of 146A and Balm of Life Spring Road,Bacon Brook,Mid-Reach,NA,42.02896,-71.60853,West River,Uxbridge,Yes,10900030206,Emerson Brook-Blackstone River,NA,"Baseline Bacon Brook, moved testing site to gage site",NA,NA,NA
+4,BCB010,B-01-01-010,South St.,Bacon Brook,Mid-Reach,NA,42.01908,-71.61399,Bacon Brook,Uxbridge,Yes,10900030206,Emerson Brook-Blackstone River,NA,Baseline Bacon Brook,NA,NA,NA
+5,BB010,A-01-01-010,Jewish Community Center,Beaver Brook,Headwaters,NA,42.29549,-71.83817,Tatnuck Brook-Blackstone River,Worcester,No,10900030102,Tatnuck Brook-Blackstone River,NA,Baseline near beginning of Beaver Brook,NA,NA,NA

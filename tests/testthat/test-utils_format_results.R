@@ -38,52 +38,188 @@ test_that("prep_mwr_results works", {
     df_out
   )
 
-  # Additional test - BDL, AQL values
+  # Additional test - BDL, AQL values; no name repair
+  df_in <- tst$mwr_data
+  df_in$Result.Value = c("BDL", 5, "AQL", 980)
+  df_in$QC.Reference.Value = c(7, NA, 0.46, "BDL")
+  colnames(df_in) <- gsub("\\.", " ", colnames(df_in))
+  colnames(df_in) <- gsub("Depth Height", "Depth/Height", colnames(df_in))
+
+
+  df_out <- df_out
+  df_out$Result.Value <- c(NA, 7, 5, NA, 0.46, 980, NA)
+  df_out$Result.Measure.Qualifier = c("DL", NA, "Q", "GT", NA, NA, "DL")
+  colnames(df_out) <- gsub("\\.", " ", colnames(df_out))
+  colnames(df_out) <- gsub("Depth Height", "Depth/Height", colnames(df_out))
+
+  expect_equal(
+    prep_mwr_results(df_in),
+    df_out
+  )
+})
+
+test_that("add_qc_ref works", {
+  # Test example data
   df_in <- data.frame(
-    "Monitoring Location ID" = "HBS-016",
-    "Activity Type" = c("Field Msr/Obs", "Sample-Routine"),
-    "Activity Start Date" = c("6/13/2021", "8/15/2021"),
-    "Activity Start Time" = c("8:00", "7:40"),
-    "Activity Depth/Height Measure" = c(1, 0.75),
-    "Activity Depth/Height Unit" = "ft",
+    "Monitoring Location ID" = c(
+      "HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA
+    ),
+    "Activity Type" = c(
+      "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
+      "Sample-Routine", "Quality Control Sample-Lab Duplicate",
+      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control-Calibration Check",
+      "Quality Control-Calibration Check Buffer"
+    ),
+    "Activity Start Date" = c(
+      "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
+      "2021-09-12", "2021-09-12"
+    ),
+    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Activity Depth/Height Measure" = c(1, 1, 0.75, NA, NA, NA, NA),
+    "Activity Depth/Height Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
     "Activity Relative Depth Name" = NA,
-    "Characteristic Name" = c("DO saturation", "TSS"),
-    "Result Value" = c("BDL", "AQL"),
-    "Result Unit" = c("%", "mg/l"),
+    "Characteristic Name" = c(
+      "DO saturation", "DO saturation", "TSS", "Nitrate", "Nitrate",
+      "Sp Conductance", "Sp Conductance"
+    ),
+    "Result Value" = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    "Result Unit" = c("%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"),
     "Quantitation Limit" = NA,
     "QC Reference Value" = NA,
-    "Result Measure Qualifier" = NA,
-    "Result Attribute" = NA,
-    "Sample Collection Method ID" = NA,
+    "Result Measure Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
+    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
     "Project ID" = "Water Quality",
     "Local Record ID" = NA,
-    "Result Comment" = NA,
+    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
     check.names = FALSE
   )
+  df_in[["Activity Start Date"]] <- as.Date(df_in[["Activity Start Date"]])
 
   df_out <- data.frame(
-    "Monitoring Location ID" = "HBS-016",
-    "Activity Type" = c("Field Msr/Obs", "Sample-Routine"),
-    "Activity Start Date" = c("6/13/2021", "8/15/2021"),
-    "Activity Start Time" = c("8:00", "7:40"),
-    "Activity Depth/Height Measure" = c(1, 0.75),
-    "Activity Depth/Height Unit" = "ft",
+    "Monitoring Location ID" = c(
+      NA, "HBS-016", "HBS-016", NA
+    ),
+    "Activity Start Date" = c(
+      "2021-05-16", "2021-06-13", "2021-08-15", "2021-09-12"
+    ),
+    "Activity Start Time" = c(NA, "8:00", "7:40", NA),
+    "Activity Depth/Height Measure" = c(NA, 1, 0.75, NA),
+    "Activity Depth/Height Unit" = c(NA, "ft", "ft", NA),
     "Activity Relative Depth Name" = NA,
-    "Characteristic Name" = c("DO saturation", "TSS"),
-    "Result Value" = NA_integer_,
-    "Result Unit" = c("%", "mg/l"),
+    "Characteristic Name" = c(
+      "Nitrate", "DO saturation", "TSS", "Sp Conductance"
+    ),
+    "Result Unit" = c("mg/l", "%", "mg/l", "uS/cm"),
     "Quantitation Limit" = NA,
-    "Result Measure Qualifier" = c("DL", "GT"),
-    "Result Attribute" = NA,
-    "Sample Collection Method ID" = NA,
+    "QC Reference Value" = c("0.46", "7", NA, "1000"),
+    "Result Attribute" = c("K16452-MB3", NA, NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA),
     "Project ID" = "Water Quality",
+    "Activity Type" = c(
+      "Quality Control Sample-Lab Duplicate", "Field Msr/Obs", "Sample-Routine",
+      "Quality Control-Calibration Check"
+    ),
+    "Result Value" = c("0.45", "46.8", "5", "980"),
+    "Result Measure Qualifier" = c(NA, NA, "Q", NA),
+    "Local Record ID" = NA_character_,
+    "Result Comment" = c(NA, NA, "River was very full", NA),
+    check.names = FALSE
+  )
+  df_out[["Activity Start Date"]] <- as.Date(df_out[["Activity Start Date"]])
+
+  expect_equal(
+    add_qc_ref(df_in),
+    df_out
+  )
+
+  # Edge case 1 - no duplicates
+  df_single <- data.frame(
+    "Monitoring Location ID" = "foo",
+    "Activity Type" = "Quality Control Field Replicate Sample-Composite",
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = c("8:00", "9:00"),
+    "Characteristic Name" = c("TN", "TP"),
+    "Result Value" = c(1, 2),
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = NA,
     "Local Record ID" = NA,
     "Result Comment" = NA,
     check.names = FALSE
   )
 
   expect_equal(
-    prep_mwr_results(df_in),
+    add_qc_ref(df_single),
+    df_single
+  )
+
+  # Edge case 2 - trio instead of duplicate
+  df_trio <- data.frame(
+    "Monitoring Location ID" = "foo",
+    "Activity Type" = "Field Msr/Obs",
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = "9:00",
+    "Characteristic Name" = "TN",
+    "Result Value" = c(1, 2, 3),
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = NA,
+    "Local Record ID" = NA,
+    "Result Comment" = NA,
+    check.names = FALSE
+  )
+
+  expect_equal(
+    suppressWarnings(
+      add_qc_ref(df_trio)
+    ),
+    df_trio
+  )
+  expect_warning(
+    add_qc_ref(df_trio),
+    regexp = "More than two matching samples found"
+  )
+
+  # Edge case 3 - concatenate selected columns (Qualifier, Record ID, Comment)
+  df_in <- data.frame(
+    "Monitoring Location ID" = "foo",
+    "Activity Type" = c(
+      "Quality Control Field Replicate Msr/Obs",
+      "Field Msr/Obs"
+    ),
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = "8:00",
+    "Characteristic Name" = "TP",
+    "Result Value" = c(1, 2),
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = NA,
+    "Result Measure Qualifier" = "Q",
+    "Local Record ID" = c(NA, "foofy"),
+    "Result Comment" = c("foo", "bar"),
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    "Monitoring Location ID" = "foo",
+    "Activity Start Date" = as.Date("2025-08-13"),
+    "Activity Start Time" = "8:00",
+    "Characteristic Name" = "TP",
+    "Result Unit" = "mg/l",
+    "QC Reference Value" = "1",
+    "Activity Type" = "Field Msr/Obs",
+    "Result Value" = "2",
+    "Result Measure Qualifier" = "Q",
+    "Local Record ID" = "foofy",
+    "Result Comment" = "bar; foo",
+    check.names = FALSE
+  )
+
+  expect_equal(
+    suppressWarnings(
+      add_qc_ref(df_in)
+    ),
     df_out
   )
 })
@@ -143,54 +279,19 @@ test_that("results_to_mwr works", {
     df_out
   )
 
-  # Test edge cases
-  # - Groups of 3 dropped NOT grouped
-  # - Concatenate select columns (Qualifier, Record ID, Comment)
+  # Test edge case - BDL, AQL handling
+  df_in <- df_in
+  df_in[["Result Value"]] <- c(NA, 7, 5, NA, 0.46, 980, NA)
+  df_in[["Result Measure Qualifier"]] = c("DL", NA, "Q", "GT", NA, NA, "DL")
 
-  df_in <- data.frame(
-    "Monitoring Location ID" = "foo",
-    "Activity Type" = c(
-      "Sample-Routine",
-      "Quality Control Field Replicate Msr/Obs",
-      "Field Msr/Obs",
-      "Field Msr/Obs",
-      "Field Msr/Obs",
-      "Field Msr/Obs"
-    ),
-    "Activity Start Date" = as.Date("2025-08-13"),
-    "Activity Start Time" = c("8:00", "8:00", "8:00", "9:00", "9:00", "9:00"),
-    "Characteristic Name" = c("TN", "TP", "TP", "TN", "TN", "TN"),
-    "Result Value" = c(1, 2, 3, 4, 5, 6),
-    "Result Unit" = "mg/l",
-    "QC Reference Value" = NA,
-    "Result Measure Qualifier" = c(NA, "Q", "Q", "Q", NA, "Q"),
-    "Local Record ID" = c(NA, "foofy", NA, NA, NA, "owl"),
-    "Result Comment" = c(NA, "foo", "bar", NA, NA, NA),
-    check.names = FALSE
+  df_out <- df_out
+  df_out[["Result Value"]] <- c("AQL", "BDL", 5, 980)
+  df_out[["QC Reference Value"]] <- c(0.46, 7, NA, "BDL")
+
+  expect_equal(
+    results_to_mwr(df_in),
+    df_out
   )
-
-  df_out <- data.frame(
-    "Monitoring Location ID" = "foo",
-    "Activity Type" = c(
-      "Sample-Routine",
-      "Field Msr/Obs",
-      "Field Msr/Obs",
-      "Field Msr/Obs",
-      "Field Msr/Obs"
-    ),
-    "Activity Start Date" = as.Date("2025-08-13"),
-    "Activity Start Time" = c("8:00", "8:00", "9:00", "9:00", "9:00"),
-    "Characteristic Name" = c("TN", "TP", "TN", "TN", "TN"),
-    "Result Value" = c(1, 3, 4, 5, 6),
-    "Result Unit" = "mg/l",
-    "QC Reference Value" = c(NA, 2, NA, NA, NA),
-    "Result Measure Qualifier" = c(NA, "Q", "Q", NA, "Q"),
-    "Local Record ID" = c(NA, "foofy", NA, NA, "owl"),
-    "Result Comment" = c(NA, "bar; foo", NA, NA, NA),
-    check.names = FALSE
-  )
-
-  expect_equal(results_to_mwr(df_in), df_out)
 })
 
 # WQX -----
@@ -244,75 +345,61 @@ test_that("results_to_wqx works", {
 
 # MA_BRC -----
 test_that("prep_brc_results works", {
-  df_in <- data.frame(
-    "DATE_TIME" = c(
-      "2024-02-04 12:56", "2024-02-05 15:25", "2024-02-06 7:24",
-      "2024-02-07 17:30", "2024-03-06 18:20"
-    ),
-    "PARAMETER" = c(
-      "Nitrate", "Nitrate Replicate", "E. coli", "E. coli Field Blank",
-      "E. coli Lab Blank"
-    )
-  )
-
   df_out <- data.frame(
-    "DATE_TIME" = c(
-      "2024-02-04 12:56", "2024-02-05 15:25", "2024-02-06 07:24",
-      "2024-02-07 17:30", "2024-03-06 18:20"
+    "ID" = c(96, 97, 98, 99, 100, 101, 102, 103, 104),
+    "SEID" = 14,
+    'SITE_BRC_CODE' = 'B-06-01-050',
+    "DATE_TIME" = as.POSIXct("2004-04-10 04:30", tz = "America/New_York"),
+    "PARAMETER" = c(
+      "Air Temperature", "Dissolved Oxy Saturation", "Dissolved Oxygen",
+      "Nitrate", "Nitrate", "Orthophosphate", "Orthophosphate", "Turbidity",
+      "Water Temperature"
     ),
-    "PARAMETER" = c("Nitrate", "Nitrate", "E. coli", "E. coli", "E. coli"),
-    "DATE" = c(
-      "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
+    "RESULT" = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
+    "UNITS" = c("C", "%", "mg/L", "mg/L", "mg/L", "mg/L", "mg/L", "NTU", "C"),
+    "UNIQUE_ID" = c(
+      "B-06-01-050_2004-04-10 04:30_TAC", "B-06-01-050_2004-04-10 04:30_OXYSAT",
+      "B-06-01-050_2004-04-10 04:30_DOXY", "B-06-01-050_2004-04-10 04:30_NO3",
+      "B-06-01-050_2004-04-10 04:30_NO3R", "B-06-01-050_2004-04-10 04:30_PO4",
+      "B-06-01-050_2004-04-10 04:30_PO4R", "B-06-01-050_2004-04-10 04:30_TURB1",
+      "B-06-01-050_2004-04-10 04:30_TWC"
     ),
-    "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
+    "DATE" = as.Date("2004-04-10"),
+    "TIME" = "04:30",
     "ACTIVITY_TYPE" = c(
-      "Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"
+      "Grab", "Grab", "Grab", "Grab", "Replicate", "Grab", "Replicate", "Grab",
+      "Grab"
     ),
     "DEPTH_CATEGORY" = "Surface",
     "PROJECT_ID" = "BRC"
   )
-  df_out[["DATE_TIME"]] <- as.POSIXct(
-    df_out[["DATE_TIME"]],
-    tz = "America/New_York"
-  )
-  df_out[["DATE"]] <- as.Date(df_out[["DATE"]])
 
-  expect_equal(prep_brc_results(df_in), df_out)
+  expect_equal(prep_brc_results(tst$ma_brc_data), df_out)
 })
 
 test_that("results_to_brc works", {
-  df <- data.frame(
-    "SITE_BRC_CODE" = c(1, 2, 3, 4, 5),
-    "PARAMETER" = c("Nitrate", "Nitrate", "E. coli", "E. coli", "E. coli"),
-    "DATE" = c(
-      "2024-02-04", "2024-02-05", "2024-02-06", "2024-02-07", "2024-03-06"
+  df_in <- data.frame(
+    "ID" = c(96, 97, 98, 99, 100, 101, 102, 103, 104),
+    "SEID" = 14,
+    'SITE_BRC_CODE' = 'B-06-01-050',
+    "PARAMETER" = c(
+      "Air Temperature", "Dissolved Oxy Saturation", "Dissolved Oxygen",
+      "Nitrate", "Nitrate", "Orthophosphate", "Orthophosphate", "Turbidity",
+      "Water Temperature"
     ),
-    "TIME" = c("12:56", "15:25", "07:24", "17:30", "18:20"),
+    "RESULT" = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
+    "UNITS" = c("C", "%", "mg/L", "mg/L", "mg/L", "mg/L", "mg/L", "NTU", "C"),
+    "DATE" = as.Date("2004-04-10"),
+    "TIME" = "04:30",
     "ACTIVITY_TYPE" = c(
-      "Grab", "Replicate", "Grab", "Field Blank", "Lab Blank"
+      "Grab", "Grab", "Grab", "Grab", "Replicate", "Grab", "Replicate", "Grab",
+      "Grab"
     ),
     "DEPTH_CATEGORY" = "Surface",
     "PROJECT_ID" = "BRC"
   )
 
-  df_out <- data.frame(
-    "SITE_BRC_CODE" = c(1, 2, 3, 4, 5),
-    "DATE_TIME" = c(
-      "2024-02-04 12:56", "2024-02-05 15:25", "2024-02-06 07:24",
-      "2024-02-07 17:30", "2024-03-06 18:20"
-    ),
-    "PARAMETER" = c(
-      "Nitrate", "Nitrate Replicate", "E. coli", "E. coli Field Blank",
-      "E. coli Lab Blank"
-    ),
-    "UNIQUE_ID" = c(
-      "1_2024-02-04 12:56_NO3", "2_2024-02-05 15:25_NO3R",
-      "3_2024-02-06 07:24_ECOL", "4_2024-02-07 17:30_ECOLFB",
-      "5_2024-03-06 18:20_ECOLB"
-    )
-  )
-
-  expect_equal(results_to_brc(df), df_out)
+  expect_equal(results_to_brc(df_in), tst$ma_brc_data)
 })
 
 # ME_FOCB ----

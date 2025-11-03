@@ -50,7 +50,13 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   }
 
   # Update columns ----
-  var_names <- fetch_var(colnames_sites, in_format, out_format, name_repair)
+  var_names <- fetch_var(
+    colnames_sites,
+    in_format,
+    out_format,
+    name_repair = name_repair,
+    limit_var = TRUE
+  )
   df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns

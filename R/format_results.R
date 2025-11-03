@@ -73,7 +73,13 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Update columns ----
-  var_names <- fetch_var(colnames_results, in_format, out_format, name_repair)
+  var_names <- fetch_var(
+    colnames_results,
+    in_format,
+    out_format,
+    name_repair = name_repair,
+    limit_var = TRUE
+  )
   df <- rename_col(df, var_names$old_names, var_names$new_names)
 
   # Add missing columns
@@ -220,4 +226,77 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 
   message("Done")
   return(df)
+}
+
+#' Check and improve formatting for MassWateR result data
+#'
+#' @description `format_mwr_results()` reviews MassWateR result data and checks
+#' for common formatting errors.
+#' * Checks for missing columns and places columns in the correct order
+#' * Updates "Result Value" and "Result Measure Qualifier" for over-detects and
+#' under-detects
+#' * Transfers duplicate values to "QC Reference Value"
+#'
+#' @param .data Input dataframe.
+#'
+#' @returns Updated dataframe.
+#'
+#' @export
+format_mwr_results <- function(.data) {
+  message("Formatting MassWateR result data...")
+
+  # Check columns
+  key_col <- c(
+    "Monitoring Location ID", "Activity Type", "Activity Start Date",
+    "Activity Start Time", "Activity Depth/Height Measure",
+    "Activity Depth/Height Unit", "Activity Relative Depth Name",
+    "Characteristic Name", "Result Value", "Result Unit", "Quantitation Limit",
+    "QC Reference Value", "Result Measure Qualifier", "Result Attribute",
+    "Sample Collection Method ID", "Project ID"
+  )
+  bonus_col <- c("Local Record ID", "Result Comment")
+
+  chk <- key_col %in% colnames(.data)
+  if (any(!chk)) {
+    missing_col <- key_col[which(!chk)]
+    stop(
+      "Missing mandatory columns: ", paste(missing_col, collapse = ", ")
+    )
+  }
+
+  chk <- bonus_col %in% colnames(.data)
+  if (any(!chk)) {
+    missing_col <- bonus_col[which(!chk)]
+    .data[missing_col] <- NA
+    warning(
+      "Missing suggested columns: ", paste(missing_col, collapse = ", ")
+    )
+  }
+
+  # Check variables
+  activity_list <- unique_var(varnames_activity, "masswater")
+  param_list <- unique_var(varnames_parameters, "masswater")
+  unit_list <- unique_var(varnames_units, "masswater")
+  qual_list <- unique_var(varnames_qualifiers, "wqx")
+
+  warn_invalid_var(.data, "Activity Type", activity_list)
+  warn_invalid_var(.data, "Characteristic Name", param_list)
+  warn_invalid_var(.data, "Result Unit", unit_list)
+  warn_invalid_var(.data, "Result Measure Qualifier", qual_list)
+
+  # Improve formatting, arrange columns
+  keep_col <- c(key_col, bonus_col)
+  drop_col <- setdiff(colnames(.data), keep_col)
+
+  if (length(drop_col) > 0) {
+    message("\tRemoved ", toString(length(drop_col)), " invalid columns")
+  }
+
+  dat <- .data %>%
+    results_to_mwr() %>%  # improve formatting
+    dplyr::select(dplyr::all_of(keep_col))  # reorder columns
+
+  message("Done")
+
+  dat
 }

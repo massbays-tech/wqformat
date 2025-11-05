@@ -58,18 +58,9 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   } else if (in_format == "ma_brc") {
     df <- prep_brc_results(df, date_format, tz)
   } else if (in_format == "me_dep") {
-    df <- df %>%
-      concat_col(
-        c("LAB_QUALIFIER", "PARAMETER_QUALIFIER", "VALIDATION_QUALIFIER"),
-        "LAB_QUALIFIER"
-      ) %>%
-      concat_col(
-        c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
-        "SAMPLE_COMMENTS",
-        concat = TRUE
-      )
+    df <- prep_me_dep_results(df)
   } else if (in_format == "me_focb") {
-    df <- prep_focb_results(df, date_format)
+    df <- prep_focb_results(df, date_format, name_repair)
   }
 
   # Update columns ----
@@ -293,8 +284,8 @@ format_mwr_results <- function(.data) {
   }
 
   dat <- .data %>%
-    results_to_mwr() %>%  # improve formatting
-    dplyr::select(dplyr::all_of(keep_col))  # reorder columns
+    results_to_mwr() %>% # improve formatting
+    dplyr::select(dplyr::all_of(keep_col)) # reorder columns
 
   message("Done")
 

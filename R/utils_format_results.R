@@ -185,7 +185,7 @@ add_qc_ref <- function(.data) {
   if (any(chk2)) {
     warning(
       "More than two matching samples found. Check rows ",
-      paste(which(chk2), collapse=", ")
+      paste(which(chk2), collapse = ", ")
     )
   }
 
@@ -553,19 +553,28 @@ results_to_brc <- function(.data) {
 #' * Pivots table from wide to long
 #'
 #' @param .data Dataframe
+#' @param name_repair Set to TRUE if column names have undergone name repair
+#' (eg all spaces replaces with periods). Default FALSE.
 #'
 #' @inheritParams col_to_date
 #'
 #' @returns Dataframe matching the standard format used by [format_results()]
 #'
 #' @noRd
-prep_focb_results <- function(.data, date_format = "m/d/y") {
+prep_focb_results <- function(.data, date_format = "m/d/y",
+                              name_repair = FALSE) {
+  # Fix column names
+  if (name_repair) {
+    colnames(.data) <- gsub("_mg\\.L|_mg\\l|MG\\.L", "_mg/L", colnames(.data))
+    colnames(.data) <- gsub("_ug\\.L|_ug\\l|UG\\.L", "_ug/L", colnames(.data))
+    colnames(.data) <- gsub("_\\.", "_%", colnames(.data))
+    colnames(.data) <- gsub("\\.", " ", colnames(.data))
+  }
+
   # Add columns
   dat <- .data %>%
     dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
-
-  colnames(dat) <- gsub("\\.", " ", colnames(dat))
 
   chk <- grepl("Sample Depth", colnames(dat))
   if (any(chk) && !"Sample Depth Unit" %in% colnames(dat)) {
@@ -657,4 +666,40 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
       )
     ) %>%
     dplyr::select(!"temp_gap")
+
+  if (name_repair) {
+    colnames(dat) <- make.names(colnames(dat))
+  }
+
+  return(dat)
+}
+
+#' Preformat result data from Maine DEP
+#'
+#' @description
+#' `prep_me_dep_results()` is a helper function for [format_results()] that
+#' standardizes result data from Maine DEP (ME_DEP).
+#' * Concatenates all comments in column "SAMPLE_COMMENTS"
+#' * Sets "QC_TYPE" `NA` values to "NOT APPLICABLE (NORMAL ENVIRONMENTAL
+#' SAMPLE)"
+#'
+#' @param .data Dataframe
+#'
+#' @returns Dataframe matching the standard format used by [format_results()]
+#'
+#' @noRd
+prep_me_dep_results <- function(.data) {
+  .data %>%
+    concat_col(
+      c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
+      "SAMPLE_COMMENTS",
+      concat = TRUE
+    ) %>%
+    dplyr::mutate(
+      "QC_TYPE" = dplyr::if_else(
+        is.na(.data$QC_TYPE),
+        "NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)",
+        .data$QC_TYPE
+      )
+    )
 }

@@ -1,0 +1,4 @@
+SiteID,Date,Time,Sample Depth_m,Temperature_Deg C,Salinity_PSU,Dissolved Oxygen_mg/L,DO Saturation_%,pH,Chlorophyll_ug/L,Turbidity_FNU
+P5BSD,7/19/2023,10:04,11,12.7,31,7.3,83.7,7.93,2.3,1.1
+P5BSD,7/19/2023,10:04,11,12.7,31,7.3,83.4,7.93,2.5,1.1
+P5BSD,7/19/2023,10:05,5,15.5,30.1,7.6,91.3,7.98,7.8,1.1

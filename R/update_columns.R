@@ -298,7 +298,7 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
     )
 
   if (!datetime) {
-    dat[[date_col]] <- as.Date(dat[[date_col]], tz=tz)
+    dat[[date_col]] <- as.Date(dat[[date_col]], tz = tz)
   }
 
   chk2 <- !is.na(dat[[date_col]])

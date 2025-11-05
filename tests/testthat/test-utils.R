@@ -29,7 +29,7 @@ test_that("unique_var works", {
   # Test error
   expect_error(
     unique_var(df, "col4"),
-    regexp="col_name is invalid"
+    regexp = "col_name is invalid"
   )
 })
 

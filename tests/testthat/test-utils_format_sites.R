@@ -15,6 +15,18 @@ test_that("prep_brc_sites works", {
     prep_brc_sites(df_in),
     df_out
   )
+
+  # Edge case - no depth column
+  df_in <- tst$ma_brc_sites
+  df_in$WATER_DEPTH_FT <- NULL
+
+  df_out$WATER_DEPTH_FT <- NA
+  df_out$WATER_DEPTH_M <- NA_integer_
+
+  expect_equal(
+    prep_brc_sites(df_in),
+    df_out
+  )
 })
 
 # Test sites_to_brc ----

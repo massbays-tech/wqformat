@@ -1,49 +1,26 @@
 # Maine ----
-test_that("format_sites converts ME_FOCB", {
-  df_test <- data.frame(
-    "Site ID" = c("RI01", "MA01", "ME01"),
-    "Station_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Town" = c("Providence", "Boston", "Portland"),
-    "X" = c(-71.41924, -71.03931, -70.27354),
-    "Y" = c(41.82897, 42.31481, 43.66218),
-    "Category" = c("Freshwater", "Saltwater", "Saltwater"),
+test_that("format_sites converts ME_FOCB to MassWateR", {
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = c("BMR02", "EEB18", "HR2", "HR4", "KVL84"),
+    "Monitoring Location Name" = c(
+      "B&M Railroad /Back Cove", "East End Beach", "Harraseeket-South Freeport",
+      "Upper Harraseeket", "Knightville Landing"
+    ),
+    "Monitoring Location Latitude" = c(
+      43.676295, 43.671281, 43.820075, 43.842034, 43.6398783
+    ),
+    "Monitoring Location Longitude" = c(
+      -70.250053, -70.241942, -70.104023, -70.095875, -70.2547617
+    ),
+    "Location Group" = "Seasonal (Surface)",
     check.names = FALSE
   )
 
   expect_equal(
     suppressMessages(
-      format_sites(df_test, "ME_FOCB", "MassWateR")
+      format_sites(tst$me_focb_sites, "ME_FOCB", "MassWateR")
     ),
-    data.frame(
-      "Monitoring Location ID" = c("RI01", "MA01", "ME01"),
-      "Monitoring Location Name" = c("NBEP", "MassBays", "Casco Bay"),
-      "Monitoring Location Latitude" = c(41.82897, 42.31481, 43.66218),
-      "Monitoring Location Longitude" = c(-71.41924, -71.03931, -70.27354),
-      "Location Group" = c("Freshwater", "Saltwater", "Saltwater"),
-      check.names = FALSE
-    )
-  )
-
-  expect_equal(
-    suppressMessages(
-      format_sites(df_test, "ME_FOCB", "WQdashboard")
-    ),
-    data.frame(
-      "Site_ID" = c("RI01", "MA01", "ME01"),
-      "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
-      "Latitude" = c(41.82897, 42.31481, 43.66218),
-      "Longitude" = c(-71.41924, -71.03931, -70.27354),
-      "Town" = c("Providence", "Boston", "Portland"),
-      "County" = NA,
-      "State" = NA_character_,
-      "Watershed" = NA,
-      "Group" = NA,
-      "Location_Type" = NA,
-      "Surface_Depth" = NA,
-      "Midwater_Depth" = NA,
-      "Near_Bottom_Depth" = NA,
-      "Bottom_Depth" = NA
-    )
+    df_mwr
   )
 })
 
@@ -112,7 +89,6 @@ test_that("format_sites converts MA_BRC to wqdashboard", {
     "Bottom_Depth" = NA_integer_
   )
 
-  # Test from BRC
   expect_equal(
     suppressMessages(
       format_sites(tst$ma_brc_sites, "MA_BRC", "wqdashboard")

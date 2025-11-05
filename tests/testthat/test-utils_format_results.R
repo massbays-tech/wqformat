@@ -40,15 +40,15 @@ test_that("prep_mwr_results works", {
 
   # Additional test - BDL, AQL values; no name repair
   df_in <- tst$mwr_data
-  df_in$Result.Value = c("BDL", 5, "AQL", 980)
-  df_in$QC.Reference.Value = c(7, NA, 0.46, "BDL")
+  df_in$Result.Value <- c("BDL", 5, "AQL", 980)
+  df_in$QC.Reference.Value <- c(7, NA, 0.46, "BDL")
   colnames(df_in) <- gsub("\\.", " ", colnames(df_in))
   colnames(df_in) <- gsub("Depth Height", "Depth/Height", colnames(df_in))
 
 
   df_out <- df_out
   df_out$Result.Value <- c(NA, 7, 5, NA, 0.46, 980, NA)
-  df_out$Result.Measure.Qualifier = c("DL", NA, "Q", "GT", NA, NA, "DL")
+  df_out$Result.Measure.Qualifier <- c("DL", NA, "Q", "GT", NA, NA, "DL")
   colnames(df_out) <- gsub("\\.", " ", colnames(df_out))
   colnames(df_out) <- gsub("Depth Height", "Depth/Height", colnames(df_out))
 
@@ -282,7 +282,7 @@ test_that("results_to_mwr works", {
   # Test edge case - BDL, AQL handling
   df_in <- df_in
   df_in[["Result Value"]] <- c(NA, 7, 5, NA, 0.46, 980, NA)
-  df_in[["Result Measure Qualifier"]] = c("DL", NA, "Q", "GT", NA, NA, "DL")
+  df_in[["Result Measure Qualifier"]] <- c("DL", NA, "Q", "GT", NA, NA, "DL")
 
   df_out <- df_out
   df_out[["Result Value"]] <- c("AQL", "BDL", 5, 980)
@@ -348,7 +348,7 @@ test_that("prep_brc_results works", {
   df_out <- data.frame(
     "ID" = c(96, 97, 98, 99, 100, 101, 102, 103, 104),
     "SEID" = 14,
-    'SITE_BRC_CODE' = 'B-06-01-050',
+    "SITE_BRC_CODE" = "B-06-01-050",
     "DATE_TIME" = as.POSIXct("2004-04-10 04:30", tz = "America/New_York"),
     "PARAMETER" = c(
       "Air Temperature", "Dissolved Oxy Saturation", "Dissolved Oxygen",
@@ -381,7 +381,7 @@ test_that("results_to_brc works", {
   df_in <- data.frame(
     "ID" = c(96, 97, 98, 99, 100, 101, 102, 103, 104),
     "SEID" = 14,
-    'SITE_BRC_CODE' = 'B-06-01-050',
+    "SITE_BRC_CODE" = "B-06-01-050",
     "PARAMETER" = c(
       "Air Temperature", "Dissolved Oxy Saturation", "Dissolved Oxygen",
       "Nitrate", "Nitrate", "Orthophosphate", "Orthophosphate", "Turbidity",
@@ -404,111 +404,61 @@ test_that("results_to_brc works", {
 
 # ME_FOCB ----
 test_that("prep_focb_results works", {
-  # Input formats - test data from ME_FOCB in 3 formats
-  df_wide1 <- data.frame(
-    "SiteID" = c("BMR02", "EEB18", "HR2"),
-    "Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "Time" = c("12:32", "12:45", "10:22"),
-    "Cloud Cover_%" = c(50, 50, 50),
-    "Wind Speed_BFT" = c(3, 3, 2),
-    "Wind Direction_DEG True" = c(120, 150, 180),
-    "Water Depth_m" = c(10.7, 3.2, NA),
-    "Secchi_m" = c(1.9, "BSV", NA),
-    check.names = FALSE
-  )
-
-  df_wide2 <- data.frame(
-    "SiteID" = c("BMR02", "EEB18", "HR2"),
-    "Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "Time" = c("12:32", "12:45", "10:22"),
-    "Sample Depth_m" = c(0.2, 0.2, 0),
-    "Temperature_Deg C" = c(11.3, 11, 14),
-    "Salinity_PSU" = c(27.5, 28, 28),
-    "Dissolved Oxygen_mg/L" = c(9.3, 9.3, 8.2),
-    "DO Saturation_%" = c(100.7, 100.7, 94.9),
-    "pH" = c(7.93, 7.93, 7.82),
-    "Chlorophyll_ug/L" = c(1.2, 1.2, 1.4),
-    "Turbidity_FNU" = c(2.7, 1.4, 2.4),
-    check.names = FALSE
-  )
-
-  df_long <- data.frame(
-    "Site ID" = c("BMR02", "EEB18", "HR2"),
-    "Sample Date" = c("05/23/23", "05/23/23", "05/24/23"),
-    "QC Type" = c("foo", "bar", NA),
-    "Lab" = "UMWL",
-    "Analysis Date" = c("07/06/23", "07/06/23", "06/07/23"),
-    "Parameter" =
-      "TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN",
-    "Result" = c(0.22, 0.18, 0.28),
-    "Unit" = "MG/L",
-    "RL" = 0.1,
-    "MDL" = 0.73,
-    "Method" = "SM4500NE_2021",
-    "Sample Depth m" = 0.2,
-    check.names = FALSE
-  )
-
-  # Expected outputs
-  df_wide1_b <- data.frame(
+  # Test - wide format 1
+  df_out1 <- data.frame(
     "SiteID" = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
-      "EEB18", "EEB18", "HR2", "HR2", "HR2"
+      "EEB18", "EEB18", "HR4", "HR4", "HR4"
     ),
-    "Sample Date" = c(
-      "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
-      "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/24/23", "05/24/23",
-      "05/24/23"
+    "Sample.Date" = c(
+      "10/4/2023", "10/4/2023", "10/4/2023", "10/4/2023", "10/4/2023",
+      "6/22/2023", "6/22/2023", "6/22/2023", "6/22/2023", "6/22/2023",
+      "5/24/2023", "5/24/2023", "5/24/2023"
     ),
     "Time" = c(
-      "12:32", "12:32", "12:32", "12:32", "12:32", "12:45", "12:45", "12:45",
-      "12:45", "12:45", "10:22", "10:22", "10:22"
+      "12:25", "12:25", "12:25", "12:25", "12:25", "8:45", "8:45", "8:45",
+      "8:45", "8:45", "13:51", "13:51", "13:51"
     ),
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled By" = "FRIENDS OF CASCO BAY",
-    "QC Type" = "Field Measurement",
+    "Sampled.By" = "FRIENDS OF CASCO BAY",
+    "QC.Type" = "Field Measurement",
     "Parameter" = c(
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
       "Cloud Cover", "Wind Speed", "Wind Direction"
     ),
     "Result" = c(
-      "50", "3", "120", "10.7", "1.9", "50", "3", "150", "3.2", "BSV", "50",
-      "2", "180"
+      25, 1, 160, 9.5, 2.7, 0, 1, 45, 0.8, "BSV", 75, 3, 180
     ),
     "Unit" = c(
       "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
       "BFT", "DEG True"
     ),
-    "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
-    check.names = FALSE
+    "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA)
   )
 
-  df_wide2_b <- data.frame(
-    "SiteID" = c(
-      "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18",
-      "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "EEB18", "HR2", "HR2", "HR2",
-      "HR2", "HR2", "HR2", "HR2"
-    ),
-    "Sample Date" = c(
-      "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
-      "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23", "05/23/23",
-      "05/23/23", "05/23/23", "05/24/23", "05/24/23", "05/24/23", "05/24/23",
-      "05/24/23", "05/24/23", "05/24/23"
-    ),
+  expect_equal(
+    prep_focb_results(tst$me_focb_data1, name_repair = TRUE),
+    df_out1
+  )
+
+  # Test - wide format 2
+  df_out2 <- data.frame(
+    "SiteID" = "P5BSD",
+    "Sample.Date" = "7/19/2023",
     "Time" = c(
-      "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:32", "12:45",
-      "12:45", "12:45", "12:45", "12:45", "12:45", "12:45", "10:22", "10:22",
-      "10:22", "10:22", "10:22", "10:22", "10:22"
+      "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04",
+      "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:05", "10:05",
+      "10:05", "10:05", "10:05", "10:05", "10:05"
     ),
-    "Sample Depth_m" = c(
-      0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0,
-      0, 0, 0, 0, 0, 0
+    "Sample.Depth_m" = c(
+      11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 5, 5, 5, 5, 5, 5,
+      5
     ),
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled By" = "FRIENDS OF CASCO BAY",
-    "Sample Depth Unit" = "m",
-    "QC Type" = "Field Measurement",
+    "Sampled.By" = "FRIENDS OF CASCO BAY",
+    "Sample.Depth.Unit" = "m",
+    "QC.Type" = "Field Measurement",
     "Parameter" = c(
       "Temperature", "Salinity", "Dissolved Oxygen", "DO Saturation", "pH",
       "Chlorophyll", "Turbidity", "Temperature", "Salinity", "Dissolved Oxygen",
@@ -517,8 +467,8 @@ test_that("prep_focb_results works", {
       "Turbidity"
     ),
     "Result" = c(
-      11.3, 27.5, 9.3, 100.7, 7.93, 1.2, 2.7, 11, 28, 9.3, 100.7, 7.93, 1.2,
-      1.4, 14, 28, 8.2, 94.9, 7.82, 1.4, 2.4
+      12.7, 31, 7.3, 83.7, 7.93, 2.3, 1.1, 12.7, 31, 7.3, 83.4, 7.93, 2.5, 1.1,
+      15.5, 30.1, 7.6, 91.3, 7.98, 7.8, 1.1
     ),
     "Unit" = c(
       "Deg C", "PSU", "mg/L", "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L",
@@ -528,34 +478,83 @@ test_that("prep_focb_results works", {
     "Qualifier" = c(
       NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA,
       NA, "J", NA
-    ),
-    check.names = FALSE
+    )
   )
 
-  df_long2 <- data.frame(
-    "Site ID" = c("BMR02", "EEB18", "HR2"),
-    "Sample Date" = c("2023-05-23", "2023-05-23", "2023-05-24"),
-    "QC Type" = c("foo", "bar", "Field Measurement"),
+  expect_equal(
+    prep_focb_results(tst$me_focb_data2, name_repair = TRUE),
+    df_out2
+  )
+
+  # Test - long format
+  df_out3 <- data.frame(
+    "Sample.ID" = "BMR02",
+    "Sample.Date" = c(
+      "2023-05-23", "2023-06-21", "2023-07-05", "2023-07-18", "2023-08-16"
+    ),
     "Lab" = "UMWL",
-    "Analysis Date" = c("2023-07-06", "2023-07-06", "2023-06-07"),
+    "Analysis.Date" = c(
+      "2023-07-06", "2023-07-27", "2023-08-28", "2023-09-25", "2023-10-20"
+    ),
     "Parameter" = "TN as N",
-    "Result" = c(0.22, 0.18, 0.28),
+    "Result" = c(0.22, 0.34, 0.28, 0.28, 0.25),
     "Unit" = "MG/L",
     "RL" = 0.1,
-    "MDL" = 0.73,
+    "MDL" = 0.073,
     "Method" = "SM4500NE_2021",
-    "Sample Depth m" = 0.2,
+    "Sample.Depth.m" = 0.2,
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled By" = "FRIENDS OF CASCO BAY",
-    "Sample Depth Unit" = "m",
-    "Qualifier" = c("J", "J", NA),
-    check.names = FALSE
+    "Sampled.By" = "FRIENDS OF CASCO BAY",
+    "Sample.Depth.Unit" = "m",
+    "QC.Type" = "Field Measurement",
+    "Qualifier" = "J"
   )
-  df_long2[["Sample Date"]] <- as.Date(df_long2[["Sample Date"]])
-  df_long2[["Analysis Date"]] <- as.Date(df_long2[["Analysis Date"]])
+  df_out3$Sample.Date <- as.Date(df_out3$Sample.Date)
+  df_out3$Analysis.Date <- as.Date(df_out3$Analysis.Date)
 
-  # Test
-  expect_equal(prep_focb_results(df_wide1), df_wide1_b)
-  expect_equal(prep_focb_results(df_wide2), df_wide2_b)
-  expect_equal(prep_focb_results(df_long), df_long2)
+  expect_equal(
+    prep_focb_results(tst$me_focb_data3, name_repair = TRUE),
+    df_out3
+  )
+
+  # Test - edge case ("QC Type" column blank but present)
+  df_in3b <- tst$me_focb_data3
+  df_in3b$QC.Type <- NA
+
+  df_out3b <- df_out3[, c(1:11, 15, 12:14, 16)]
+
+  expect_equal(
+    prep_focb_results(df_in3b, name_repair = TRUE),
+    df_out3b
+  )
+})
+
+# ME_FOCB ----
+test_that("prep_me_dep works", {
+  df_out <- tst$me_dep_data
+  df_out$QC_TYPE <- "NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)"
+  df_out$SAMPLE_COMMENTS <- NA_character_
+  df_out <- df_out[, c(1:18, 26, 19:25, 27)]
+
+  expect_equal(
+    prep_me_dep_results(tst$me_dep_data),
+    df_out
+  )
+
+  # Test edge case
+  df_in <- tst$me_dep_data
+  df_in$LAB_COMMENT <- c("foo", NA, "piping", NA, NA)
+  df_in$SAMPLE_COMMENTS <- c("bar", "superb", "plover", NA, NA)
+  df_in$VALIDATION_COMMENT <- c("foofy", "owl", NA, NA, NA)
+
+  df_out$LAB_COMMENT <- df_in$LAB_COMMENT
+  df_out$SAMPLE_COMMENTS <- c(
+    "foo; bar; foofy", "superb; owl", "piping; plover", NA, NA
+  )
+  df_out$VALIDATION_COMMENT <- df_in$VALIDATION_COMMENT
+
+  expect_equal(
+    prep_me_dep_results(df_in),
+    df_out
+  )
 })

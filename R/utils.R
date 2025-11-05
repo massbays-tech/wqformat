@@ -33,7 +33,7 @@
 #'
 #' @noRd
 fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
-                     limit_var = FALSE) {
+                      limit_var = FALSE) {
   # Check input values
   chk <- c(in_format, out_format) %in% colnames(df)
   if (any(!chk)) {
@@ -54,7 +54,6 @@ fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
     dplyr::filter(!is.na(.data[[out_format]])) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
     dplyr::arrange(.data[[out_format]]) %>%
-    # Drop ##|| from start of out_format
     dplyr::mutate(
       {{ out_format }} := dplyr::if_else(
         grepl("||", .data[[out_format]], fixed = TRUE),
@@ -75,7 +74,6 @@ fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
   } else {
     df <- df %>%
       dplyr::filter(!is.na(.data[[in_format]])) %>%
-      # Drop ##|| from start of in_format
       dplyr::mutate(
         {{ in_format }} := dplyr::if_else(
           grepl("||", .data[[in_format]], fixed = TRUE),

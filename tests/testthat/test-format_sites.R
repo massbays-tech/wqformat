@@ -82,11 +82,9 @@ test_that("format_sites converts MA_BRC to wqdashboard", {
     "Group" = c(
       "Warmwater", "Coldwater", "Coldwater", "Coldwater", "Warmwater"
     ),
-    "Location_Type" = NA,
-    "Surface_Depth" = NA,
-    "Midwater_Depth" = NA,
-    "Near_Bottom_Depth" = NA,
-    "Bottom_Depth" = NA_integer_
+    "Max_Surface_Depth_m" = NA,
+    "Max_Midwater_Depth_m" = NA,
+    "Max_Depth_m" = NA_integer_
   )
 
   expect_equal(
@@ -151,20 +149,18 @@ test_that("format_sites converts RI_WW", {
       format_sites(df_test, "RI_WW", "WQdashboard")
     ),
     data.frame(
-      "Site_ID" = c("WW001", "WW002"),
-      "Site_Name" = c("Alton Pond", "Barber Pond"),
-      "Latitude" = c(41.438171, 41.504129),
-      "Longitude" = c(-71.721642, -71.564271),
-      "Town" = c("Hopkinton", "South Kingstown"),
-      "County" = "WASHINGTON",
-      "State" = "RI",
-      "Watershed" = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
-      "Group" = NA,
-      "Location_Type" = c("Reservoir", "Lake or Pond"),
-      "Surface_Depth" = NA,
-      "Midwater_Depth" = NA,
-      "Near_Bottom_Depth" = NA,
-      "Bottom_Depth" = c(4.2, 4.6)
+      Site_ID = c("WW001", "WW002"),
+      Site_Name = c("Alton Pond", "Barber Pond"),
+      Latitude = c(41.438171, 41.504129),
+      Longitude = c(-71.721642, -71.564271),
+      Town = c("Hopkinton", "South Kingstown"),
+      County = "WASHINGTON",
+      State = "RI",
+      Watershed = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
+      Group = NA_character_,
+      Max_Surface_Depth_m = NA,
+      Max_Midwater_Depth_m = NA,
+      Max_Depth_m = c(4.2, 4.6)
     )
   )
 })
@@ -182,13 +178,12 @@ test_that("format_sites converts MassWateR to wqdashboard", {
     County = NA,
     State = NA_character_,
     Watershed = NA,
-    Group = NA,
-    Location_Type = NA,
-    Surface_Depth = NA,
-    Midwater_Depth = NA,
-    Near_Bottom_Depth = NA,
-    Bottom_Depth = NA,
-    Location.Group = c("Lower Assabet", "Upper Assabet", NA)
+    Group = NA_character_,
+    Max_Surface_Depth_m = NA,
+    Max_Midwater_Depth_m = NA,
+    Max_Depth_m = NA,
+    "Location Group" = c("Lower Assabet", "Upper Assabet", NA),
+    check.names = FALSE
   )
 
   expect_equal(
@@ -231,32 +226,32 @@ test_that("format_sites converts WQX to wqdashboard", {
     ),
     State = c("UT", "SC", "WV", "CO", "ID", "UT", "UT", "UT", "UT"),
     Watershed = NA,
-    Group = NA,
+    Group = NA_character_,
+    Max_Surface_Depth_m = NA,
+    Max_Midwater_Depth_m = NA,
+    Max_Depth_m = NA,
     Location_Type = c(
       "Spring", "River/Stream", "River/Stream", "Spring", "River/Stream",
       "River/Stream", "River/Stream", "River/Stream", "River/Stream"
     ),
-    Surface_Depth = NA,
-    Midwater_Depth = NA,
-    Near_Bottom_Depth = NA,
-    Bottom_Depth = NA,
-    Tribal.Land.Indicator..Yes.No. = "No",
-    Tribal.Land.Name = NA,
-    Monitoring.Location.Source.Map.Scale = c(
+    "Tribal Land Indicator (Yes/No)" = "No",
+    "Tribal Land Name" = NA,
+    "Monitoring Location Source Map Scale" = c(
       24000, NA, NA, 12000, NA, NA, NA, NA, NA
     ),
-    Monitoring.Location.Horizontal.Collection.Method = c(
+    "Monitoring Location Horizontal Collection Method" = c(
       "Interpolation-Map", "GPS-Unspecified", "GPS-Unspecified",
       "Interpolation-Map", "GPS-Unspecified", "GPS-Unspecified",
       "GPS-Unspecified", "GPS-Unspecified", "GPS-Unspecified"
     ),
-    Monitoring.Location.Horizontal.Coordinate.Reference.System = c(
+    "Monitoring Location Horizontal Coordinate Reference System" = c(
       "NAD27", "NAD83", "NAD83", "NAD27", "NAD83", "NAD83", "NAD83", "NAD83",
       "NAD83"
     ),
-    County.Code..Auto.Generated. = c(35, 15, 3, 27, 37, 35, 35, 35, 35),
-    HUC.8 = NA,
-    HUC.12 = NA
+    "County Code (Auto-Generated)" = c(35, 15, 3, 27, 37, 35, 35, 35, 35),
+    "HUC 8" = NA,
+    "HUC 12" = NA,
+    check.names = FALSE
   )
 
   expect_equal(
@@ -276,11 +271,11 @@ test_that("format_sites converts WQX to wqdashboard", {
 
 test_that("format_sites to WQX updates state names", {
   df_wqd <- data.frame(
-    "Site_ID" = c("RI01", "MA01", "ME01"),
-    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Latitude" = c(41.82897, 42.31481, 43.66218),
-    "Longitude" = c(-71.41924, -71.03931, -70.27354),
-    "State" = c("Rhode Island", "Massachusetts", "Maine")
+    Site_ID = c("RI01", "MA01", "ME01"),
+    Site_Name = c("NBEP", "MassBays", "Casco Bay"),
+    Latitude = c(41.82897, 42.31481, 43.66218),
+    Longitude = c(-71.41924, -71.03931, -70.27354),
+    State = c("Rhode Island", "Massachusetts", "Maine")
   )
 
   df_wqx <- suppressMessages(
@@ -295,12 +290,12 @@ test_that("format_sites to WQX updates state names", {
 
 test_that("format_sites to MA_BRC updates CFR, WATER_DEPTH_FT", {
   df_wqd <- data.frame(
-    "Site_ID" = c("RI01", "MA01", "ME01"),
-    "Site_Name" = c("NBEP", "MassBays", "Casco Bay"),
-    "Latitude" = c(41.82897, 42.31481, 43.66218),
-    "Longitude" = c(-71.41924, -71.03931, -70.27354),
-    "Group" = c("Warmwater", "Warmwater", "Coldwater"),
-    "Bottom_Depth" = c(NA, 0.3048, 1)
+    Site_ID = c("RI01", "MA01", "ME01"),
+    Site_Name = c("NBEP", "MassBays", "Casco Bay"),
+    Latitude = c(41.82897, 42.31481, 43.66218),
+    Longitude = c(-71.41924, -71.03931, -70.27354),
+    Group = c("Warmwater", "Warmwater", "Coldwater"),
+    Max_Depth_m = c(NA, 0.3048, 1)
   )
 
   df_brc <- suppressMessages(

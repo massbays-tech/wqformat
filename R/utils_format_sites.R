@@ -85,3 +85,37 @@ sites_to_brc <- function(.data) {
     ) %>%
     dplyr::select(!dplyr::any_of(c("STATE", "WATER_DEPTH_M")))
 }
+
+#' Format site data for wqdashboard
+#'
+#' @description
+#' `sites_to_wqdashboard()` is a helper function for [format_sites()] that
+#' formats site data for wqdashboard.
+#' * Updates "Group" if "Location_Type" includes the string "Ocean"
+#' * Removes column "Location_Type" if empty or `drop_extra_col` is `TRUE`
+#'
+#' @param .data Dataframe
+#' @param drop_extra_col Boolean. If `TRUE`, removes column "Location_Type".
+#' Default `FALSE`.
+#'
+#' @returns
+#' Updated dataframe
+#'
+#' @noRd
+sites_to_wqdashboard <- function(.data, drop_extra_col = FALSE) {
+  dat <- .data %>%
+    dplyr::mutate(
+      "Group" = dplyr::case_when(
+        !is.na(.data$Group) ~ .data$Group,
+        stringr::str_detect(.data$Location_Type, "Ocean") ~ "Saltwater",
+        TRUE ~ NA
+      )
+    )
+
+  chk <- is.na(dat$Location_Type)
+  if (all(chk) || drop_extra_col) {
+    dat <- dplyr::select(dat, !"Location_Type")
+  }
+
+  return(dat)
+}

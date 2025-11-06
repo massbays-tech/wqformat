@@ -50,3 +50,32 @@ test_that("sites_to_brc works", {
 
   expect_equal(sites_to_brc(df_in), df_out)
 })
+
+# Test sites_to_wqdashboard ----
+test_that("sites_to_wqdashboard works", {
+  # Basic test - fake data for simplicity's sake
+  df_in <- data.frame(
+    "Group" = c("Coldwater", NA, "Warmwater", NA),
+    "Location_Type" = c("River", "River", "Ocean", "Ocean")
+  )
+
+  df_out <- data.frame(
+    "Group" = c("Coldwater", NA, "Warmwater", "Saltwater"),
+    "Location_Type" = c("River", "River", "Ocean", "Ocean")
+  )
+
+  expect_equal(sites_to_wqdashboard(df_in), df_out)
+
+  # Edge case 1 - drop extra col is TRUE
+  df_out$Location_Type <- NULL
+
+  expect_equal(sites_to_wqdashboard(df_in, TRUE), df_out)
+
+  # Edge case 2 - Location_Type is blank
+  df_in$Location_Type <- NA
+  df_out <- data.frame(
+    "Group" = c("Coldwater", NA, "Warmwater", NA)
+  )
+
+  expect_equal(sites_to_wqdashboard(df_in), df_out)
+})

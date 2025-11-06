@@ -39,9 +39,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   chk <- grepl("\\.", colnames(df))
   chk2 <- grepl(" ", colnames(df))
   if (any(chk) && !any(chk2)) {
-    name_repair <- TRUE
-  } else {
-    name_repair <- FALSE
+    df <- unrepair_names(df, colnames_sites[[in_format]])
   }
 
   # Prep data with nonstandard formats ----
@@ -54,7 +52,6 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     colnames_sites,
     in_format,
     out_format,
-    name_repair = name_repair,
     limit_var = TRUE
   )
   df <- rename_col(df, var_names$old_names, var_names$new_names)
@@ -96,6 +93,8 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   # Format data with nonstandard formats ----
   if (out_format == "ma_brc") {
     df <- sites_to_brc(df)
+  } else if (out_format == "wqdashboard") {
+    df <- sites_to_wqdashboard(df, drop_extra_col)
   }
 
   message("Done")

@@ -39,7 +39,7 @@ test_that("fetch_var works", {
     col1 = c("01||A", "03||B|C", "D|E", "F", "02||G", NA),
     col2 = c("X|Y", "Z", "T|U", NA, "V", "W"),
     col3 = c(NA, 2, NA, NA, 5, 6),
-    col4 = c("foo bar", NA, "foo (bar)", "foo_bar", NA, NA)
+    col4 = c("foo", NA, "bar", "foofy", NA, NA)
   )
 
   # Basic tests
@@ -65,23 +65,6 @@ test_that("fetch_var works", {
       old_names = c("B", "C", "G"),
       new_names = c("2", "2", "5"),
       keep_var = c("2", "5", "6")
-    )
-  )
-  # Test name_repair
-  expect_equal(
-    fetch_var(df, "col4", "col1"),
-    list(
-      old_names = c("foo bar", "foo (bar)", "foo_bar"),
-      new_names = c("A", "D", "F"),
-      keep_var = c("A", "G", "B", "C", "D", "E", "F")
-    )
-  )
-  expect_equal(
-    fetch_var(df, "col4", "col1", name_repair = TRUE),
-    list(
-      old_names = c("foo.bar", "foo..bar.", "foo_bar"),
-      new_names = c("A", "D", "F"),
-      keep_var = c("A", "G", "B", "C", "D", "E", "F")
     )
   )
   # Test limit_var
@@ -116,14 +99,6 @@ test_that("fetch_var works", {
       old_names = c("U", "Y"),
       new_names = c("T", "X"),
       keep_var = c("T", "U", "V", "W", "X", "Y", "Z")
-    )
-  )
-  expect_equal(
-    fetch_var(df, "col4", "col4", name_repair = TRUE),
-    list(
-      old_names = c("foo..bar.", "foo.bar"),
-      new_names = c("foo (bar)", "foo bar"),
-      keep_var = c("foo (bar)", "foo bar", "foo_bar")
     )
   )
   # Test edge case - no matches
@@ -213,5 +188,37 @@ test_that("str_unique works", {
   expect_equal(
     str_unique("tweedle dee| tweedle dum |tweedle dee", delim = "|"),
     "tweedle dee|tweedle dum"
+  )
+})
+
+# Test unrepair_names ----
+test_that("unrepair_names works", {
+  df_in <- data.frame(
+    "foo.bar" = c(1, 2, 3),
+    "foofy." = c("a", "b", "c"),
+    "superb.owl." = "yes"
+  )
+
+  df_out <- data.frame(
+    "foo bar" = c(1, 2, 3),
+    "foofy?" = c("a", "b", "c"),
+    "superb owl!" = "yes",
+    check.names = FALSE
+  )
+
+  expect_equal(
+    unrepair_names(df_in, c("foo bar", "foofy?", "superb owl!")),
+    df_out
+  )
+
+  # test edge cases
+  df_in <- data.frame(
+    "foo.bar" = c(1, 2, 3),
+    "superb_owl" = "yes"
+  )
+
+  expect_equal(
+    unrepair_names(df_in, c("foo bar", "foo/bar", "superb_owl")),
+    df_in
   )
 })

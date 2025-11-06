@@ -1,7 +1,7 @@
 wqx,masswater,wqdashboard,ri_dem,ri_ww,ma_brc,me_dep,me_focb
 01||Monitoring Location ID,01||Monitoring Location ID,01||Site_ID,,02||WW_Station,02||BRC_CODE,,01||Site ID
 02||Monitoring Location Name,02||Monitoring Location Name,02||Site_Name,,05||Site_DESCR,03||SITE_NAME,,02||Station_Name
-03||Monitoring Location Type ,,10||Location_Type,,04||WB_Type,,,
+03||Monitoring Location Type ,,Location_Type,,04||WB_Type,,,
 04||Tribal Land Indicator (Yes/No),,,,,,,
 05||Tribal Land Name,,,,,,,
 06||Monitoring Location Latitude (DD.DDDD) ,03||Monitoring Location Latitude,03||Latitude,,11||LAT_DD,07||LATITUDE,,05||Y
@@ -18,10 +18,9 @@ wqx,masswater,wqdashboard,ri_dem,ri_ww,ma_brc,me_dep,me_focb
 ,,05||Town,,07||Town,10||TOWN,,03||Town
 ,,08||Watershed,,26||HUC_12_NAME,13||HUC_NAME,,
 ,,09||Group,,,11||CFR,,
-,,11||Surface_Depth,,,,,
-,,12||Midwater_Depth,,,,,
-,,13||Near_Bottom_Depth,,,,,
-,,14||Bottom_Depth,,18||MaxDepth_m,WATER_DEPTH_M,,
+,,10||Max_Surface_Depth_m,,,,,
+,,11||Max_Midwater_Depth_m,,,,,
+,,12||Max_Depth_m,,18||MaxDepth_m,WATER_DEPTH_M,,
 ,,,,01||WW_StaNumb,,,
 ,,,,03||WBID,,,
 ,,,,06||PARKING_ACCESS,,,

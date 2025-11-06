@@ -707,38 +707,38 @@ test_that("format_results converts RI_WW to WQdashboard", {
 # Test OTHER ----
 test_that("format_results converts MassWateR to WQdashboard", {
   df_wqd <- data.frame(
-    "Site_ID" = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
-    "Activity_Type" = c(
+    Site_ID = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
+    Activity_Type = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",
       "Quality Control Sample-Lab Duplicate 2",
       "Quality Control-Calibration Check",
       "Quality Control-Calibration Check Buffer"
     ),
-    "Date" = c(
+    Date = c(
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
       "2021-09-12", "2021-09-12"
     ),
-    "Depth" = c(1, 1, 0.75, NA, NA, NA, NA),
-    "Depth_Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
-    "Depth_Category" = NA,
-    "Parameter" = c(
+    Depth = c(1, 1, 0.75, NA, NA, NA, NA),
+    Depth_Unit = c("ft", "ft", "ft", NA, NA, NA, NA),
+    Depth_Category = NA,
+    Parameter = c(
       "Dissolved oxygen saturation", "Dissolved oxygen saturation",
       "Total suspended solids", "Nitrate", "Nitrate", "Specific conductance",
       "Specific conductance"
     ),
-    "Result" = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
-    "Result_Unit" = c("%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"),
-    "Detection_Limit_Type" = NA,
-    "Detection_Limit" = NA,
-    "Detection_Limit_Unit" = NA,
-    "Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
-    "Activity.Start.Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
-    "Result.Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
-    "Sample.Collection.Method.ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
-    "Project.ID" = "Water Quality",
-    "Local.Record.ID" = NA,
-    "Result.Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    Result = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    Result_Unit = c("%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"),
+    Detection_Limit_Type = NA,
+    Detection_Limit = NA,
+    Detection_Limit_Unit = NA,
+    Qualifier = c(NA, NA, "Q", NA, NA, NA, NA),
+    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
     check.names = FALSE
   )
   df_wqd$Date <- as.Date(df_wqd$Date)
@@ -775,60 +775,61 @@ test_that("format_results converts WQX to WQdashboard", {
   df_wqx <- head(tst$wqx_data)
 
   df_wqd <- data.frame(
-    "Site_ID" = "ML-06",
-    "Activity_Type" = c(
+    Site_ID = "ML-06",
+    Activity_Type = c(
       "Sample-Routine", "Sample-Routine", "Sample-Routine", "Sample-Routine",
       "Field Msr/Obs", "Sample-Routine"
     ),
-    "Date" = as.Date("2017-03-01"),
-    "Depth" = NA_integer_,
-    "Depth_Unit" = NA_character_,
-    "Depth_Category" = NA,
-    "Parameter" = c(
+    Date = as.Date("2017-03-01"),
+    Depth = NA_integer_,
+    Depth_Unit = NA_character_,
+    Depth_Category = NA,
+    Parameter = c(
       "Phosphate-phosphorus", "Kjeldahl nitrogen",
       "Total Nitrogen/Total Phosphorus Ratio (TN:TP)", "pH", "Conductivity",
       "Turbidity"
     ),
-    "Result" = c(NA, NA, NA, 7.1, 4.3, NA),
-    "Result_Unit" = c(NA, NA, NA, "None", "mg/l", NA),
-    "Detection_Limit_Type" = c(
+    Result = c(NA, NA, NA, 7.1, 4.3, NA),
+    Result_Unit = c(NA, NA, NA, "None", "mg/l", NA),
+    Detection_Limit_Type = c(
       "Upper Quantitation Limit", "Method Detection Level",
       "Method Detection Level", NA, NA, "Lower Reporting Limit"
     ),
-    "Detection_Limit" = c(0.058, 1.1, 1.1, NA, NA, 12),
-    "Detection_Limit_Unit" = c("mg/l", "mg/l", "mg/l", NA, NA, "NTU"),
-    "Qualifier" = c("DL", "DL", "DL", NA, NA, "DL"),
-    "Project.ID" = "TEMPLATE_PCHEM",
-    "Activity.ID..CHILD.subset." = c(
+    Detection_Limit = c(0.058, 1.1, 1.1, NA, NA, 12),
+    Detection_Limit_Unit = c("mg/l", "mg/l", "mg/l", NA, NA, "NTU"),
+    Qualifier = c("DL", "DL", "DL", NA, NA, "DL"),
+    "Project ID" = "TEMPLATE_PCHEM",
+    "Activity ID (CHILD-subset)" = c(
       "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
       "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
       "ML-06:20170301:1433:FM:WB:", "ML-06:20170301:1433:SR:WB:"
     ),
-    "Activity.ID.User.Supplied..PARENTs." = NA,
-    "Activity.Media.Name" = "Water",
-    "Activity.Start.Time" = "14:33",
-    "Activity.Start.Time.Zone" = "MST",
-    "Sample.Collection.Method.ID" = "Grab Sample Method",
-    "Sample.Collection.Method.Context" = NA,
-    "Sample.Collection.Equipment.Name" = "Water Bottle",
-    "Sample.Collection.Equipment.Comment" = NA_character_,
-    "Characteristic.Name.User.Supplied" = NA,
-    "Method.Speciation" = c("as P", "as N", NA, NA, NA, NA),
-    "Result.Detection.Condition" = c(
+    "Activity ID User Supplied (PARENTs)" = NA,
+    "Activity Media Name" = "Water",
+    "Activity Start Time" = "14:33",
+    "Activity Start Time Zone" = "MST",
+    "Sample Collection Method ID" = "Grab Sample Method",
+    "Sample Collection Method Context" = NA,
+    "Sample Collection Equipment Name" = "Water Bottle",
+    "Sample Collection Equipment Comment" = NA_character_,
+    "Characteristic Name User Supplied" = NA,
+    "Method Speciation" = c("as P", "as N", NA, NA, NA, NA),
+    "Result Detection Condition" = c(
       "Not Detected", "Not Detected", "Not Detected", NA, NA, "Not Detected"
     ),
-    "Result.Sample.Fraction" = c(
+    "Result Sample Fraction" = c(
       "Filtered, lab", "Filtered, lab", NA, NA, NA, NA
     ),
-    "Result.Status.ID" = "Final",
-    "ResultTemperatureBasis" = NA_character_,
-    "Statistical.Base.Code" = NA_character_,
-    "ResultTimeBasis" = NA_character_,
-    "Result.Value.Type" = "Actual",
-    "Result.Analytical.Method.ID" = 120.1,
-    "Result.Analytical.Method.Context" = "USEPA",
-    "Analysis.Start.Date" = "3/2/2017",
-    "Result.Comment" = NA
+    "Result Status ID" = "Final",
+    ResultTemperatureBasis = NA_character_,
+    "Statistical Base Code" = NA_character_,
+    ResultTimeBasis = NA_character_,
+    "Result Value Type" = "Actual",
+    "Result Analytical Method ID" = 120.1,
+    "Result Analytical Method Context" = "USEPA",
+    "Analysis Start Date" = as.Date("2017-03-02"),
+    "Result Comment" = NA,
+    check.names = FALSE
   )
 
   expect_equal(
@@ -926,10 +927,10 @@ test_that("format_mwr_results works", {
     df_out
   )
 
-  # Test edge case - BDL, AQL handling
-  df_in <- df_in
-  df_in[["Result Value"]] <- c(NA, 7, 5, NA, 0.46, 980, NA)
-  df_in[["Result Measure Qualifier"]] <- c("DL", NA, "Q", "GT", NA, NA, "DL")
+  # Test edge case - BDL, AQL handling, no name repair
+  colnames(df_in) <- make.names(colnames(df_in))
+  df_in$Result.Value <- c(NA, 7, 5, NA, 0.46, 980, NA)
+  df_in$Result.Measure.Qualifier <- c("DL", NA, "Q", "GT", NA, NA, "DL")
 
   df_out <- df_out
   df_out[["Result Value"]] <- c("AQL", "BDL", 5, 980)

@@ -1,56 +1,56 @@
 # MassWateR -----
 test_that("prep_mwr_results works", {
   # Test example data
+  df_in <- tst$mwr_data
+  colnames(df_in) <- gsub("\\.", " ", colnames(df_in))
+  colnames(df_in) <- gsub("Depth Height", "Depth/Height", colnames(df_in))
+
   df_out <- data.frame(
-    Monitoring.Location.ID = c("HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA),
-    Activity.Type = c(
+    "Monitoring Location ID" = c(
+      "HBS-016", "HBS-016", "HBS-016", NA, NA, NA, NA
+    ),
+    "Activity Type" = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",
       "Quality Control Sample-Lab Duplicate 2",
       "Quality Control-Calibration Check",
       "Quality Control-Calibration Check Buffer"
     ),
-    Activity.Start.Date = c(
+    "Activity Start Date" = c(
       "6/13/2021", "6/13/2021", "8/15/2021", "5/16/2021", "5/16/2021",
       "9/12/2021", "9/12/2021"
     ),
-    Activity.Start.Time = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
-    Activity.Depth.Height.Measure = c(1, 1, 0.75, NA, NA, NA, NA),
-    Activity.Depth.Height.Unit = c("ft", "ft", "ft", NA, NA, NA, NA),
-    Activity.Relative.Depth.Name = NA,
-    Characteristic.Name = c(
+    "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
+    "Activity Depth/Height Measure" = c(1, 1, 0.75, NA, NA, NA, NA),
+    "Activity Depth/Height Unit" = c("ft", "ft", "ft", NA, NA, NA, NA),
+    "Activity Relative Depth Name" = NA,
+    "Characteristic Name" = c(
       "DO saturation", "DO saturation", "TSS", "Nitrate", "Nitrate",
       "Sp Conductance", "Sp Conductance"
     ),
-    Result.Value = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
-    Result.Unit = c("%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"),
-    Quantitation.Limit = NA,
-    Result.Measure.Qualifier = c(NA, NA, "Q", NA, NA, NA, NA),
-    Result.Attribute = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
-    Sample.Collection.Method.ID = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
-    Project.ID = "Water Quality",
-    Local.Record.ID = NA,
-    Result.Comment = c(NA, NA, "River was very full", NA, NA, NA, NA)
+    "Result Value" = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
+    "Result Unit" = c("%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"),
+    "Quantitation Limit" = NA,
+    "Result Measure Qualifier" = c(NA, NA, "Q", NA, NA, NA, NA),
+    "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
+    "Sample Collection Method ID" = c(NA, NA, "Grab-MassWateR", NA, NA, NA, NA),
+    "Project ID" = "Water Quality",
+    "Local Record ID" = NA,
+    "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    check.names = FALSE
   )
 
   expect_equal(
-    prep_mwr_results(tst$mwr_data, name_repair = TRUE),
+    prep_mwr_results(df_in),
     df_out
   )
 
-  # Additional test - BDL, AQL values; no name repair
-  df_in <- tst$mwr_data
-  df_in$Result.Value <- c("BDL", 5, "AQL", 980)
-  df_in$QC.Reference.Value <- c(7, NA, 0.46, "BDL")
-  colnames(df_in) <- gsub("\\.", " ", colnames(df_in))
-  colnames(df_in) <- gsub("Depth Height", "Depth/Height", colnames(df_in))
+  # Additional test - BDL, AQL values
+  df_in[["Result Value"]] <- c("BDL", 5, "AQL", 980)
+  df_in[["QC Reference Value"]] <- c(7, NA, 0.46, "BDL")
 
-
-  df_out <- df_out
-  df_out$Result.Value <- c(NA, 7, 5, NA, 0.46, 980, NA)
-  df_out$Result.Measure.Qualifier <- c("DL", NA, "Q", "GT", NA, NA, "DL")
-  colnames(df_out) <- gsub("\\.", " ", colnames(df_out))
-  colnames(df_out) <- gsub("Depth Height", "Depth/Height", colnames(df_out))
+  df_out[["Result Value"]] <- c(NA, 7, 5, NA, 0.46, 980, NA)
+  df_out[["Result Measure Qualifier"]] <- c("DL", NA, "Q", "GT", NA, NA, "DL")
 
   expect_equal(
     prep_mwr_results(df_in),
@@ -304,16 +304,6 @@ test_that("prep_wqx_results works", {
     NA, "NRR", "NRR", "NRR", "NRR", NA, NA, NA, NA
   )
 
-  # Test - with name repair
-  df_wqx <- tst$wqx_data %>%
-    prep_wqx_results(name_repair = TRUE)
-
-  expect_equal(
-    df_wqx$Result.Measure.Qualifier,
-    out_qual
-  )
-
-  # Test - no name repair
   df_wqx <- tst$wqx_data
   colnames(df_wqx) <- gsub("\\.", " ", colnames(df_wqx))
   df_wqx <- prep_wqx_results(df_wqx)
@@ -406,94 +396,96 @@ test_that("results_to_brc works", {
 test_that("prep_focb_results works", {
   # Test - wide format 1
   df_out1 <- data.frame(
-    "SiteID" = c(
+    SiteID = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18", "HR4", "HR4", "HR4"
     ),
-    "Sample.Date" = c(
+    "Sample Date" = c(
       "10/4/2023", "10/4/2023", "10/4/2023", "10/4/2023", "10/4/2023",
       "6/22/2023", "6/22/2023", "6/22/2023", "6/22/2023", "6/22/2023",
       "5/24/2023", "5/24/2023", "5/24/2023"
     ),
-    "Time" = c(
+    Time = c(
       "12:25", "12:25", "12:25", "12:25", "12:25", "8:45", "8:45", "8:45",
       "8:45", "8:45", "13:51", "13:51", "13:51"
     ),
-    "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled.By" = "FRIENDS OF CASCO BAY",
-    "QC.Type" = "Field Measurement",
-    "Parameter" = c(
+    Project = "FRIENDS OF CASCO BAY ALL SITES",
+    "Sampled By" = "FRIENDS OF CASCO BAY",
+    "QC Type" = "Field Measurement",
+    Parameter = c(
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
       "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
       "Cloud Cover", "Wind Speed", "Wind Direction"
     ),
-    "Result" = c(
+    Result = c(
       25, 1, 160, 9.5, 2.7, 0, 1, 45, 0.8, "BSV", 75, 3, 180
     ),
-    "Unit" = c(
+    Unit = c(
       "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
       "BFT", "DEG True"
     ),
-    "Qualifier" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA)
+    Qualifier = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
+    check.names = FALSE
   )
 
   expect_equal(
-    prep_focb_results(tst$me_focb_data1, name_repair = TRUE),
+    prep_focb_results(tst$me_focb_data1),
     df_out1
   )
 
   # Test - wide format 2
   df_out2 <- data.frame(
-    "SiteID" = "P5BSD",
-    "Sample.Date" = "7/19/2023",
-    "Time" = c(
+    SiteID = "P5BSD",
+    "Sample Date" = "7/19/2023",
+    Time = c(
       "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04",
       "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:05", "10:05",
       "10:05", "10:05", "10:05", "10:05", "10:05"
     ),
-    "Sample.Depth_m" = c(
+    "Sample Depth_m" = c(
       11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 5, 5, 5, 5, 5, 5,
       5
     ),
-    "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled.By" = "FRIENDS OF CASCO BAY",
-    "Sample.Depth.Unit" = "m",
-    "QC.Type" = "Field Measurement",
-    "Parameter" = c(
+    Project = "FRIENDS OF CASCO BAY ALL SITES",
+    "Sampled By" = "FRIENDS OF CASCO BAY",
+    "Sample Depth Unit" = "m",
+    "QC Type" = "Field Measurement",
+    Parameter = c(
       "Temperature", "Salinity", "Dissolved Oxygen", "DO Saturation", "pH",
       "Chlorophyll", "Turbidity", "Temperature", "Salinity", "Dissolved Oxygen",
       "DO Saturation", "pH", "Chlorophyll", "Turbidity", "Temperature",
       "Salinity", "Dissolved Oxygen", "DO Saturation", "pH", "Chlorophyll",
       "Turbidity"
     ),
-    "Result" = c(
+    Result = c(
       12.7, 31, 7.3, 83.7, 7.93, 2.3, 1.1, 12.7, 31, 7.3, 83.4, 7.93, 2.5, 1.1,
       15.5, 30.1, 7.6, 91.3, 7.98, 7.8, 1.1
     ),
-    "Unit" = c(
+    Unit = c(
       "Deg C", "PSU", "mg/L", "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L",
       "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L", "%", "STU", "ug/L",
       "FNU"
     ),
-    "Qualifier" = c(
+    Qualifier = c(
       NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA,
       NA, "J", NA
-    )
+    ),
+    check.names = FALSE
   )
 
   expect_equal(
-    prep_focb_results(tst$me_focb_data2, name_repair = TRUE),
+    prep_focb_results(tst$me_focb_data2),
     df_out2
   )
 
   # Test - long format
   df_out3 <- data.frame(
-    "Sample.ID" = "BMR02",
-    "Sample.Date" = c(
+    "Sample ID" = "BMR02",
+    "Sample Date" = c(
       "2023-05-23", "2023-06-21", "2023-07-05", "2023-07-18", "2023-08-16"
     ),
     "Lab" = "UMWL",
-    "Analysis.Date" = c(
+    "Analysis Date" = c(
       "2023-07-06", "2023-07-27", "2023-08-28", "2023-09-25", "2023-10-20"
     ),
     "Parameter" = "TN as N",
@@ -502,18 +494,19 @@ test_that("prep_focb_results works", {
     "RL" = 0.1,
     "MDL" = 0.073,
     "Method" = "SM4500NE_2021",
-    "Sample.Depth.m" = 0.2,
+    "Sample Depth m" = 0.2,
     "Project" = "FRIENDS OF CASCO BAY ALL SITES",
-    "Sampled.By" = "FRIENDS OF CASCO BAY",
-    "Sample.Depth.Unit" = "m",
-    "QC.Type" = "Field Measurement",
-    "Qualifier" = "J"
+    "Sampled By" = "FRIENDS OF CASCO BAY",
+    "Sample Depth Unit" = "m",
+    "QC Type" = "Field Measurement",
+    "Qualifier" = "J",
+    check.names = FALSE
   )
-  df_out3$Sample.Date <- as.Date(df_out3$Sample.Date)
-  df_out3$Analysis.Date <- as.Date(df_out3$Analysis.Date)
+  df_out3[["Sample Date"]] <- as.Date(df_out3[["Sample Date"]])
+  df_out3[["Analysis Date"]] <- as.Date(df_out3[["Analysis Date"]])
 
   expect_equal(
-    prep_focb_results(tst$me_focb_data3, name_repair = TRUE),
+    prep_focb_results(tst$me_focb_data3),
     df_out3
   )
 
@@ -524,7 +517,7 @@ test_that("prep_focb_results works", {
   df_out3b <- df_out3[, c(1:11, 15, 12:14, 16)]
 
   expect_equal(
-    prep_focb_results(df_in3b, name_repair = TRUE),
+    prep_focb_results(df_in3b),
     df_out3b
   )
 })

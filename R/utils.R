@@ -18,8 +18,6 @@
 #' @param df Dataframe.
 #' @param in_format,out_format String. Column names for the input
 #' (`in_format`) and output formats (`out_format`).
-#' @param name_repair Boolean. If `TRUE`, converts all `in_format` variables to
-#' syntactically valid names. Default `FALSE`
 #' @param limit_var Boolean. If `TRUE`, `keep_var` only includes the first,
 #' default variable for each row in `out_format`. If `FALSE`, `keep_var`
 #' includes both default and alternate values listed in `out_format`. Default
@@ -32,8 +30,7 @@
 #' * `keep_var` is a list of unique variables in the `out_format` column.
 #'
 #' @noRd
-fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
-                      limit_var = FALSE) {
+fetch_var <- function(df, in_format, out_format, limit_var = FALSE) {
   # Check input values
   chk <- c(in_format, out_format) %in% colnames(df)
   if (any(!chk)) {
@@ -104,18 +101,6 @@ fetch_var <- function(df, in_format, out_format, name_repair = FALSE,
       )
     ) %>%
     tidyr::separate_longer_delim({{ in_format }}, "|")
-
-  # If name_repair is TRUE, update in_format
-  if (name_repair) {
-    df <- df %>%
-      dplyr::mutate(
-        {{ in_format }} := dplyr::if_else(
-          is.na(.data[[in_format]]),
-          NA,
-          make.names(.data[[in_format]])
-        )
-      )
-  }
 
   # Drop rows where in_format == out_format
   df <- df %>%
@@ -251,4 +236,48 @@ str_unique <- function(x, delim = ",") {
     paste(collapse = delim)
 
   return(x)
+}
+
+#' Undo name repair for dataframe column names
+#'
+#' @description
+#' `unrepair_names()` undoes name repair for input dataframe column names.
+#' Helper function for [format_sites()], [format_results()], and
+#' [format_mwr_results()].
+#'
+#' @param .data Dataframe
+#' @param new_col List of unrepaired column names.
+#'
+#' @returns Dataframe with updated column names.
+#'
+#' @noRd
+unrepair_names <- function(.data, new_col) {
+  # Define variables
+  new_col <- new_col[!is.na(new_col)]
+  new_col <- gsub("..\\|\\|", "", new_col)
+  new_col <- stringr::str_split(new_col, "\\|") %>%
+    unlist() %>%
+    unique()
+  old_col <- make.names(new_col)
+
+  # Drop instances where no changes are made
+  chk <- new_col == old_col
+  if (any(chk)) {
+    old_col <- old_col[which(!chk)]
+    new_col <- new_col[which(!chk)]
+  }
+
+  # Drop ambiguous name repair
+  chk <- duplicated(old_col) | duplicated(old_col, fromLast = TRUE)
+  if (any(chk)) {
+    old_col <- old_col[which(!chk)]
+    new_col <- new_col[which(!chk)]
+  }
+
+  if (length(old_col) == 0) {
+    return(.data)
+  }
+
+  # Rename columns
+  rename_col(.data, old_col, new_col)
 }

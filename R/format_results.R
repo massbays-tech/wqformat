@@ -45,22 +45,20 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   chk <- grepl("\\.", colnames(df))
   chk2 <- grepl(" ", colnames(df))
   if (any(chk) && !any(chk2)) {
-    name_repair <- TRUE
-  } else {
-    name_repair <- FALSE
+    df <- unrepair_names(df, colnames_results[[in_format]])
   }
 
   # Preformat data ----
   if (in_format == "masswater") {
-    df <- prep_mwr_results(df, name_repair)
+    df <- prep_mwr_results(df)
   } else if (in_format == "wqx") {
-    df <- prep_wqx_results(df, name_repair)
+    df <- prep_wqx_results(df)
   } else if (in_format == "ma_brc") {
     df <- prep_brc_results(df, date_format, tz)
   } else if (in_format == "me_dep") {
     df <- prep_me_dep_results(df)
   } else if (in_format == "me_focb") {
-    df <- prep_focb_results(df, date_format, name_repair)
+    df <- prep_focb_results(df, date_format)
   }
 
   # Update columns ----
@@ -68,7 +66,6 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     colnames_results,
     in_format,
     out_format,
-    name_repair = name_repair,
     limit_var = TRUE
   )
   df <- rename_col(df, var_names$old_names, var_names$new_names)
@@ -235,6 +232,13 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 #' @export
 format_mwr_results <- function(.data) {
   message("Formatting MassWateR result data...")
+
+  # Check - repaired column names?
+  chk <- grepl("\\.", colnames(.data))
+  if (any(chk)) {
+    colnames(.data) <- gsub("\\.", " ", colnames(.data))
+    colnames(.data) <- gsub("Depth Height", "Depth/Height", colnames(.data))
+  }
 
   # Check columns
   key_col <- c(

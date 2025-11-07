@@ -22,17 +22,8 @@ test_that("rename_col works", {
 
   # Check 1:1 column name conversion
   expect_equal(
-    rename_col(df, c("species", "genus", "numbers"), c("foo", "bar", "foofy")),
-    data.frame(
-      "foo" = c("aardvark", "bittern", NA, NA),
-      "class" = c("mammal", "bird", "mammal", NA),
-      "foofy" = c(1, 2, 3, 4)
-    )
-  )
-
-  # Check pipes
-  expect_equal(
-    df %>% rename_col(
+    rename_col(
+      df,
       c("species", "genus", "numbers"),
       c("foo", "bar", "foofy")
     ),
@@ -69,6 +60,20 @@ test_that("rename_col works", {
       "foofy" = c(1, 2, 3, 4)
     )
   )
+
+  # Check NA handling, pipes
+  expect_equal(
+    df %>%
+      rename_col(
+        c("species", "genus", "numbers"),
+        c(NA, "bar", "foofy")
+      ),
+    data.frame(
+      "species" = c("aardvark", "bittern", NA, NA),
+      "class" = c("mammal", "bird", "mammal", NA),
+      "foofy" = c(1, 2, 3, 4)
+    )
+  )
 })
 
 test_that("rename_col error messages", {
@@ -81,10 +86,6 @@ test_that("rename_col error messages", {
   expect_error(
     rename_col(df, c("species", "class"), "foo"),
     regexp = "old_colnames and new_colnames are different lengths"
-  )
-  expect_error(
-    rename_col(df, c("species", "class"), c(NA, "foo")),
-    regexp = "Can not include NA values in old_colnames or new_colnames"
   )
 })
 
@@ -193,9 +194,9 @@ test_that("col_to_numeric error message", {
     col_to_numeric(df_in, "col1", FALSE)
   )
 
-  expect_warning(
+  expect_error(
     col_to_numeric(df_in, "col2", FALSE),
-    regexp = "Unable to convert col2 to numeric"
+    regexp = "Non-numeric values detected in col2. Check rows: 1"
   )
 })
 

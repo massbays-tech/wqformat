@@ -16,28 +16,23 @@
 #'
 #' @export
 rename_col <- function(.data, old_colnames, new_colnames) {
-  dat <- .data
-
   # Check inputs
-  chk <- is.na(c(old_colnames, new_colnames))
-  if (all(chk)) {
-    return(dat)
-  } else if (any(chk)) {
-    stop("Can not include NA values in old_colnames or new_colnames")
-  } else if (all(old_colnames == new_colnames)) {
-    return(dat)
-  } else if (length(old_colnames) != length(new_colnames)) {
+  if (length(old_colnames) != length(new_colnames)) {
     stop("old_colnames and new_colnames are different lengths")
   }
+
+  dat <- .data
 
   dat_colnames <- data.frame(
     old_name = old_colnames,
     new_name = new_colnames
   ) %>%
+    dplyr::filter(!is.na(.data$old_name)) %>%
+    dplyr::filter(!is.na(.data$new_name)) %>%
     dplyr::filter(.data$old_name %in% colnames(dat))
 
   if (nrow(dat_colnames) == 0) {
-    return(dat)
+    return(.data)
   }
 
   # Check if duplicate values in new_colnames
@@ -206,7 +201,7 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
 #' @param .data Dataframe.
 #' @param col_name String. Column name.
 #' @param silent Boolean. If TRUE, does not provide warning if unable to set
-#' column to numeric. If FALSE, provides warning. Default TRUE.
+#' column to numeric. If FALSE, provides error message. Default TRUE.
 #'
 #' @seealso [col_to_date]
 #'
@@ -227,10 +222,13 @@ col_to_numeric <- function(.data, col_name, silent = TRUE) {
   if (all(chk)) {
     .data[[col_name]] <- as.numeric(.data[[col_name]])
   } else if (!silent) {
-    warning("Unable to convert ", col_name, " to numeric")
+    stop(
+      "Non-numeric values detected in ", col_name, ". Check rows: ",
+      paste(which(!chk), collapse = ", ")
+    )
   }
 
-  .data
+  return(.data)
 }
 
 #' Convert column to date or datetime format

@@ -328,6 +328,44 @@ results_to_mwr <- function(.data) {
     col_to_numeric("QC Reference Value")
 }
 
+#' Results to wqdashboard
+#'
+#' @description
+#' `results_to_wqd()` is a helper function for [format_results()] that
+#' formats result data for wqdashboard.
+#' * Adds column "Year"
+#' * Converts depth from feet to meters
+#'
+#' @param .data Dataframe
+#'
+#' @returns Dataframe matching the format used by wqdashboard
+#'
+#' @noRd
+results_to_wqd <- function(.data) {
+  .data %>%
+    dplyr::mutate("Year" = lubridate::year(.data$Date)) %>%
+    dplyr::mutate("temp_depth" = suppressWarnings(as.numeric(.data$Depth))) %>%
+    dplyr::mutate(
+      "Depth" = dplyr::if_else(
+        !is.na(.data$temp_depth) & !is.na(.data$Depth_Unit) &
+          .data$Depth_Unit == "ft",
+        as.character(.data$temp_depth * 0.3048),
+        as.character(.data$Depth)
+      )
+    ) %>%
+    dplyr::mutate(
+      "Depth_Unit" = dplyr::if_else(
+        !is.na(.data$temp_depth) & !is.na(.data$Depth_Unit) &
+          .data$Depth_Unit == "ft",
+        "m",
+        .data$Depth_Unit
+      )
+    ) %>%
+    col_to_numeric("Depth") %>%
+    dplyr::select(!"temp_depth")
+}
+
+
 #' Prepare result data from WQX
 #'
 #' @description

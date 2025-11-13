@@ -109,28 +109,17 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     }
   }
 
-  # Check - in_format and out_format using same variables?
-  in_var <- in_format
-  if (in_format == "wqdashboard") {
-    in_var <- "wqx"
-  } else if (in_format == "ri_ww") {
-    in_var <- "ri_dem"
+  # Update in_format, set out_var
+  switch_format <- c("ri_dem", "wqx")
+  names(switch_format) <- c("ri_ww", "wqdashboard")
+
+  if (in_format %in% names(switch_format)) {
+    in_format <- unname(switch_format[in_format])
   }
 
   out_var <- out_format
-  if (out_format == "wqdashboard") {
-    out_var <- "wqx"
-  } else if (out_format == "ri_ww") {
-    out_var <- "ri_dem"
-  }
-
-  if (in_var == out_var && out_format == "wqx") {
-    df <- results_to_wqx(df)
-    message("Done")
-    return(df)
-  } else if (in_var == out_var) {
-    message("Done")
-    return(df)
+  if (out_var %in% names(switch_format)) {
+    out_var <- unname(switch_format[out_format])
   }
 
   # Rename parameters
@@ -140,13 +129,13 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    param <- fetch_var(varnames_parameters, in_var, out_var)
+    param <- fetch_var(varnames_parameters, in_format, out_var)
     df <- update_var(df, col_name, param$old_names, param$new_names)
     warn_invalid_var(df, col_name, param$keep_var)
   }
 
   # Rename units
-  unit_name <- fetch_var(varnames_units, in_var, out_var)
+  unit_name <- fetch_var(varnames_units, in_format, out_var)
   for (
     unit_col in c(
       "Result Unit", "Activity Depth/Height Unit",
@@ -172,7 +161,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    in_qual <- in_var
+    in_qual <- in_format
     out_qual <- out_var
 
     if (in_format == "masswater") {
@@ -194,7 +183,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   )
   if (col_name %in% colnames(df)) {
     atype <- try(
-      fetch_var(varnames_activity, in_var, out_var),
+      fetch_var(varnames_activity, in_format, out_var),
       silent = TRUE
     )
     if (!inherits(atype, "try-error")) {
@@ -206,6 +195,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   # Custom format changes -----
   if (out_format == "masswater") {
     df <- results_to_mwr(df)
+  } else if (out_format == "wqdashboard") {
+    df <- results_to_wqd(df)
   } else if (out_format == "wqx") {
     df <- results_to_wqx(df)
   } else if (out_format == "ma_brc") {
@@ -277,6 +268,7 @@ format_mwr_results <- function(.data) {
   warn_invalid_var(.data, "Activity Type", activity_list)
   warn_invalid_var(.data, "Characteristic Name", param_list)
   warn_invalid_var(.data, "Result Unit", unit_list)
+  warn_invalid_var(.data, "Activity Depth/Height Unit", unit_list)
   warn_invalid_var(.data, "Result Measure Qualifier", qual_list)
 
   # Improve formatting, arrange columns
@@ -290,6 +282,73 @@ format_mwr_results <- function(.data) {
   dat <- .data %>%
     results_to_mwr() %>% # improve formatting
     dplyr::select(dplyr::all_of(keep_col)) # reorder columns
+
+  message("Done")
+
+  dat
+}
+
+#' Check and improve formatting for wqdashboard result data
+#'
+#' @description `format_wqd_results()` reviews wqdashboard result data and
+#' checks for common formatting errors.
+#' * Checks for missing columns
+#' * Checks for unknown parameters, units, qualifiers, and activity type
+#' * Formats Date column as date
+#'
+#' @param .data Input dataframe
+#'
+#' @inheritParams col_to_date
+#'
+#' @returns Updated dataframe
+#'
+#' @export
+format_wqd_results <- function(.data, date_format) {
+  message("Formatting wqdashboard result data...")
+
+  # Check columns
+  key_col <- c("Site_ID", "Date", "Parameter", "Result", "Result_Unit")
+  bonus_col <- c(
+    "Activity_Type", "Depth", "Depth_Unit", "Depth_Category", "Detection_Limit",
+    "Detection_Limit_Type", "Detection_Limit_Unit", "Qualifier"
+  )
+
+  chk <- key_col %in% colnames(.data)
+  if (any(!chk)) {
+    missing_col <- key_col[which(!chk)]
+    stop(
+      "Missing mandatory columns: ", paste(missing_col, collapse = ", ")
+    )
+  }
+
+  missing_col <- setdiff(bonus_col, colnames(.data))
+  .data[missing_col] <- NA
+
+  # Improve formatting, standardize variables
+  param <- fetch_var(varnames_parameters, "wqx", "wqx")
+  par_unit <- fetch_var(varnames_units, "wqx", "wqx")
+  old_unit <- par_unit$old_names
+  new_unit <- par_unit$new_names
+
+  dat <- .data %>%
+    col_to_date("Date", date_format) %>%
+    update_var("Parameter", param$old_names, param$new_names) %>%
+    update_var("Result_Unit", old_unit, new_unit) %>%
+    update_var("Depth_Unit", old_unit, new_unit) %>%
+    update_var("Detection_Limit_Unit", old_unit, new_unit) %>%
+    results_to_wqd()
+
+  # Check variables
+  activity_list <- unique_var(varnames_activity, "wqx")
+  qual_list <- unique_var(varnames_qualifiers, "wqx")
+  unit_list <- par_unit$keep_var
+
+  warn_invalid_var(dat, "Activity_Type", activity_list)
+  warn_invalid_var(dat, "Parameter", param$keep_var)
+  warn_invalid_var(dat, "Result_Unit", unit_list)
+  warn_invalid_var(dat, "Depth_Unit", unit_list)
+  warn_invalid_var(dat, "Detection_Limit_Unit", unit_list)
+  warn_invalid_var(dat, "Qualifier", qual_list)
 
   message("Done")
 

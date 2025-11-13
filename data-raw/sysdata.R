@@ -44,5 +44,6 @@ varnames_units <- readr::read_csv(
 usethis::use_data(
   colnames_results, colnames_sites, varnames_activity, varnames_parameters,
   varnames_qualifiers, varnames_units,
-  internal = TRUE
+  internal = TRUE,
+  overwrite = TRUE
 )

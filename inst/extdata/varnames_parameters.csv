@@ -1,11 +1,11 @@
 ﻿wqx,masswater,ri_dem,ma_brc,me_dep,me_focb
 "Temperature, air","Air Temp|Temperature, air",,Air Temperature,,
-Ammonia,Ammonia,"Nitrogen, Ammonia Dissolved as N - 00608",,NH3 AS N|AMMONIA AS NITROGEN,NH3 AS N|AMMONIA AS NITROGEN
+Ammonia|Ammonia-nitrogen,Ammonia,"Nitrogen, Ammonia Dissolved as N - 00608",,NH3 AS N|AMMONIA AS NITROGEN,NH3 AS N|AMMONIA AS NITROGEN
 Ammonium,Ammonium,,,NH4 AS N|AMMONIUM AS NITROGEN,NH4 AS N|AMMONIUM AS NITROGEN
-Chlorophyll a (probe),Chl a (probe)|Chlorophyll a (probe),,,,
+Chlorophyll a (probe)|Chlorophyll a (probe relative fluorescence),Chl a (probe)|Chlorophyll a (probe),,,,
 Chlorophyll a,Chl a|Chlorophyll a,,,CHLOROPHYLL,Chlorophyll|CHLOROPHYLL
 Chloride,Chloride,Chloride - 00940,,,
-Conductivity,Conductivity,,Conductivity,,
+Conductivity|Conductance,Conductivity,,Conductivity,,
 "Algae, blue-green (phylum cyanophyta) density","Cyanobacteria (lab)|Algae, blue-green (phylum cyanophyta) density",,,,
 "Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)","Cyanobacteria (probe)|Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)",,,,
 Depth,Depth,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth|DEPTH
@@ -19,25 +19,25 @@ Flow,Flow,Flow - 50050,,,
 Metals,Metals,,,,
 Microcystins,Microcystins,,,,
 Nitrate,Nitrate,,Nitrate,,
-Nitrate + Nitrite,Nitrate + Nitrite,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN
+Nitrate + Nitrite|Neon-21/neon-22,Nitrate + Nitrite,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN
 Nitrite,Nitrite,,,,
-Orthophosphate,Ortho P|Orthophosphate,"Orthophosphate, Dissolved - 00671",Orthophosphate,,
+Orthophosphate|Inorganic phosphorus|Non-apatite inorganic phosphorus|Particulate Inorganic Phosphorus|Phosphate-phosphorus,Ortho P|Orthophosphate,"Orthophosphate, Dissolved - 00671",Orthophosphate,,
 pH,pH,pH - 00400,,PH,pH|PH
 Pheophytin a,Pheophytin|Pheophytin a,,,PHAEOPHYTIN,PHAEOPHYTIN
 Phycocyanin,Phycocyanin,,,,
 Phycocyanin (probe),Phycocyanin (probe),,,,
 Particulate organic carbon,POC|Particulate organic carbon,,,,
-"Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic",,,,
+"Organic phosphorus|Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic",,,,
 Salinity,Salinity,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity|SALINITY|SALINITY (FROM SODIUM)
-"Depth, Secchi disk depth","Secchi Depth|Depth, Secchi disk depth",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI
+"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI
 Silicate,Silicate,,,,
 Specific conductance,Sp Conductance|Specific conductance,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095",,,
 Sulfate,Sulfate,Sulfate as SO4 - 00945,,,
 Surfactants,Surfactants,Surfactants - 38260,,,
 Total dissolved solids,TDS|Total dissolved solids,"Solids, Total Dissolved (Electrical Conductivity), mg/l - 47004|Solids, Total Dissolved (Electrical Conductivity) - 47004",,,
-Total Kjeldahl nitrogen,TKN|Total Kjeldahl nitrogen,,,,
-"Total Nitrogen, mixed forms","TN|PON|TDN|Total Nitrogen, mixed forms","Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TN as N|TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
-"Total Phosphorus, mixed forms","TP|TDP|Total Phosphorus, mixed forms","Phosphorus, Total - 00665",,,
+Total Kjeldahl nitrogen|Total Kjeldahl nitrogen (Organic N & NH3)|Kjeldahl nitrogen,TKN|Total Kjeldahl nitrogen,,,,
+"Total Nitrogen, mixed forms|Nitrogen|Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)|Total Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)","TN|PON|TDN|Total Nitrogen, mixed forms","Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TN as N|TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
+"Total Phosphorus, mixed forms|Phosphates (orthophosphate plus condensed and polyphosphates)|Phosphorus|Total Particulate Phosphorus","TP|TDP|Total Phosphorus, mixed forms","Phosphorus, Total - 00665",,,
 Total suspended solids,TSS|Total suspended solids,TSS - 00530,,,
 Turbidity,Turbidity,Turbidity - 00070,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY
 "Temperature, water","Water Temp|Temperature, water",Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMP|TEMPERATURE
@@ -63,3 +63,5 @@ Trichloroethylene,,Trichloroethylene - 39180,,,
 "Wind direction, horizontal",,,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION
 "Wind force, Beaufort scale",,,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED
 ,,"Phosphorus, Dissolved - 00666",,,
+Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,,,,
+Oxidation reduction potential (ORP),,,,,

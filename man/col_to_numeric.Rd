@@ -12,7 +12,7 @@ col_to_numeric(.data, col_name, silent = TRUE)
 \item{col_name}{String. Column name.}
 
 \item{silent}{Boolean. If TRUE, does not provide warning if unable to set
-column to numeric. If FALSE, provides warning. Default TRUE.}
+column to numeric. If FALSE, provides error message. Default TRUE.}
 }
 \value{
 If all values are numeric, converts column to numeric and returns dataframe.

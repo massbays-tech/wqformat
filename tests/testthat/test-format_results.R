@@ -441,30 +441,31 @@ test_that("format_results converts MA_BRC to RI_DEM", {
 
 test_that("format_results converts MA_BRC to WQdashboard", {
   df_wqd <- data.frame(
-    "Site_ID" = "B-06-01-050",
-    "Activity_Type" = c(
+    Site_ID = "B-06-01-050",
+    Activity_Type = c(
       "Field Msr/Obs", "Field Msr/Obs", "Field Msr/Obs", "Field Msr/Obs",
       "Quality Control Field Replicate Msr/Obs", "Field Msr/Obs",
       "Quality Control Field Replicate Msr/Obs", "Field Msr/Obs",
       "Field Msr/Obs"
     ),
-    "Date" = as.Date("2004-04-10"),
-    "Depth" = NA,
-    "Depth_Unit" = NA,
-    "Depth_Category" = "Surface",
-    "Parameter" = c(
+    Date = as.Date("2004-04-10"),
+    Depth = NA_integer_,
+    Depth_Unit = NA_character_,
+    Depth_Category = "Surface",
+    Parameter = c(
       "Temperature, air", "Dissolved oxygen saturation",
       "Dissolved oxygen (DO)", "Nitrate", "Nitrate", "Orthophosphate",
       "Orthophosphate", "Turbidity", "Temperature, water"
     ),
-    "Result" = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
-    "Result_Unit" = c(
+    Result = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
+    Result_Unit = c(
       "deg C", "%", "mg/L", "mg/L", "mg/L", "mg/L", "mg/L", "NTU", "deg C"
     ),
-    "Detection_Limit_Type" = NA,
-    "Detection_Limit" = NA,
-    "Detection_Limit_Unit" = NA,
-    "Qualifier" = NA
+    Detection_Limit_Type = NA,
+    Detection_Limit = NA,
+    Detection_Limit_Unit = NA,
+    Qualifier = NA,
+    Year = 2004
   )
 
   # Test
@@ -530,10 +531,10 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
       "Nitrate + Nitrite, Dissolved - 00631"
     ),
     "Concentration" = c(1.25, 4.725, 1),
-    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Unit" = c("MPN/100ml", "MPN/100ml", "mg/l"),
     "Qualifier Code" = c("U", NA, NA),
     "Detection Limit" = c(1, 1, 0.015),
-    "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    "Detection Limit Unit" = c("MPN/100ml", "MPN/100ml", "mg/l"),
     "Quantitation Level" = c(1, 1, 0.015),
     "Quantitation Level Unit" = c("MPN/100", "MPN/100", "mg/L"),
     "Lab Name" = "URIWW",
@@ -550,6 +551,8 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
 
   df_ww2 <- df_ww
   df_ww2[["Date of Sample"]] <- as.Date("2021-05-07")
+  df_ww2$Unit <- c("MPN/100ml", "MPN/100ml", "mg/l")
+  df_ww2[["Detection Limit Unit"]] <- c("MPN/100ml", "MPN/100ml", "mg/l")
   df_ww2[["Monitoring location"]] <- NA
   df_ww2[["Watershed"]] <- NA
   df_ww2[["Watershed Code"]] <- NA
@@ -677,22 +680,23 @@ test_that("format_results converts RI_WW to WQdashboard", {
   )
 
   df_wqd <- data.frame(
-    "Site_ID" = "WW066",
-    "Activity_Type" = c(
+    Site_ID = "WW066",
+    Activity_Type = c(
       "Quality Control Field Replicate Msr/Obs", "Field Msr/Obs",
       "Field Msr/Obs"
     ),
-    "Date" = as.Date("2021-05-07"),
-    "Depth" = c(0.5, 0.5, 1),
-    "Depth_Unit" = NA,
-    "Depth_Category" = NA,
-    "Parameter" = c("Enterococcus", "Enterococcus", "Nitrate + Nitrite"),
-    "Result" = c(1.25, 4.725, 1),
-    "Result_Unit" = c("MPN/100mL", "MPN/100mL", "mg/L"),
-    "Detection_Limit_Type" = NA,
-    "Detection_Limit" = c(1, 1, 0.015),
-    "Detection_Limit_Unit" = c("MPN/100mL", "MPN/100mL", "mg/L"),
-    "Qualifier" = c("DL", NA, NA)
+    Date = as.Date("2021-05-07"),
+    Depth = c(0.5, 0.5, 1),
+    Depth_Unit = NA_character_,
+    Depth_Category = NA,
+    Parameter = c("Enterococcus", "Enterococcus", "Nitrate + Nitrite"),
+    Result = c(1.25, 4.725, 1),
+    Result_Unit = c("MPN/100mL", "MPN/100mL", "mg/L"),
+    Detection_Limit_Type = NA,
+    Detection_Limit = c(1, 1, 0.015),
+    Detection_Limit_Unit = c("MPN/100mL", "MPN/100mL", "mg/L"),
+    Qualifier = c("DL", NA, NA),
+    Year = 2021
   )
 
   # Test
@@ -719,8 +723,8 @@ test_that("format_results converts MassWateR to WQdashboard", {
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
       "2021-09-12", "2021-09-12"
     ),
-    Depth = c(1, 1, 0.75, NA, NA, NA, NA),
-    Depth_Unit = c("ft", "ft", "ft", NA, NA, NA, NA),
+    Depth = c(0.3048, 0.3048, 0.2286, NA, NA, NA, NA),
+    Depth_Unit = c("m", "m", "m", NA, NA, NA, NA),
     Depth_Category = NA,
     Parameter = c(
       "Dissolved oxygen saturation", "Dissolved oxygen saturation",
@@ -739,6 +743,7 @@ test_that("format_results converts MassWateR to WQdashboard", {
     "Project ID" = "Water Quality",
     "Local Record ID" = NA,
     "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    Year = 2021,
     check.names = FALSE
   )
   df_wqd$Date <- as.Date(df_wqd$Date)
@@ -785,18 +790,17 @@ test_that("format_results converts WQX to WQdashboard", {
     Depth_Unit = NA_character_,
     Depth_Category = NA,
     Parameter = c(
-      "Phosphate-phosphorus", "Kjeldahl nitrogen",
-      "Total Nitrogen/Total Phosphorus Ratio (TN:TP)", "pH", "Conductivity",
-      "Turbidity"
+      "Orthophosphate", "Total Kjeldahl nitrogen",
+      "Nitrogen/Phosphorus molar ratio", "pH", "Conductivity", "Turbidity"
     ),
     Result = c(NA, NA, NA, 7.1, 4.3, NA),
-    Result_Unit = c(NA, NA, NA, "None", "mg/l", NA),
+    Result_Unit = c(NA, NA, NA, "None", "mg/L", NA),
     Detection_Limit_Type = c(
       "Upper Quantitation Limit", "Method Detection Level",
       "Method Detection Level", NA, NA, "Lower Reporting Limit"
     ),
     Detection_Limit = c(0.058, 1.1, 1.1, NA, NA, 12),
-    Detection_Limit_Unit = c("mg/l", "mg/l", "mg/l", NA, NA, "NTU"),
+    Detection_Limit_Unit = c("mg/L", "mg/L", "mg/L", NA, NA, "NTU"),
     Qualifier = c("DL", "DL", "DL", NA, NA, "DL"),
     "Project ID" = "TEMPLATE_PCHEM",
     "Activity ID (CHILD-subset)" = c(
@@ -829,6 +833,7 @@ test_that("format_results converts WQX to WQdashboard", {
     "Result Analytical Method Context" = "USEPA",
     "Analysis Start Date" = as.Date("2017-03-02"),
     "Result Comment" = NA,
+    Year = 2017,
     check.names = FALSE
   )
 
@@ -1000,4 +1005,70 @@ test_that("format_mwr_results errors", {
   df_extra$foo <- "superb owl"
   chk <- suppressMessages(format_mwr_results(df_extra))
   expect_false("foo" %in% colnames(chk))
+})
+
+# Test format_wqd_results ----
+test_that("format_wqd_results works", {
+  # Test example data
+  df_in <- data.frame(
+    Site_ID = "foo",
+    Activity_Type = "Field Msr/Obs",
+    Date = as.Date("2025-11-12"),
+    Depth = c(1, 2, 3, "foo"),
+    Depth_Unit = c("m", "ft", "m", "ft"),
+    Parameter = "Dissolved oxygen (DO)",
+    Result = 8,
+    Result_Unit = "mg/l"
+  )
+
+  df_out <- data.frame(
+    Site_ID = "foo",
+    Activity_Type = "Field Msr/Obs",
+    Date = as.Date("2025-11-12"),
+    Depth = c(1, 0.6096, 3, "foo"),
+    Depth_Unit = c("m", "m", "m", "ft"),
+    Parameter = "Dissolved oxygen (DO)",
+    Result = 8,
+    Result_Unit = "mg/L",
+    Depth_Category = NA,
+    Detection_Limit = NA,
+    Detection_Limit_Type = NA,
+    Detection_Limit_Unit = NA,
+    Qualifier = NA,
+    Year = 2025
+  )
+
+  expect_equal(
+    suppressMessages(
+      format_wqd_results(df_in)
+    ),
+    df_out
+  )
+})
+
+test_that("format_wqd_results errors", {
+  df_in <- data.frame(
+    Site_ID = "foo",
+    Activity_Type = "Field Msr/Obs",
+    Date = as.Date("2025-11-12"),
+    Depth = c(1, 2, 3, "foo"),
+    Depth_Unit = c("m", "ft", "m", "ft"),
+    Depth_Category = NA,
+    Parameter = "Dissolved oxygen (DO)",
+    Result = 8,
+    Result_Unit = "mg/l",
+    Qualifier = NA
+  )
+
+  expect_no_error(
+    suppressMessages(format_wqd_results(df_in))
+  )
+
+  df_in$Site_ID <- NULL
+  df_in$Date <- NULL
+
+  expect_error(
+    suppressMessages(format_wqd_results(df_in)),
+    regexp = "Missing mandatory columns: Site_ID, Date"
+  )
 })

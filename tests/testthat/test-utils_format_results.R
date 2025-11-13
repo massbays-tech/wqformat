@@ -294,6 +294,35 @@ test_that("results_to_mwr works", {
   )
 })
 
+# wqdashboard ----
+test_that("results_to_wqd works", {
+  df_in <- data.frame(
+    Site_ID = "foo",
+    Activity_Type = "Field Msr/Obs",
+    Date = as.Date("2025-11-12"),
+    Depth = c(1, 2, 3, "foo"),
+    Depth_Unit = c("m", "ft", "m", "ft"),
+    Depth_Category = NA,
+    Parameter = "Dissolved oxygen (DO)",
+    Result = 8,
+    Result_Unit = "mg/L",
+    Detection_Limit_Type = NA,
+    Detection_Limit = NA,
+    Detection_Limit_Unit = NA,
+    Qualifier = NA
+  )
+
+  df_out <- df_in
+  df_out$Depth <- c(1, 0.6096, 3, "foo")
+  df_out$Depth_Unit <- c("m", "m", "m", "ft")
+  df_out$Year <- 2025
+
+  expect_equal(
+    results_to_wqd(df_in),
+    df_out
+  )
+})
+
 # WQX -----
 test_that("prep_wqx_results works", {
   # Set var

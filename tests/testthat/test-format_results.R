@@ -461,11 +461,10 @@ test_that("format_results converts MA_BRC to WQdashboard", {
     Result_Unit = c(
       "deg C", "%", "mg/L", "mg/L", "mg/L", "mg/L", "mg/L", "NTU", "deg C"
     ),
-    Detection_Limit_Type = NA,
-    Detection_Limit = NA,
+    Lower_Detection_Limit = NA,
+    Upper_Detection_Limit = NA,
     Detection_Limit_Unit = NA,
-    Qualifier = NA,
-    Year = 2004
+    Qualifier = NA
   )
 
   # Test
@@ -692,11 +691,10 @@ test_that("format_results converts RI_WW to WQdashboard", {
     Parameter = c("Enterococcus", "Enterococcus", "Nitrate + Nitrite"),
     Result = c(1.25, 4.725, 1),
     Result_Unit = c("MPN/100mL", "MPN/100mL", "mg/L"),
-    Detection_Limit_Type = NA,
-    Detection_Limit = c(1, 1, 0.015),
+    Lower_Detection_Limit = c(1, 1, 0.015),
+    Upper_Detection_Limit = NA,
     Detection_Limit_Unit = c("MPN/100mL", "MPN/100mL", "mg/L"),
-    Qualifier = c("DL", NA, NA),
-    Year = 2021
+    Qualifier = c("DL", NA, NA)
   )
 
   # Test
@@ -733,8 +731,8 @@ test_that("format_results converts MassWateR to WQdashboard", {
     ),
     Result = c(46.8, 7, 5, 0.45, 0.46, 980, 1000),
     Result_Unit = c("%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"),
-    Detection_Limit_Type = NA,
-    Detection_Limit = NA,
+    Lower_Detection_Limit = NA,
+    Upper_Detection_Limit = NA,
     Detection_Limit_Unit = NA,
     Qualifier = c(NA, NA, "Q", NA, NA, NA, NA),
     "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
@@ -743,7 +741,6 @@ test_that("format_results converts MassWateR to WQdashboard", {
     "Project ID" = "Water Quality",
     "Local Record ID" = NA,
     "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
-    Year = 2021,
     check.names = FALSE
   )
   df_wqd$Date <- as.Date(df_wqd$Date)
@@ -795,13 +792,14 @@ test_that("format_results converts WQX to WQdashboard", {
     ),
     Result = c(NA, NA, NA, 7.1, 4.3, NA),
     Result_Unit = c(NA, NA, NA, "None", "mg/L", NA),
+    Lower_Detection_Limit = c(NA, 1.1, 1.1, NA, NA, 12),
+    Upper_Detection_Limit = c(0.058, NA, NA, NA, NA, NA),
+    Detection_Limit_Unit = c("mg/L", "mg/L", "mg/L", NA, NA, "NTU"),
+    Qualifier = c("DL", "DL", "DL", NA, NA, "DL"),
     Detection_Limit_Type = c(
       "Upper Quantitation Limit", "Method Detection Level",
       "Method Detection Level", NA, NA, "Lower Reporting Limit"
     ),
-    Detection_Limit = c(0.058, 1.1, 1.1, NA, NA, 12),
-    Detection_Limit_Unit = c("mg/L", "mg/L", "mg/L", NA, NA, "NTU"),
-    Qualifier = c("DL", "DL", "DL", NA, NA, "DL"),
     "Project ID" = "TEMPLATE_PCHEM",
     "Activity ID (CHILD-subset)" = c(
       "ML-06:20170301:1433:SR:WB:", "ML-06:20170301:1433:SR:WB:",
@@ -833,7 +831,6 @@ test_that("format_results converts WQX to WQdashboard", {
     "Result Analytical Method Context" = "USEPA",
     "Analysis Start Date" = as.Date("2017-03-02"),
     "Result Comment" = NA,
-    Year = 2017,
     check.names = FALSE
   )
 
@@ -1031,11 +1028,10 @@ test_that("format_wqd_results works", {
     Result = 8,
     Result_Unit = "mg/L",
     Depth_Category = NA,
-    Detection_Limit = NA,
-    Detection_Limit_Type = NA,
+    Lower_Detection_Limit = NA,
+    Upper_Detection_Limit = NA,
     Detection_Limit_Unit = NA,
-    Qualifier = NA,
-    Year = 2025
+    Qualifier = NA
   )
 
   expect_equal(

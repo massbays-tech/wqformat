@@ -306,8 +306,12 @@ test_that("results_to_wqd works", {
     Parameter = "Dissolved oxygen (DO)",
     Result = 8,
     Result_Unit = "mg/L",
-    Detection_Limit_Type = NA,
-    Detection_Limit = NA,
+    Detection_Limit_Type = c(
+      "Lower Quantitation Limit", "Lower Quantitation Limit",
+      "Upper Quantitation Limit", "Upper Quantitation Limit"
+    ),
+    Lower_Detection_Limit = 2,
+    Upper_Detection_Limit = c(10, NA, 10, NA),
     Detection_Limit_Unit = NA,
     Qualifier = NA
   )
@@ -315,7 +319,21 @@ test_that("results_to_wqd works", {
   df_out <- df_in
   df_out$Depth <- c(1, 0.6096, 3, "foo")
   df_out$Depth_Unit <- c("m", "m", "m", "ft")
-  df_out$Year <- 2025
+  df_out$Lower_Detection_Limit <- c(2, 2, NA, NA)
+  df_out$Upper_Detection_Limit <- c(10, NA, 10, 2)
+
+  expect_equal(
+    results_to_wqd(df_in),
+    df_out
+  )
+
+  # Test edge case - Detection_Limit_Type is blank
+  df_in$Detection_Limit_Type <- NA
+
+  df_out <- df_in
+  df_out$Depth <- c(1, 0.6096, 3, "foo")
+  df_out$Depth_Unit <- c("m", "m", "m", "ft")
+  df_out$Detection_Limit_Type <- NULL
 
   expect_equal(
     results_to_wqd(df_in),

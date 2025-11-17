@@ -9,7 +9,7 @@
 16||Characteristic Name,08||Characteristic Name,07||Parameter,07||Parameter,07||Parameter,04||PARAMETER,10||PARAMETER_NAME,06||Parameter
 20||Result Value,09||Result Value,08||Result,08||Concentration,08||Concentration,05||RESULT,11||CONCENTRATION,07||Result
 21||Result Unit,10||Result Unit,09||Result_Unit,09||Unit,09||Unit,06||UNITS,14||PARAMETER_UNITS,08||Unit
-33||Result Detection/Quantitation Limit Measure,11||Quantitation Limit,11||Detection_Limit,11||Detection Limit,11||Detection Limit,,19||MDL,10||MDL
+33||Result Detection/Quantitation Limit Measure,11||Quantitation Limit,10||Lower_Detection_Limit,11||Detection Limit,11||Detection Limit,,19||MDL,10||MDL
 ,12||QC Reference Value,,,,,,
 22||Result Measure Qualifier,13||Result Measure Qualifier,13||Qualifier,10||Qualifier Code,10||Qualifier Code,QUALIFIER,12||LAB_QUALIFIER,Qualifier
 ,14||Result Attribute,,,,,,
@@ -36,8 +36,9 @@
 29||Result Analytical Method ID,,,16||Analytical Method Number,16||Analytical Method Number,,,
 30||Result Analytical Method Context,,,,,,,
 31||Analysis Start Date,,,,,,17||ANALYSIS_DATE,05||Analysis Date
-32||Result Detection/Quantitation Limit Type,,10||Detection_Limit_Type,,,,,
+32||Result Detection/Quantitation Limit Type,,Detection_Limit_Type,,,,,
 34||Result Detection/Quantitation Limit Unit,,12||Detection_Limit_Unit,12||Detection Limit Unit,12||Detection Limit Unit,,,
+,,11||Upper_Detection_Limit,,,,,
 ,,,13||Quantitation Level,13||Quantitation Level,,,
 ,,,14||Quantitation Level Unit,14||Quantitation Level Unit,,,
 ,,,15||Lab Name,15||Lab Name,,,

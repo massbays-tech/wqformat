@@ -309,8 +309,9 @@ format_wqd_results <- function(.data, date_format) {
   # Check columns
   key_col <- c("Site_ID", "Date", "Parameter", "Result", "Result_Unit")
   bonus_col <- c(
-    "Activity_Type", "Depth", "Depth_Unit", "Depth_Category", "Detection_Limit",
-    "Detection_Limit_Type", "Detection_Limit_Unit", "Qualifier"
+    "Activity_Type", "Depth", "Depth_Unit", "Depth_Category",
+    "Detection_Limit_Type", "Lower_Detection_Limit", "Upper_Detection_Limit",
+    "Detection_Limit_Unit", "Qualifier"
   )
 
   chk <- key_col %in% colnames(.data)

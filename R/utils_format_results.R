@@ -333,7 +333,8 @@ results_to_mwr <- function(.data) {
 #' @description
 #' `results_to_wqd()` is a helper function for [format_results()] that
 #' formats result data for wqdashboard.
-#' * Adds column "Year"
+#' * Checks if Detection_Limit_Type is an upper limit; updates
+#' Lower_Detection_Limit and Upper_Detection_Limit accordingly
 #' * Converts depth from feet to meters
 #'
 #' @param .data Dataframe
@@ -342,8 +343,8 @@ results_to_mwr <- function(.data) {
 #'
 #' @noRd
 results_to_wqd <- function(.data) {
-  .data %>%
-    dplyr::mutate("Year" = lubridate::year(.data$Date)) %>%
+  # Update depth
+  dat <- .data %>%
     dplyr::mutate("temp_depth" = suppressWarnings(as.numeric(.data$Depth))) %>%
     dplyr::mutate(
       "Depth" = dplyr::if_else(
@@ -363,6 +364,30 @@ results_to_wqd <- function(.data) {
     ) %>%
     col_to_numeric("Depth") %>%
     dplyr::select(!"temp_depth")
+
+  # Adjust detection limits
+  chk <- is.na(dat$Detection_Limit_Type)
+  if (all(chk)) {
+    dat$Detection_Limit_Type <- NULL
+    return(dat)
+  }
+
+  dat %>%
+    dplyr::mutate(
+      "Upper_Detection_Limit" = dplyr::if_else(
+        grepl("upper", .data$Detection_Limit_Type, ignore.case = TRUE) &
+          is.na(.data$Upper_Detection_Limit),
+        .data$Lower_Detection_Limit,
+        .data$Upper_Detection_Limit
+      )
+    ) %>%
+    dplyr::mutate(
+      "Lower_Detection_Limit" = dplyr::if_else(
+        grepl("upper", .data$Detection_Limit_Type, ignore.case = TRUE),
+        NA,
+        .data$Lower_Detection_Limit
+      )
+    )
 }
 
 
@@ -685,6 +710,10 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
 #' @noRd
 prep_me_dep_results <- function(.data) {
   .data %>%
+    concat_col(
+      c("LAB_QUALIFIER", "VALIDATION_QUALIFIER"),
+      "LAB_QUALIFIER"
+    ) %>%
     concat_col(
       c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
       "SAMPLE_COMMENTS",

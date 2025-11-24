@@ -11,7 +11,7 @@
 #' and new variable names in `new_varname`. `old_varname` and `new_varname` are
 #' a paired list, therefor they must be the same length and in the same order.
 #'
-#' @seealso [warn_invalid_var]
+#' @seealso [update_param], [update_unit], [warn_invalid_var]
 #'
 #' @return Dataframe with updated variables in target column. If no
 #' substitutions found, returns original dataframe.
@@ -43,6 +43,74 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
         USE.NAMES = FALSE
       )
     )
+}
+
+#' Rename parameters
+#'
+#' @description
+#' `update_param()` converts parameters in target column to new format.
+#'
+#' @param .data Dataframe
+#'
+#' @inheritParams update_var
+#' @inheritParams format_results
+#'
+#' @seealso [update_var], [update_unit]
+#'
+#' @return Dataframe with updated parameters in target column
+#'
+#' @export
+update_param <- function(.data, col_name, in_format, out_format) {
+  # Check inputs
+  chk <- col_name %in% colnames(.data)
+  if (!chk) {
+    stop("col_name not in dataframe")
+  }
+
+  # Update parameters
+  param <- fetch_var(
+    varnames_parameters,
+    tolower(in_format),
+    tolower(out_format)
+  )
+  dat <- update_var(.data, col_name, param$old_names, param$new_names)
+  warn_invalid_var(dat, col_name, param$keep_var)
+
+  dat
+}
+
+#' Rename units
+#'
+#' @description
+#' `update_unit()` converts units in target column to new format.
+#'
+#' @param .data Dataframe
+#'
+#' @inheritParams update_var
+#' @inheritParams format_results
+#'
+#' @seealso [update_var], [update_unit]
+#'
+#' @return Dataframe with updated units in target column
+#'
+#' @export
+update_unit <- function(.data, col_name, in_format, out_format) {
+  # Check inputs
+  chk <- col_name %in% colnames(.data)
+  if (!chk) {
+    stop("col_name not in dataframe")
+  }
+
+  # Update units
+  unit_list <- fetch_var(
+    varnames_units,
+    tolower(in_format),
+    tolower(out_format)
+  )
+  dat <- update_var(.data, col_name, unit_list$old_names, unit_list$new_names)
+  warn_invalid_var(dat, col_name, unit_list$keep_var)
+
+  dat
 }
 
 #' Check column for invalid variables

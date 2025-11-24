@@ -74,7 +74,46 @@ test_that("update_var sends error messages", {
   )
 })
 
-# test rename_var -----
+# test update_param -----
+test_that("update_param works", {
+  df_out <- tst$mwr_data
+  df_out$Characteristic.Name <- c(
+    "Dissolved oxygen saturation", "Total suspended solids", "Nitrate",
+    "Specific conductance"
+  )
+
+  expect_equal(
+    update_param(tst$mwr_data, "Characteristic.Name", "masswater", "wqx"),
+    df_out
+  )
+})
+
+test_that("update_param error messages", {
+  expect_error(
+    update_param(tst$mwr_data, "foo", "masswater", "wqx"),
+    regexp = "col_name not in dataframe"
+  )
+})
+
+# test update_unit -----
+test_that("update_unit works", {
+ df_out <- tst$mwr_data
+ df_out$Result.Unit <- c("%", "mg/L", "mg/L", "uS/cm")
+
+  expect_equal(
+    update_unit(tst$mwr_data, "Result.Unit", "masswater", "wqx"),
+    df_out
+  )
+})
+
+test_that("update_unit error messages", {
+  expect_error(
+    update_unit(tst$mwr_data, "foo", "masswater", "wqx"),
+    regexp = "col_name not in dataframe"
+  )
+})
+
+# test warn_invalid_var -----
 test_that("warn_invalid_var works", {
   df <- data.frame(
     "col1" = c("A", "B", "C"),

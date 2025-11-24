@@ -5,20 +5,28 @@
 #' @param df Input dataframe.
 #' @param in_format,out_format String. Desired input and output formats.
 #' Not case sensitive. Accepted formats:
+#'
 #' * WQX
+#'
 #' * MassWateR
+#'
 #' * wqdashboard
+#'
 #' * RI_WW (Rhode Island Watershed Watch)
+#'
 #' * RI_DEM (Rhode Island DEM)
+#'
 #' * MA_BRC (Blackstone River Coalition)
+#'
 #' * ME_DEP (Maine DEP)
+#'
 #' * ME_FOCB (Friends of Casco Bay)
 #' @param drop_extra_col Boolean. If `TRUE`, removes any columns that can't be
 #'    converted to `out_format`. Default `TRUE`.
 #'
 #' @inheritParams col_to_date
 #'
-#' @returns Updated dataframe.
+#' @returns Updated dataframe
 #'
 #' @export
 format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
@@ -99,78 +107,39 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 
   # Format dates
   for (date_col in c("Activity Start Date", "Analysis Start Date")) {
-    col_name <- rename_var(
-      in_var = date_col,
-      old_varname = col_sub$old_names,
-      new_varname = col_sub$new_names
-    )
+    col_name <- rename_var(date_col, col_sub$old_names, col_sub$new_names)
     if (col_name %in% colnames(df)) {
       df <- col_to_date(df, col_name, date_format)
     }
   }
 
-  # Update in_format, set out_var
-  switch_format <- c("ri_dem", "wqx")
-  names(switch_format) <- c("ri_ww", "wqdashboard")
-
-  if (in_format %in% names(switch_format)) {
-    in_format <- unname(switch_format[in_format])
-  }
-
-  out_var <- out_format
-  if (out_var %in% names(switch_format)) {
-    out_var <- unname(switch_format[out_format])
-  }
-
   # Rename parameters
   col_name <- rename_var(
-    in_var = "Characteristic Name",
-    old_varname = col_sub$old_names,
-    new_varname = col_sub$new_names
+    "Characteristic Name", col_sub$old_names, col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    param <- fetch_var(varnames_parameters, in_format, out_var)
-    df <- update_var(df, col_name, param$old_names, param$new_names)
-    warn_invalid_var(df, col_name, param$keep_var)
+    df <- update_param(df, col_name, in_format, out_format)
   }
 
   # Rename units
-  unit_name <- fetch_var(varnames_units, in_format, out_var)
   for (
     unit_col in c(
       "Result Unit", "Activity Depth/Height Unit",
       "Result Detection/Quantitation Limit Unit"
     )
   ) {
-    col_name <- rename_var(
-      in_var = unit_col,
-      old_varname = col_sub$old_names,
-      new_varname = col_sub$new_names
-    )
+    col_name <- rename_var(unit_col, col_sub$old_names, col_sub$new_names)
     if (col_name %in% colnames(df)) {
-      df <- df %>%
-        update_var(col_name, unit_name$old_names, unit_name$new_names)
-      warn_invalid_var(df, col_name, unit_name$keep_var)
+      df <- update_unit(df, col_name, in_format, out_format)
     }
   }
 
   # Rename qualifiers
   col_name <- rename_var(
-    in_var = "Result Measure Qualifier",
-    old_varname = col_sub$old_names,
-    new_varname = col_sub$new_names
+    "Result Measure Qualifier", col_sub$old_names, col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    in_qual <- in_format
-    out_qual <- out_var
-
-    if (in_format == "masswater") {
-      in_qual <- "wqx"
-    } else if (out_format == "masswater") {
-      out_qual <- "wqx"
-    }
-
-    qual <- fetch_var(varnames_qualifiers, in_qual, out_qual)
+    qual <- fetch_var(varnames_qualifiers, in_format, out_format)
     df <- update_var(df, col_name, qual$old_names, qual$new_names)
     warn_invalid_var(df, col_name, qual$keep_var)
   }
@@ -182,14 +151,9 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     new_varname = col_sub$new_names
   )
   if (col_name %in% colnames(df)) {
-    atype <- try(
-      fetch_var(varnames_activity, in_format, out_var),
-      silent = TRUE
-    )
-    if (!inherits(atype, "try-error")) {
-      df <- update_var(df, col_name, atype$old_names, atype$new_names)
-      warn_invalid_var(df, col_name, atype$keep_var)
-    }
+    atype <- fetch_var(varnames_activity, in_format, out_format)
+    df <- update_var(df, col_name, atype$old_names, atype$new_names)
+    warn_invalid_var(df, col_name, atype$keep_var)
   }
 
   # Custom format changes -----

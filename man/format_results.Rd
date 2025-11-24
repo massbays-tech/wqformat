@@ -18,13 +18,21 @@ format_results(
 
 \item{in_format, out_format}{String. Desired input and output formats.
 Not case sensitive. Accepted formats:
+
 * WQX
+
 * MassWateR
+
 * wqdashboard
+
 * RI_WW (Rhode Island Watershed Watch)
+
 * RI_DEM (Rhode Island DEM)
+
 * MA_BRC (Blackstone River Coalition)
+
 * ME_DEP (Maine DEP)
+
 * ME_FOCB (Friends of Casco Bay)}
 
 \item{date_format}{String. Date format. Uses the same formatting as
@@ -37,7 +45,7 @@ timezone as default.}
 converted to `out_format`. Default `TRUE`.}
 }
 \value{
-Updated dataframe.
+Updated dataframe
 }
 \description{
 Converts water quality result data between different formats.

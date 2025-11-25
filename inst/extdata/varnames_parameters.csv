@@ -39,7 +39,7 @@ Total Kjeldahl nitrogen|Total Kjeldahl nitrogen (Organic N & NH3)|Kjeldahl nitro
 "Total Nitrogen, mixed forms|Nitrogen|Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)|Total Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)","TN|PON|TDN|Total Nitrogen, mixed forms","Total Nitrogen, mixed forms|Nitrogen|Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)|Total Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)","Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TN as N|TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","Nitrogen, Total (unfiltered) - 00600"
 "Total Phosphorus, mixed forms|Phosphates (orthophosphate plus condensed and polyphosphates)|Phosphorus|Total Particulate Phosphorus","TP|TDP|Total Phosphorus, mixed forms","Total Phosphorus, mixed forms|Phosphates (orthophosphate plus condensed and polyphosphates)|Phosphorus|Total Particulate Phosphorus","Phosphorus, Total - 00665",,,,"Phosphorus, Total - 00665"
 Total suspended solids,TSS|Total suspended solids,Total suspended solids,TSS - 00530,,,,TSS - 00530
-Turbidity,Turbidity,Turbidity,Turbidity - 00070,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY,Turbidity - 00070
+Turbidity,Turbidity,Turbidity,Turbidity - 00070|Turbidity - 00076,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY,Turbidity - 00070|Turbidity - 00076
 "Temperature, water","Water Temp|Temperature, water","Temperature, water",Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMP|TEMPERATURE,Temperature - 00011
 "1,1,1-Trichloroethane",,"1,1,1-Trichloroethane","1,1,1 Trichloroethane - 34506",,,,"1,1,1 Trichloroethane - 34506"
 "1,2-Dichlorobenzene-d4",,"1,2-Dichlorobenzene-d4","1,2 Dichlorobenzene - 34536",,,,"1,2 Dichlorobenzene - 34536"
@@ -58,7 +58,7 @@ Propylene glycol,,Propylene glycol,"Propylene Glycol, water, unfiltered, recover
 Sodium,,Sodium,"Sodium, Dissolved as NA - 00930",,,,"Sodium, Dissolved as NA - 00930"
 Tetrachloroethylene,,Tetrachloroethylene,Tetrachloroethylene - 34475,,,,Tetrachloroethylene - 34475
 Toluene,,Toluene,Toluene - 34010,,,,Toluene - 34010
-Total Coliform,,Total Coliform,Total Coliform - 31502,,,,Total Coliform - 31502
+Total Coliform,,Total Coliform,Total Coliform - 31502|Total coliform - 31502,,,,Total Coliform - 31502|Total coliform - 31502
 Trichloroethylene,,Trichloroethylene,Trichloroethylene - 39180,,,,Trichloroethylene - 39180
 "Wind direction, horizontal",,"Wind direction, horizontal",,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION,
 "Wind force, Beaufort scale",,"Wind force, Beaufort scale",,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED,

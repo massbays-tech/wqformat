@@ -39,7 +39,7 @@ Total Kjeldahl nitrogen|Total Kjeldahl nitrogen (Organic N & NH3)|Kjeldahl nitro
 "Total Nitrogen, mixed forms|Nitrogen|Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)|Total Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)","TN|PON|TDN|Total Nitrogen, mixed forms",,"Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TN as N|TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
 "Total Phosphorus, mixed forms|Phosphates (orthophosphate plus condensed and polyphosphates)|Phosphorus|Total Particulate Phosphorus","TP|TDP|Total Phosphorus, mixed forms",,"Phosphorus, Total - 00665",,,
 Total suspended solids,TSS|Total suspended solids,,TSS - 00530,,,
-Turbidity,Turbidity,,Turbidity - 00070,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY
+Turbidity,Turbidity,,Turbidity - 00070|Turbidity - 00076,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY
 "Temperature, water","Water Temp|Temperature, water",,Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMP|TEMPERATURE
 "1,1,1-Trichloroethane",,,"1,1,1 Trichloroethane - 34506",,,
 "1,2-Dichlorobenzene-d4",,,"1,2 Dichlorobenzene - 34536",,,
@@ -58,7 +58,7 @@ Propylene glycol,,,"Propylene Glycol, water, unfiltered, recoverable, mg/l - 910
 Sodium,,,"Sodium, Dissolved as NA - 00930",,,
 Tetrachloroethylene,,,Tetrachloroethylene - 34475,,,
 Toluene,,,Toluene - 34010,,,
-Total Coliform,,,Total Coliform - 31502,,,
+Total Coliform,,,Total Coliform - 31502|Total coliform - 31502,,,
 Trichloroethylene,,,Trichloroethylene - 39180,,,
 "Wind direction, horizontal",,,,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION
 "Wind force, Beaufort scale",,,,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED

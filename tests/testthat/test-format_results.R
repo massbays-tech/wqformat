@@ -17,34 +17,34 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   # Test - FOCB wide format 1
   df_dep1 <- data.frame(
     "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
-    "SAMPLE_POINT_NAME" = c(
+    SAMPLE_POINT_NAME = c(
       "BMR02", "BMR02", "BMR02", "BMR02", "BMR02", "EEB18", "EEB18", "EEB18",
       "EEB18", "EEB18", "HR4", "HR4", "HR4"
     ),
-    "SAMPLE_DATE" = c(
+    SAMPLE_DATE = c(
       "2023-10-04", "2023-10-04", "2023-10-04", "2023-10-04", "2023-10-04",
       "2023-06-22", "2023-06-22", "2023-06-22", "2023-06-22", "2023-06-22",
       "2023-05-24", "2023-05-24", "2023-05-24"
     ),
-    "SAMPLE_TIME" = c(
+    SAMPLE_TIME = c(
       "12:25", "12:25", "12:25", "12:25", "12:25", "8:45", "8:45", "8:45",
       "8:45", "8:45", "13:51", "13:51", "13:51"
     ),
-    "QC_TYPE" = "NA",
-    "PARAMETER_NAME" = c(
+    QC_TYPE = "NA",
+    PARAMETER_NAME = c(
       "CLOUD COVER", "WSPD", "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD",
       "WDIR", "DEPTH", "SECCHI", "CLOUD COVER", "WSPD", "WDIR"
     ),
-    "CONCENTRATION" = c(
+    CONCENTRATION = c(
       25, 1, 160, 9.5, 2.7, 0, 1, 45, 0.8, "BSV", 75, 3, 180
     ),
-    "LAB_QUALIFIER" = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
-    "PARAMETER_UNITS" = c(
+    LAB_QUALIFIER = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
+    PARAMETER_UNITS = c(
       "%", "BFT", "DEG TRUE", "M", "M", "%", "BFT", "DEG TRUE", "M", "M", "%",
       "BFT", "DEG TRUE"
     ),
-    "ANALYSIS_DATE" = as.Date(NA),
-    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
+    ANALYSIS_DATE = as.Date(NA),
+    SAMPLED_BY = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
   df_dep1$SAMPLE_DATE <- as.Date(df_dep1$SAMPLE_DATE)
@@ -62,39 +62,39 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   # Test - FOCB wide format 2
   df_dep2 <- data.frame(
     "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
-    "SAMPLE_POINT_NAME" = "P5BSD",
-    "SAMPLE_DATE" = as.Date("2023-07-19"),
-    "SAMPLE_TIME" = c(
+    SAMPLE_POINT_NAME = "P5BSD",
+    SAMPLE_DATE = as.Date("2023-07-19"),
+    SAMPLE_TIME = c(
       "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:04",
       "10:04", "10:04", "10:04", "10:04", "10:04", "10:04", "10:05", "10:05",
       "10:05", "10:05", "10:05", "10:05", "10:05"
     ),
-    "QC_TYPE" = "NA",
-    "SAMPLE_DEPTH" = c(
+    QC_TYPE = "NA",
+    SAMPLE_DEPTH = c(
       11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 5, 5, 5, 5, 5, 5,
       5
     ),
-    "SAMPLE_DEPTH_UNIT" = "M",
-    "PARAMETER_NAME" = c(
+    SAMPLE_DEPTH_UNIT = "M",
+    PARAMETER_NAME = c(
       "TEMP", "SALINITY", "DO", "DO SAT", "PH", "CHLOROPHYLL", "TUR", "TEMP",
       "SALINITY", "DO", "DO SAT", "PH", "CHLOROPHYLL", "TUR", "TEMP",
       "SALINITY", "DO", "DO SAT", "PH", "CHLOROPHYLL", "TUR"
     ),
-    "CONCENTRATION" = c(
+    CONCENTRATION = c(
       12.7, 31, 7.3, 83.7, 7.93, 2.3, 1.1, 12.7, 31, 7.3, 83.4, 7.93, 2.5, 1.1,
       15.5, 30.1, 7.6, 91.3, 7.98, 7.8, 1.1
     ),
-    "PARAMETER_UNITS" = c(
+    PARAMETER_UNITS = c(
       "DEG C", "PSU", "MG/L", "%", "STU", "UG/L", "FNU", "DEG C", "PSU", "MG/L",
       "%", "STU", "UG/L", "FNU", "DEG C", "PSU", "MG/L", "%", "STU", "UG/L",
       "FNU"
     ),
-    "LAB_QUALIFIER" = c(
+    LAB_QUALIFIER = c(
       NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA,
       NA, "J", NA
     ),
-    "ANALYSIS_DATE" = as.Date(NA),
-    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
+    ANALYSIS_DATE = as.Date(NA),
+    SAMPLED_BY = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
   missing_col <- setdiff(col_order, colnames(df_dep2))
@@ -111,25 +111,25 @@ test_that("format_results converts ME_FOCB to ME_DEP", {
   # Test - FOCB long format
   df_dep3 <- data.frame(
     "PROJECT/SITE" = "FRIENDS OF CASCO BAY ALL SITES",
-    "SAMPLE_POINT_NAME" = "BMR02",
-    "SAMPLE_DATE" = c(
+    SAMPLE_POINT_NAME = "BMR02",
+    SAMPLE_DATE = c(
       "2023-05-23", "2023-06-21", "2023-07-05", "2023-07-18", "2023-08-16"
     ),
-    "QC_TYPE" = "NA",
-    "ANALYSIS_LAB" = "UMWL",
-    "ANALYSIS_DATE" = c(
+    QC_TYPE = "NA",
+    ANALYSIS_LAB = "UMWL",
+    ANALYSIS_DATE = c(
       "2023-07-06", "2023-07-27", "2023-08-28", "2023-09-25", "2023-10-20"
     ),
-    "PARAMETER_NAME" = "TN AS N",
-    "CONCENTRATION" = c(0.22, 0.34, 0.28, 0.28, 0.25),
-    "PARAMETER_UNITS" = "MG/L",
-    "REPORTING_LIMIT" = 0.1,
-    "MDL" = 0.073,
-    "TEST" = "SM4500NE_2021",
-    "SAMPLE_DEPTH" = 0.2,
-    "SAMPLE_DEPTH_UNIT" = "M",
-    "LAB_QUALIFIER" = "J",
-    "SAMPLED_BY" = "FRIENDS OF CASCO BAY",
+    PARAMETER_NAME = "TN AS N",
+    CONCENTRATION = c(0.22, 0.34, 0.28, 0.28, 0.25),
+    PARAMETER_UNITS = "MG/L",
+    REPORTING_LIMIT = 0.1,
+    MDL = 0.073,
+    TEST = "SM4500NE_2021",
+    SAMPLE_DEPTH = 0.2,
+    SAMPLE_DEPTH_UNIT = "M",
+    LAB_QUALIFIER = "J",
+    SAMPLED_BY = "FRIENDS OF CASCO BAY",
     check.names = FALSE
   )
   df_dep3$SAMPLE_DATE <- as.Date(df_dep3$SAMPLE_DATE)
@@ -386,22 +386,22 @@ test_that("format_results converts MA_BRC to MassWateR", {
 test_that("format_results converts MA_BRC to RI_DEM", {
   df_dem <- data.frame(
     "Station Name" = "B-06-01-050",
-    "Date" = as.Date("2004-04-10"),
-    "Time" = "04:30",
+    Date = as.Date("2004-04-10"),
+    Time = "04:30",
     "Sample Type" = c(
       "Grab", "Grab", "Grab", "Grab", "Replicate", "Grab", "Replicate", "Grab",
       "Grab"
     ),
     "Sample Media" = NA,
-    "Depth" = NA,
-    "Parameter" = c(
+    Depth = NA,
+    Parameter = c(
       "Air Temperature", "Dissolved Oxygen Percent Saturation - 00301",
       "Dissolved Oxygen - 00300", "Nitrate", "Nitrate",
       "Orthophosphate, Dissolved - 00671", "Orthophosphate, Dissolved - 00671",
       "Turbidity - 00070", "Temperature - 00011"
     ),
-    "Concentration" = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
-    "Unit" = c("C", "%", "mg/l", "mg/l", "mg/l", "mg/l", "mg/l", "NTU", "C"),
+    Concentration = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),
+    Unit = c("C", "%", "mg/l", "mg/l", "mg/l", "mg/l", "mg/l", "NTU", "C"),
     check.names = FALSE
   )
   blank_col <- c(
@@ -486,16 +486,16 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
   df_ww <- data.frame(
     "WW ID" = "WW066",
     "Date of Sample" = "5/7/2021",
-    "Time" = "12:28:00 PM",
+    Time = "12:28:00 PM",
     "Sample Type" = c("Replicate", "Grab", "Grab"),
     "Sample Media" = "Water",
-    "Depth" = c(0.5, 0.5, 1),
-    "Parameter" = c(
+    Depth = c(0.5, 0.5, 1),
+    Parameter = c(
       "Enterococci - 31639", "Enterococci - 31639",
       "Nitrate + Nitrite, Dissolved - 00631"
     ),
-    "Concentration" = c(1.25, 4.725, 1),
-    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    Concentration = c(1.25, 4.725, 1),
+    Unit = c("MPN/100", "MPN/100", "mg/L"),
     "Qualifier Code" = c("U", NA, NA),
     "Detection Limit" = c(1, 1, 0.015),
     "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
@@ -509,9 +509,9 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
     "Particle Size Unit" = NA,
     "Fish Sample Type" = NA,
     "Fish Taxa" = NA,
-    "Comments" = c(NA, NA, "Trilogy"),
+    Comments = c(NA, NA, "Trilogy"),
     "Monitoring location" = "Worden Pond",
-    "Watershed" = "Upper Pawcatuck River",
+    Watershed = "Upper Pawcatuck River",
     "Watershed Code" = "WD",
     "MONITOR 1" = NA,
     "MONITOR 2" = NA,
@@ -520,17 +520,17 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
 
   df_dem <- data.frame(
     "Station Name" = "WW066",
-    "Date" = as.Date("2021-05-07"),
-    "Time" = "12:28:00 PM",
+    Date = as.Date("2021-05-07"),
+    Time = "12:28:00 PM",
     "Sample Type" = c("Replicate", "Grab", "Grab"),
     "Sample Media" = "Water",
-    "Depth" = c(0.5, 0.5, 1),
-    "Parameter" = c(
+    Depth = c(0.5, 0.5, 1),
+    Parameter = c(
       "Enterococci - 31639", "Enterococci - 31639",
       "Nitrate + Nitrite, Dissolved - 00631"
     ),
-    "Concentration" = c(1.25, 4.725, 1),
-    "Unit" = c("MPN/100ml", "MPN/100ml", "mg/l"),
+    Concentration = c(1.25, 4.725, 1),
+    Unit = c("MPN/100ml", "MPN/100ml", "mg/l"),
     "Qualifier Code" = c("U", NA, NA),
     "Detection Limit" = c(1, 1, 0.015),
     "Detection Limit Unit" = c("MPN/100ml", "MPN/100ml", "mg/l"),
@@ -544,7 +544,7 @@ test_that("format_results converts RI_WW to RI_DEM and vice versa", {
     "Particle Size Unit" = NA,
     "Fish Sample Type" = NA,
     "Fish Taxa" = NA,
-    "Comments" = c(NA, NA, "Trilogy"),
+    Comments = c(NA, NA, "Trilogy"),
     check.names = FALSE
   )
 
@@ -579,16 +579,16 @@ test_that("format_results converts RI_WW to MassWateR", {
   df_ww <- data.frame(
     "WW ID" = "WW066",
     "Date of Sample" = "5/7/2021",
-    "Time" = "12:28:00 PM",
+    Time = "12:28:00 PM",
     "Sample Type" = c("Replicate", "Grab", "Grab"),
     "Sample Media" = "Water",
-    "Depth" = c(0.5, 0.5, 1),
-    "Parameter" = c(
+    Depth = c(0.5, 0.5, 1),
+    Parameter = c(
       "Enterococci - 31639", "Enterococci - 31639",
       "Nitrate + Nitrite, Dissolved - 00631"
     ),
-    "Concentration" = c(1.25, 4.725, 1),
-    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    Concentration = c(1.25, 4.725, 1),
+    Unit = c("MPN/100", "MPN/100", "mg/L"),
     "Qualifier Code" = c("U", NA, NA),
     "Detection Limit" = c(1, 1, 0.015),
     "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
@@ -602,7 +602,7 @@ test_that("format_results converts RI_WW to MassWateR", {
     "Particle Size Unit" = NA,
     "Fish Sample Type" = NA,
     "Fish Taxa" = NA,
-    "Comments" = c(NA, NA, "Trilogy"),
+    Comments = c(NA, NA, "Trilogy"),
     "Monitoring location" = "Worden Pond",
     "Watershed" = "Upper Pawcatuck River",
     "Watershed code" = "WD",
@@ -646,16 +646,16 @@ test_that("format_results converts RI_WW to WQdashboard", {
   df_ww <- data.frame(
     "WW ID" = "WW066",
     "Date of Sample" = "5/7/2021",
-    "Time" = "12:28:00 PM",
+    Time = "12:28:00 PM",
     "Sample Type" = c("Replicate", "Grab", "Grab"),
     "Sample Media" = "Water",
-    "Depth" = c(0.5, 0.5, 1),
-    "Parameter" = c(
+    Depth = c(0.5, 0.5, 1),
+    Parameter = c(
       "Enterococci - 31639", "Enterococci - 31639",
       "Nitrate + Nitrite, Dissolved - 00631"
     ),
-    "Concentration" = c(1.25, 4.725, 1),
-    "Unit" = c("MPN/100", "MPN/100", "mg/L"),
+    Concentration = c(1.25, 4.725, 1),
+    Unit = c("MPN/100", "MPN/100", "mg/L"),
     "Qualifier Code" = c("U", NA, NA),
     "Detection Limit" = c(1, 1, 0.015),
     "Detection Limit Unit" = c("MPN/100", "MPN/100", "mg/L"),
@@ -669,9 +669,9 @@ test_that("format_results converts RI_WW to WQdashboard", {
     "Particle Size Unit" = NA,
     "Fish Sample Type" = NA,
     "Fish Taxa" = NA,
-    "Comments" = c(NA, NA, "Trilogy"),
+    Comments = c(NA, NA, "Trilogy"),
     "Monitoring location" = "Worden Pond",
-    "Watershed" = "Upper Pawcatuck River",
+    Watershed = "Upper Pawcatuck River",
     "Watershed code" = "WD",
     "MONITOR 1" = NA,
     "MONITOR 2" = NA,
@@ -747,30 +747,17 @@ test_that("format_results converts MassWateR to WQdashboard", {
 
   # Test
   expect_equal(
-    suppressWarnings(
       suppressMessages(
         format_results(
           tst$mwr_data,
           "MassWateR", "WQdashboard",
           drop_extra_col = FALSE,
           date_format = "m/d/Y"
-        )
       )
     ),
     df_wqd
   )
 
-  expect_warning(
-    suppressMessages(
-      format_results(
-        tst$mwr_data,
-        "MassWateR", "WQdashboard",
-        drop_extra_col = FALSE,
-        date_format = "m/d/Y"
-      )
-    ),
-    regexp = "Unable to rename 6 columns"
-  )
 })
 
 test_that("format_results converts WQX to WQdashboard", {
@@ -835,29 +822,15 @@ test_that("format_results converts WQX to WQdashboard", {
   )
 
   expect_equal(
-    suppressWarnings(
-      suppressMessages(
+    suppressMessages(
         format_results(
           df_wqx,
           "WQX", "WQdashboard",
           drop_extra_col = FALSE,
           date_format = "m/d/Y"
         )
-      )
     ),
     df_wqd
-  )
-
-  expect_warning(
-    suppressMessages(
-      format_results(
-        df_wqx,
-        "WQX", "WQdashboard",
-        drop_extra_col = FALSE,
-        date_format = "m/d/Y"
-      )
-    ),
-    regexp = "Unable to rename 23 columns"
   )
 })
 

@@ -2,28 +2,40 @@
 % Please edit documentation in R/update_variables.R
 \name{update_unit}
 \alias{update_unit}
-\title{Rename all variables in column}
+\title{Rename units}
 \usage{
-update_unit(.data, col_name, old_varname, new_varname)
+update_unit(.data, col_name, in_format, out_format)
 }
 \arguments{
 \item{.data}{Dataframe}
 
 \item{col_name}{String. Column name.}
 
-\item{old_varname, new_varname}{List. List old variable names in `old_varname`
-and new variable names in `new_varname`. `old_varname` and `new_varname` are
-a paired list, therefor they must be the same length and in the same order.}
+\item{in_format, out_format}{String. Desired input and output formats.
+Not case sensitive. Accepted formats:
+
+* WQX
+
+* MassWateR
+
+* wqdashboard
+
+* RI_WW (Rhode Island Watershed Watch)
+
+* RI_DEM (Rhode Island DEM)
+
+* MA_BRC (Blackstone River Coalition)
+
+* ME_DEP (Maine DEP)
+
+* ME_FOCB (Friends of Casco Bay)}
 }
 \value{
-Dataframe with updated variables in target column. If no
-substitutions found, returns original dataframe.
+Dataframe with updated units in target column
 }
 \description{
-`update_var()` uses a paired list (`old_varname`, `new_varname`) to
-generate a list of name substitutions and update all variables in the input
-column. If no match found, leaves old variable name.
+`update_unit()` converts units in target column to new format.
 }
 \seealso{
-[warn_invalid_var]
+[update_var], [update_unit]
 }

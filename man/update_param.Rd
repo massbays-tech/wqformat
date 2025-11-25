@@ -2,7 +2,7 @@
 % Please edit documentation in R/update_variables.R
 \name{update_param}
 \alias{update_param}
-\title{Rename all parameters in column}
+\title{Rename parameters}
 \usage{
 update_param(.data, col_name, in_format, out_format)
 }
@@ -34,7 +34,7 @@ Not case sensitive. Accepted formats:
 Dataframe with updated parameters in target column
 }
 \description{
-`update_param()` updates all parameter values in the input column.
+`update_param()` converts parameters in target column to new format.
 }
 \seealso{
 [update_var], [update_unit]

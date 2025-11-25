@@ -297,10 +297,10 @@ results_to_mwr <- function(.data) {
 
   # Update qualifiers, result value
   q_under <- c(
-    "<2B", "2-5B", "BQL", "BRL", "D>T", "DL", "IDL", "K", "LTGTE", "U"
+    "<2B", "2-5B", "BQL", "BRL", "D>T", "DL", "IDL", "K", "LTGTE", "U", "BDL"
   )
 
-  q_over <- c("GT", "E", "EE")
+  q_over <- c("GT", "E", "EE", "AQL")
 
   dat <- .data %>%
     dplyr::mutate(

@@ -76,10 +76,8 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     message("\tDropped ", toString(length(drop_col)), " columns")
   } else {
     df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
-    warning(
-      "\tUnable to rename ", toString(length(drop_col)), " columns: ",
-      paste(drop_col, collapse = ", "),
-      call. = FALSE
+    message(
+      "\tRetaining ", toString(length(drop_col)), " surplus columns"
     )
   }
 

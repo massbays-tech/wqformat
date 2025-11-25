@@ -57,34 +57,27 @@ test_that("format_sites converts MA_BRC to MassWateR", {
 
 test_that("format_sites converts MA_BRC to wqdashboard", {
   df_wqd <- data.frame(
-    "Site_ID" = c(
+    Site_ID = c(
       "A-06-01-010", "A-06-01-020", "B-01-01-020", "B-01-01-010", "A-01-01-010"
     ),
-    "Site_Name" = c(
+    Site_Name = c(
       "Esta Brook", "Shore Dr.",
       "Intersection of 146A and Balm of Life Spring Road", "South St.",
       "Jewish Community Center"
     ),
-    "Latitude" = c(
-      42.31425, 42.304617, 42.02896, 42.01908, 42.29549
-    ),
-    "Longitude" = c(
-      -71.82114, -71.81665, -71.60853, -71.61399, -71.83817
-    ),
-    "Town" = c("Worcester", "Worcester", "Uxbridge", "Uxbridge", "Worcester"),
-    "County" = NA,
-    "State" = "MA",
-    "Watershed" = c(
+    Latitude = c(42.31425, 42.304617, 42.02896, 42.01908, 42.29549),
+    Longitude = c(-71.82114, -71.81665, -71.60853, -71.61399, -71.83817),
+    Town = c("Worcester", "Worcester", "Uxbridge", "Uxbridge", "Worcester"),
+    State = "MA",
+    Watershed = c(
       "Tatnuck Brook-Blackstone River", "Tatnuck Brook-Blackstone River",
       "Emerson Brook-Blackstone River", "Emerson Brook-Blackstone River",
       "Tatnuck Brook-Blackstone River"
     ),
-    "Group" = c(
-      "Warmwater", "Coldwater", "Coldwater", "Coldwater", "Warmwater"
-    ),
-    "Max_Surface_Depth_m" = NA,
-    "Max_Midwater_Depth_m" = NA,
-    "Max_Depth_m" = NA_integer_
+    Group = c("Warmwater", "Coldwater", "Coldwater", "Coldwater", "Warmwater"),
+    Max_Surface_Depth_m = NA,
+    Max_Midwater_Depth_m = NA,
+    Max_Depth_m = NA_integer_
   )
 
   expect_equal(
@@ -98,36 +91,36 @@ test_that("format_sites converts MA_BRC to wqdashboard", {
 # Rhode Island ----
 test_that("format_sites converts RI_WW", {
   df_test <- data.frame(
-    "WW_StaNumb" = c(1, 2),
-    "WW_Station" = c("WW001", "WW002"),
-    "WBID" = c("RI0008040L-01", "RI0008040L-01"),
-    "WB_Type" = c("Reservoir", "Lake or Pond"),
-    "Site_DESCR" = c("Alton Pond", "Barber Pond"),
-    "PARKING_ACCESS" = NA,
-    "Town" = c("Hopkinton", "South Kingstown"),
-    "BorderTown" = c("Richmon, Hopkinton", NA),
-    "COUNTY" = "WASHINGTON",
-    "State" = "RI",
-    "LAT_DD" = c(41.438171, 41.504129),
-    "LON_DD" = c(-71.721642, -71.564271),
-    "ProjID" = 12,
-    "Year_added" = 1988,
-    "Active" = c(2022, 2018),
-    "Status" = c("Active", "Not Active"),
-    "DepthCode" = c("S", "D"),
-    "MaxDepth_m" = c(4.2, 4.6),
-    "PublicAcce" = "Yes",
-    "LakeAcreag" = c(99.7, 28.5),
-    "sq__meter" = NA,
-    "HUC_8" = "01090005",
-    "HUC_10" = c("0109000501", "0109000502"),
-    "HUC_12" = c("010900050102", "010900050204"),
-    "HUC_10_NAME" = c("Wood River", "Upper Pawcatuck River"),
-    "HUC_12_NAME" = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
-    "Image" = NA,
-    "elevation_Feet" = c(46.9, 114.8),
-    "elevation_meters" = c(14.3, 35.0),
-    "Ord_Id" = "WPWA"
+    WW_StaNumb = c(1, 2),
+    WW_Station = c("WW001", "WW002"),
+    WBID = c("RI0008040L-01", "RI0008040L-01"),
+    WB_Type = c("Reservoir", "Lake or Pond"),
+    Site_DESCR = c("Alton Pond", "Barber Pond"),
+    PARKING_ACCESS = NA,
+    Town = c("Hopkinton", "South Kingstown"),
+    BorderTown = c("Richmond, Hopkinton", NA),
+    COUNTY = "WASHINGTON",
+    State = "RI",
+    LAT_DD = c(41.438171, 41.504129),
+    LON_DD = c(-71.721642, -71.564271),
+    ProjID = 12,
+    Year_added = 1988,
+    Active = c(2022, 2018),
+    Status = c("Active", "Not Active"),
+    DepthCode = c("S", "D"),
+    MaxDepth_m = c(4.2, 4.6),
+    PublicAcce = "Yes",
+    LakeAcreag = c(99.7, 28.5),
+    sq__meter = NA,
+    HUC_8 = "01090005",
+    HUC_10 = c("0109000501", "0109000502"),
+    HUC_12 = c("010900050102", "010900050204"),
+    HUC_10_NAME = c("Wood River", "Upper Pawcatuck River"),
+    HUC_12_NAME = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
+    Image = NA,
+    elevation_Feet = c(46.9, 114.8),
+    elevation_meters = c(14.3, 35.0),
+    Ord_Id = "WPWA"
   )
 
   expect_equal(
@@ -154,7 +147,6 @@ test_that("format_sites converts RI_WW", {
       Latitude = c(41.438171, 41.504129),
       Longitude = c(-71.721642, -71.564271),
       Town = c("Hopkinton", "South Kingstown"),
-      County = "WASHINGTON",
       State = "RI",
       Watershed = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
       Group = NA_character_,
@@ -175,7 +167,6 @@ test_that("format_sites converts MassWateR to wqdashboard", {
     Latitude = c(42.47037, 42.404519, 42.37398),
     Longitude = c(-71.362579, -71.526349, -71.381739),
     Town = NA,
-    County = NA,
     State = NA_character_,
     Watershed = NA,
     Group = NA_character_,
@@ -220,10 +211,6 @@ test_that("format_sites converts WQX to wqdashboard", {
       -112.099, -111.685
     ),
     Town = NA,
-    County = c(
-      "Salt Lake", "Berkeley", "Berkeley", "Custer", "Custer", "Salt Lake",
-      "Salt Lake", "Salt Lake", "Salt Lake"
-    ),
     State = c("UT", "SC", "WV", "CO", "ID", "UT", "UT", "UT", "UT"),
     Watershed = NA,
     Group = NA_character_,
@@ -247,6 +234,10 @@ test_that("format_sites converts WQX to wqdashboard", {
     "Monitoring Location Horizontal Coordinate Reference System" = c(
       "NAD27", "NAD83", "NAD83", "NAD27", "NAD83", "NAD83", "NAD83", "NAD83",
       "NAD83"
+    ),
+    "Monitoring Location County Name" = c(
+      "Salt Lake", "Berkeley", "Berkeley", "Custer", "Custer", "Salt Lake",
+      "Salt Lake", "Salt Lake", "Salt Lake"
     ),
     "County Code (Auto-Generated)" = c(35, 15, 3, 27, 37, 35, 35, 35, 35),
     "HUC 8" = NA,
@@ -316,7 +307,6 @@ test_that("format_sites to MA_BRC updates CFR, WATER_DEPTH_FT", {
 # Error messages -----
 
 test_that("format_sites error messages", {
-  # Invalid in_format or out_format
   expect_error(
     suppressMessages(
       format_sites(tst$mwr_sites, "MassWateR", "bar")
@@ -329,18 +319,5 @@ test_that("format_sites error messages", {
       format_sites(tst$mwr_sites, "foo", "WQX")
     ),
     regexp = "Invalid format. Acceptable options: "
-  )
-
-  # Can't rename column
-  expect_warning(
-    suppressMessages(
-      format_sites(
-        tst$mwr_sites,
-        "MassWateR",
-        "WQdashboard",
-        drop_extra_col = FALSE
-      )
-    ),
-    regexp = "\tUnable to rename 1 columns: Location.Group"
   )
 })

@@ -5,7 +5,7 @@ wqx,masswater,ri_dem,ma_brc,me_dep,me_focb,wqdashboard,ri_ww
 AU,AU,,,,,AU,
 cfm,cfm,,,,,cfm,
 cfs|ft3/sec,cfs,cfs,,,,cfs|ft3/sec,cfs
-cfu/100mL|cfu/100ml|#col/100mL|#col/100ml,cfu/100ml,CFU/100ml|CFU/100mL,,,,cfu/100mL|cfu/100ml|#col/100mL|#col/100ml,CFU/100ml|CFU/100mL
+cfu/100mL|cfu/100ml|#col/100mL|#col/100ml,cfu/100ml,CFU/100ml|CFU/100mL|CFU/100,,,,cfu/100mL|cfu/100ml|#col/100mL|#col/100ml,CFU/100ml|CFU/100mL|CFU/100
 cm,cm,,,,,cm,
 deg C,deg C,C|c,C,DEG C,Deg C|DEG C,deg C,C|c
 deg F,deg F,F|f,,,,deg F,F|f

@@ -77,7 +77,7 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
   } else {
     df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
     message(
-      "\tRetaining ", toString(length(drop_col)), " surplus columns"
+      "\tKept ", toString(length(drop_col)), " extra columns"
     )
   }
 

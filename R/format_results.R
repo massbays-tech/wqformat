@@ -96,7 +96,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   } else {
     df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
     message(
-      "\tRetaining ", toString(length(drop_col)), " surplus columns"
+      "\tKept ", toString(length(drop_col)), " extra columns"
     )
   }
 

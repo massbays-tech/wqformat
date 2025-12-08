@@ -247,5 +247,4 @@ test_that("fetch_unit works", {
     fetch_unit("feet"),
     NULL
   )
-
 })

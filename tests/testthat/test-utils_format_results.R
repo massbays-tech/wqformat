@@ -37,6 +37,9 @@ test_that("prep_mwr_results works", {
     "Project ID" = "Water Quality",
     "Local Record ID" = NA,
     "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
+    "Detection Limit Unit" = c(
+      "%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"
+    ),
     check.names = FALSE
   )
 
@@ -472,6 +475,10 @@ test_that("prep_focb_results works", {
       "BFT", "DEG True"
     ),
     Qualifier = c(NA, NA, NA, NA, NA, NA, NA, NA, NA, "G", NA, NA, NA),
+    "Detection Limit Unit" = c(
+      "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
+      "BFT", "DEG True"
+    ),
     check.names = FALSE
   )
 
@@ -517,6 +524,11 @@ test_that("prep_focb_results works", {
       NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA, NA, "J", NA, NA, NA, NA, NA,
       NA, "J", NA
     ),
+    "Detection Limit Unit" = c(
+      "Deg C", "PSU", "mg/L", "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L",
+      "%", "STU", "ug/L", "FNU", "Deg C", "PSU", "mg/L", "%", "STU", "ug/L",
+      "FNU"
+    ),
     check.names = FALSE
   )
 
@@ -531,22 +543,23 @@ test_that("prep_focb_results works", {
     "Sample Date" = c(
       "2023-05-23", "2023-06-21", "2023-07-05", "2023-07-18", "2023-08-16"
     ),
-    "Lab" = "UMWL",
+    Lab = "UMWL",
     "Analysis Date" = c(
       "2023-07-06", "2023-07-27", "2023-08-28", "2023-09-25", "2023-10-20"
     ),
-    "Parameter" = "TN as N",
-    "Result" = c(0.22, 0.34, 0.28, 0.28, 0.25),
-    "Unit" = "MG/L",
-    "RL" = 0.1,
-    "MDL" = 0.073,
-    "Method" = "SM4500NE_2021",
+    Parameter = "TN as N",
+    Result = c(0.22, 0.34, 0.28, 0.28, 0.25),
+    Unit = "MG/L",
+    RL = 0.1,
+    MDL = 0.073,
+    Method = "SM4500NE_2021",
     "Sample Depth m" = 0.2,
-    "Project" = "FRIENDS OF CASCO BAY ALL SITES",
+    Project = "FRIENDS OF CASCO BAY ALL SITES",
     "Sampled By" = "FRIENDS OF CASCO BAY",
     "Sample Depth Unit" = "m",
     "QC Type" = "Field Measurement",
-    "Qualifier" = "J",
+    Qualifier = "J",
+    "Detection Limit Unit" = "MG/L",
     check.names = FALSE
   )
   df_out3[["Sample Date"]] <- as.Date(df_out3[["Sample Date"]])
@@ -561,7 +574,7 @@ test_that("prep_focb_results works", {
   df_in3b <- tst$me_focb_data3
   df_in3b$QC.Type <- NA
 
-  df_out3b <- df_out3[, c(1:11, 15, 12:14, 16)]
+  df_out3b <- df_out3[, c(1:11, 15, 12:14, 16:17)]
 
   expect_equal(
     prep_focb_results(df_in3b),
@@ -569,12 +582,35 @@ test_that("prep_focb_results works", {
   )
 })
 
-# ME_FOCB ----
+test_that("results_to_focb works", {
+  df_in <- data.frame(
+    Unit = "MG/L",
+    RL = c(0.1, 100),
+    MDL = c(0.073, 73),
+    "Detection Limit Unit" = c("MG/L", "UG/L"),
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    Unit = c("MG/L", "MG/L"),
+    RL = 0.1,
+    MDL = 0.073,
+    check.names = FALSE
+  )
+
+  expect_equal(
+    results_to_focb(df_in),
+    df_out
+  )
+})
+
+# ME_DEP ----
 test_that("prep_me_dep works", {
   df_out <- tst$me_dep_data
   df_out$QC_TYPE <- "NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)"
   df_out$SAMPLE_COMMENTS <- NA_character_
-  df_out <- df_out[, c(1:18, 26, 19:25, 27)]
+  df_out$DETECTION_LIMIT_UNIT <- c("DEG C", "PPTH", "MG/L", "%", "STU")
+  df_out <- df_out[, c(1:18, 26, 19:25, 27:28)]
 
   expect_equal(
     prep_me_dep_results(tst$me_dep_data),
@@ -592,9 +628,31 @@ test_that("prep_me_dep works", {
     "foo; bar; foofy", "superb; owl", "piping; plover", NA, NA
   )
   df_out$VALIDATION_COMMENT <- df_in$VALIDATION_COMMENT
+  df_out <- df_out[, c(1:27, 29, 28)]
 
   expect_equal(
     prep_me_dep_results(df_in),
+    df_out
+  )
+})
+
+test_that("results_to_me_dep works", {
+  df_in <- data.frame(
+    PARAMETER_UNITS = "MG/L",
+    REPORTING_LIMIT = c(0.1, 100),
+    MDL = c(0.073, 73),
+    DETECTION_LIMIT_UNIT = c("MG/L", "UG/L")
+  )
+
+  df_out <- data.frame(
+    PARAMETER_UNITS = c("MG/L", "MG/L"),
+    REPORTING_LIMIT = 0.1,
+    MDL = 0.073,
+    check.names = FALSE
+  )
+
+  expect_equal(
+    results_to_me_dep(df_in),
     df_out
   )
 })

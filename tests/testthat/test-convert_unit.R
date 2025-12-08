@@ -18,7 +18,7 @@ test_that("convert_unit works", {
 
 test_that("convert_unit error messages", {
   expect_error(
-    convert_unit(32, "deg F", "deg C", unit_format = 'foo'),
+    convert_unit(32, "deg F", "deg C", unit_format = "foo"),
     regexp = "unit_format is invalid"
   )
 
@@ -113,5 +113,106 @@ test_that("standardize_units error messages", {
       warn_only = FALSE
     ),
     regexp = "Unable to standardize units"
+  )
+})
+
+# Test standardize_units_across ----
+test_that("standardize_units_across works", {
+  df_in <- data.frame(
+    Result_Unit = c("mg/L", "mg/L", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 32),
+    Upper_Detection_Limit = c(10000, NA, 212),
+    Detection_Limit_Unit = c("ug/L", "mg/L", "deg F")
+  )
+
+  df_out <- data.frame(
+    Result_Unit =  c("mg/L", "mg/L", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 0),
+    Upper_Detection_Limit = c(10, NA, 100),
+    Detection_Limit_Unit =  c("mg/L", "mg/L", "deg C")
+  )
+
+  expect_equal(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit")
+    ),
+    df_out
+  )
+
+  # Test edge cases
+  df_in <- data.frame(
+    Result_Unit =  c("mg/L", "mg/L", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 0),
+    Upper_Detection_Limit = c(10, NA, 100),
+    Detection_Limit_Unit =  c("mg/L", "mg/L", "deg C")
+  )
+
+  expect_equal(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit")
+    ),
+    df_in
+  )
+
+  df_in <- data.frame(
+    Result_Unit = c("mg/L", "mg/L", "deg C", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 2, 32),
+    Upper_Detection_Limit = c(10000, NA, 10000, 212),
+    Detection_Limit_Unit = c("ug/L", "mg/L", "ug/L", "deg F")
+  )
+
+  df_out <- data.frame(
+    Result_Unit =  c("mg/L", "mg/L", "deg C", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 2, 0),
+    Upper_Detection_Limit = c(10, NA, 10000, 100),
+    Detection_Limit_Unit =  c("mg/L", "mg/L", "ug/L", "deg C")
+  )
+
+  expect_equal(
+    suppressWarnings(
+      standardize_units_across(
+        df_in,
+        "Result_Unit",
+        "Detection_Limit_Unit",
+        c("Lower_Detection_Limit", "Upper_Detection_Limit")
+      )
+    ),
+    df_out
+  )
+})
+
+test_that("standardize_units_across error messages", {
+  df_in <- data.frame(
+    Result_Unit = c("mg/L", "mg/L", "deg C", "deg C"),
+    Lower_Detection_Limit = c(NA, 2, 2, 32),
+    Upper_Detection_Limit = c(10000, NA, 10000, 212),
+    Detection_Limit_Unit = c("ug/L", "mg/L", "ug/L", "deg F")
+  )
+
+  expect_warning(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit")
+    ),
+    regexp = "Unable to standardize units in row"
+  )
+
+  expect_error(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit"),
+      warn_only = FALSE
+    ),
+    regexp = "Unable to standardize units in row"
   )
 })

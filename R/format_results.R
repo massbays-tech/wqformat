@@ -165,6 +165,10 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     df <- results_to_wqx(df)
   } else if (out_format == "ma_brc") {
     df <- results_to_brc(df)
+  } else if (out_format == "me_dep") {
+    df <- results_to_me_dep(df)
+  } else if (out_format == "me_focb") {
+    df <- results_to_focb(df)
   } else if (out_format %in% c("ri_dem", "ri_ww")) {
     df <- results_to_ridem(df)
   }
@@ -223,6 +227,10 @@ format_mwr_results <- function(.data) {
     warning(
       "Missing suggested columns: ", paste(missing_col, collapse = ", ")
     )
+  }
+
+  if (!"Detection Limit Unit" %in% colnames(.data)) {
+    .data[["Detection Limit Unit"]] <- .data[["Result Unit"]]
   }
 
   # Check variables

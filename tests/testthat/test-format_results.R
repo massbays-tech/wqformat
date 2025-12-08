@@ -192,15 +192,18 @@ test_that("format_results converts ME_FOCB to MassWateR", {
 
   expect_warning(
     expect_warning(
-      suppressMessages(
-        format_results(tst$me_focb_data1, "ME_FOCB", "MassWateR")
+      expect_warning(
+        suppressMessages(
+          format_results(tst$me_focb_data1, "ME_FOCB", "MassWateR")
+        ),
+        paste(
+          "Invalid variables in Characteristic Name:",
+          "Cloud Cover, Wind Speed, Wind Direction"
+        )
       ),
-      paste(
-        "Invalid variables in Characteristic Name:",
-        "Cloud Cover, Wind Speed, Wind Direction"
-      )
+      "Invalid variables in Result Unit: BFT, DEG True"
     ),
-    "Invalid variables in Result Unit: BFT, DEG True"
+    "Invalid variables in Detection Limit Unit: BFT, DEG True"
   )
 
   expect_equal(
@@ -733,7 +736,9 @@ test_that("format_results converts MassWateR to WQdashboard", {
     Result_Unit = c("%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"),
     Lower_Detection_Limit = NA,
     Upper_Detection_Limit = NA,
-    Detection_Limit_Unit = NA,
+    Detection_Limit_Unit = c(
+      "%", "%", "mg/L", "mg/L", "mg/L", "uS/cm", "uS/cm"
+    ),
     Qualifier = c(NA, NA, "Q", NA, NA, NA, NA),
     "Activity Start Time" = c("8:00", "8:00", "7:40", NA, NA, NA, NA),
     "Result Attribute" = c(NA, NA, NA, "K16452-MB3", "K16452-MB3", NA, NA),
@@ -747,17 +752,16 @@ test_that("format_results converts MassWateR to WQdashboard", {
 
   # Test
   expect_equal(
-      suppressMessages(
-        format_results(
-          tst$mwr_data,
-          "MassWateR", "WQdashboard",
-          drop_extra_col = FALSE,
-          date_format = "m/d/Y"
+    suppressMessages(
+      format_results(
+        tst$mwr_data,
+        "MassWateR", "WQdashboard",
+        drop_extra_col = FALSE,
+        date_format = "m/d/Y"
       )
     ),
     df_wqd
   )
-
 })
 
 test_that("format_results converts WQX to WQdashboard", {
@@ -823,12 +827,12 @@ test_that("format_results converts WQX to WQdashboard", {
 
   expect_equal(
     suppressMessages(
-        format_results(
-          df_wqx,
-          "WQX", "WQdashboard",
-          drop_extra_col = FALSE,
-          date_format = "m/d/Y"
-        )
+      format_results(
+        df_wqx,
+        "WQX", "WQdashboard",
+        drop_extra_col = FALSE,
+        date_format = "m/d/Y"
+      )
     ),
     df_wqd
   )

@@ -1,3 +1,5 @@
+# MassWateR ----
+
 #' Prepare result data from MassWateR
 #'
 #' @description
@@ -6,6 +8,7 @@
 #' * Transfers "BDL" and "AQL" values from "Result Value" to "Result Measure
 #' Qualifier".
 #' * Data in "QC Reference Value" is copied to its own row.
+#' * Adds column "Detection Limit Unit"
 #'
 #' @param .data Dataframe
 #'
@@ -35,8 +38,8 @@ prep_mwr_results <- function(.data) {
     "Quality Control-Calibration Check"
   )
 
-  dat <- .data %>%
-    # Separate QC Reference Value to own row
+  .data %>%
+    # Send QC Reference Value to own row
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
         is.na(.data[["QC Reference Value"]]),
@@ -68,11 +71,7 @@ prep_mwr_results <- function(.data) {
         .data[["Activity Type"]]
       )
     ) %>%
-    # Drop QC Reference Value columns
-    dplyr::select(!"QC Reference Value")
-
-  # Update qualifiers, result value
-  dat <- dat %>%
+    # Update qualifiers, result value
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::case_when(
         .data[["Result Value"]] == "BDL" ~ "DL",
@@ -87,7 +86,10 @@ prep_mwr_results <- function(.data) {
         .data[["Result Value"]]
       )
     ) %>%
-    col_to_numeric("Result Value")
+    # Final column adjustments
+    dplyr::select(!"QC Reference Value") %>%
+    col_to_numeric("Result Value") %>%
+    dplyr::mutate("Detection Limit Unit" = .data[["Result Unit"]])
 }
 
 #' Add QC Reference Value to MassWateR result data
@@ -282,6 +284,7 @@ add_qc_ref <- function(.data) {
 #' * Updates "Result Value" and "Result Measure Qualifier" for over-detects and
 #' under-detects
 #' * Transfers duplicate values to "QC Reference Value"
+#' * Standardizes units
 #'
 #' @param .data Dataframe
 #'
@@ -295,7 +298,7 @@ results_to_mwr <- function(.data) {
 
   column_order <- colnames(.data)
 
-  # Update qualifiers, result value
+  # Update qualifiers, result value; standardize units
   q_under <- c(
     "<2B", "2-5B", "BQL", "BRL", "D>T", "DL", "IDL", "K", "LTGTE", "U", "BDL"
   )
@@ -316,17 +319,37 @@ results_to_mwr <- function(.data) {
         NA,
         .data[["Result Measure Qualifier"]]
       )
+    ) %>%
+    standardize_units(
+      "Characteristic Name",
+      "Result Value",
+      "Result Unit",
+      "masswater"
+    ) %>%
+    standardize_units_across(
+      "Result Unit",
+      "Detection Limit Unit",
+      "Detection Limit",
+      "masswater"
     )
+
+  chk <- dat[["Result Unit"]] == dat[["Detection Limit Unit"]] |
+    is.na(dat[["Detection Limit Unit"]])
+  if (all(chk)) {
+    dat[["Detection Limit Unit"]] <- NULL
+  }
 
   # Transfer duplicate samples to QC Reference Value
   dat <- add_qc_ref(dat)
 
   # Adjust formatting
   dat <- dat %>%
-    dplyr::select(dplyr::all_of(column_order)) %>%
+    dplyr::select(dplyr::any_of(column_order)) %>%
     col_to_numeric("Result Value") %>%
     col_to_numeric("QC Reference Value")
 }
+
+# wqdashboard ----
 
 #' Results to wqdashboard
 #'
@@ -422,6 +445,8 @@ prep_wqx_results <- function(.data) {
     )
 }
 
+# WQX -----
+
 #' Results to WQX
 #'
 #' @description
@@ -456,6 +481,8 @@ results_to_wqx <- function(.data) {
       )
     )
 }
+
+# MA_BRC ----
 
 #' Preformat result data from the Blackstone River Coalition
 #'
@@ -570,12 +597,14 @@ results_to_brc <- function(.data) {
     )
 }
 
+# ME_FOCB -----
+
 #' Preformat result data from Friends of Casco Bay
 #'
 #' @description
 #' `prep_focb_results()` is a helper function for [format_results()] that
 #' standardizes result data from Friends of Casco Bay (ME_FOCB).
-#' * Adds column "Sample Depth Unit"
+#' * Adds columns "Sample Depth Unit", "Detection Limit Unit"
 #' * Pivots table from wide to long
 #'
 #' @param .data Dataframe
@@ -672,8 +701,8 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
     dat$temp_gap <- 0
   }
 
-  # Add qualifiers
-  dat <- dat %>%
+  # Add qualifiers, Detection Limit Unit
+  dat %>%
     dplyr::mutate(
       "Parameter" = dplyr::if_else(
         grepl("total nitrogen mixed forms", tolower(.data$Parameter)),
@@ -689,8 +718,41 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
         TRUE ~ NA
       )
     ) %>%
+    dplyr::mutate("Detection Limit Unit" = .data$Unit) %>%
     dplyr::select(!"temp_gap")
 }
+
+#' Format result data for Friends of Casco Bay
+#'
+#' @description
+#' `results_to_focb()` is a helper function for [format_results()] that
+#' formats result data for Friends of Casco Bay (ME_FOCB).
+#' * Ensures MDL uses same units as Results
+#' * Drops column "Detection Limit Unit"
+#'
+#' @param .data Dataframe
+#'
+#' @returns Dataframe matching the format used by Friends of Casco Bay (ME_FOCB)
+#'
+#' @noRd
+results_to_focb <- function(.data) {
+  dat <- .data %>%
+    standardize_units_across(
+      "Unit",
+      "Detection Limit Unit",
+      c("RL", "MDL"),
+      "me_focb"
+    )
+
+  chk <- dat$Unit == dat[["Detection Limit Unit"]]
+  if (all(chk)) {
+    dat[["Detection Limit Unit"]] <- NULL
+  }
+
+  dat
+}
+
+# ME_DEP -----
 
 #' Preformat result data from Maine DEP
 #'
@@ -700,6 +762,7 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
 #' * Concatenates all comments in column "SAMPLE_COMMENTS"
 #' * Sets "QC_TYPE" `NA` values to "NOT APPLICABLE (NORMAL ENVIRONMENTAL
 #' SAMPLE)"
+#' * Adds column "DETECTION_LIMIT_UNIT"
 #'
 #' @param .data Dataframe
 #'
@@ -723,8 +786,41 @@ prep_me_dep_results <- function(.data) {
         "NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)",
         .data$QC_TYPE
       )
-    )
+    ) %>%
+    dplyr::mutate("DETECTION_LIMIT_UNIT" = .data$PARAMETER_UNITS)
 }
+
+#' Format result data for Maine DEP
+#'
+#' @description
+#' `results_to_focb()` is a helper function for [format_results()] that
+#' formats result data for Maine DEP (ME_DEP).
+#' * Ensures MDL uses same units as Results
+#' * Drops column "DETECTION_LIMIT_UNIT"
+#'
+#' @param .data Dataframe
+#'
+#' @returns Dataframe matching the format used by Maine DEP (ME_DEP)
+#'
+#' @noRd
+results_to_me_dep <- function(.data) {
+  dat <- .data %>%
+    standardize_units_across(
+      "PARAMETER_UNITS",
+      "DETECTION_LIMIT_UNIT",
+      c("REPORTING_LIMIT", "MDL"),
+      "me_dep"
+    )
+
+  chk <- dat$PARAMETER_UNITS == dat$DETECTION_LIMIT_UNIT
+  if (all(chk)) {
+    dat$DETECTION_LIMIT_UNIT <- NULL
+  }
+
+  dat
+}
+
+# RI_DEM / RI_WW ----
 
 #' Results to RI DEM/Watershed Watch
 #'

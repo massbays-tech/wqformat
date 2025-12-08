@@ -74,8 +74,8 @@ convert_unit <- function(x, old_unit, new_unit, unit_format = "wqx") {
 #'
 #' @export
 standardize_units <- function(
-    .data, group, value, unit, unit_format = "wqx", warn_only = TRUE
-  ) {
+  .data, group, value, unit, unit_format = "wqx", warn_only = TRUE
+) {
   # Set var
   dat <- .data %>%
     dplyr::filter(
@@ -165,84 +165,102 @@ standardize_units <- function(
     dplyr::select(!"temp_unit")
 }
 
-#' #' Standardize units across a row
-#' #'
-#' #' @description `standardize_units_across()` updates result data so that
-#' #' each row uses the same units for results and detection limits.
-#' #'
-#' #' @param .data Dataframe
-#' #'
-#' #' @returns Updated dataframe. Detection limit and detection limit unit will
-#' #' be updated to match that row's result unit.
-#' #'
-#' #' @export
-#' standardize_units_across <- function(.data) {
-#'   # Check - all rows okay as is?
-#'   chk <- is.na(.data$Detection_Limit_Unit) |
-#'     .data$Detection_Limit_Unit == .data$Result_Unit
-#'   if (all(chk)) {
-#'     return(.data)
-#'   }
+#' Standardize units across each row
 #'
-#'   # Split data according to whether it needs to be updated
-#'   dat <- dplyr::mutate(.data, "temp_row" = dplyr::row_number())
+#' @description `standardize_units_across()` standardizes the units used across
+#' a row of data.
 #'
-#'   dat1 <- dat[which(chk), ]
-#'   dat2 <- dat[which(!chk), ] %>%
-#'     dplyr::mutate(
-#'       "temp_lower" = mapply(
-#'         function(x, y, z) convert_unit(x, y, z),
-#'         .data$Lower_Detection_Limit, .data$Detection_Limit_Unit,
-#'         .data$Result_Unit
-#'       )
-#'     ) %>%
-#'     dplyr::mutate(
-#'       "temp_upper" = mapply(
-#'         function(x, y, z) convert_unit(x, y, z),
-#'         .data$Upper_Detection_Limit, .data$Detection_Limit_Unit,
-#'         .data$Result_Unit
-#'       )
-#'     )
+#' @param .data Dataframe
+#' @param target_unit String. Column that contains the units that all other
+#' columns should match.
+#' @param value List or string. Column(s) with result values. If multiple
+#' columns are listed, then data in row will only update if the entire row can
+#' be updated.
 #'
-#'   # Check - any rows fail to update data?
-#'   chk <- (!is.na(dat2$temp_lower) & dat2$temp_lower == -999999) |
-#'     (!is.na(dat2$temp_upper) & dat2$temp_upper == -999999)
-#'   if (any(chk)) {
-#'     bad_par <- dat2[which(chk), ]
-#'     bad_par <- unique(bad_par$temp_row)
-#'     stop(
-#'       "Result and detection units are incompatible. Check rows: ",
-#'       paste(bad_par, collapse = ", "),
-#'       call. = FALSE
-#'     )
-#'   }
+#' @inheritParams standardize_units
 #'
-#'   dat2 <- dat2 %>%
-#'     dplyr::mutate(
-#'       "Lower_Detection_Limit" = dplyr::if_else(
-#'         is.na(.data$temp_lower),
-#'         .data$Lower_Detection_Limit,
-#'         .data$temp_lower
-#'       )
-#'     ) %>%
-#'     dplyr::mutate(
-#'       "Upper_Detection_Limit" = dplyr::if_else(
-#'         is.na(.data$temp_upper),
-#'         .data$Upper_Detection_Limit,
-#'         .data$temp_upper
-#'       )
-#'     ) %>%
-#'     dplyr::mutate(
-#'       "Detection_Limit_Unit" = dplyr::if_else(
-#'         is.na(.data$Result_Unit),
-#'         .data$Detection_Limit_Unit,
-#'         .data$Result_Unit
-#'       )
-#'     ) %>%
-#'     dplyr::select(!c("temp_upper", "temp_lower"))
+#' @returns Updated dataframe. Where possible, units will be standardized across
+#' the row. If units can not be standardized in a row, the units and values for
+#' that row will be left as-is.
 #'
-#'   # Combine data
-#'   rbind(dat1, dat2) %>%
-#'     dplyr::arrange(.data$temp_row) %>%
-#'     dplyr::select(!"temp_row")
-#' }
+#' @export
+standardize_units_across <- function(
+  .data, target_unit, unit, value, unit_format = "wqx", warn_only = TRUE
+) {
+  # Check - all rows okay as is?
+  chk <- is.na(.data[[target_unit]]) | is.na(.data[[unit]]) |
+    .data[[unit]] == .data[[target_unit]]
+  if (all(chk)) {
+    return(.data)
+  }
+
+  # Split data according to whether it needs to be updated
+  dat <- dplyr::mutate(.data, "temp_row" = dplyr::row_number())
+
+  dat1 <- dat[which(chk), ]
+  dat2 <- dat[which(!chk), ]
+
+  bad_row <- c()
+
+  for (val in value) {
+    temp_val <- paste0("temp_", val)
+
+    dat2 <- dat2 %>%
+      dplyr::mutate(
+        {{ temp_val }} := mapply(
+          function(x, y, z) {
+            suppressWarnings(
+              convert_unit(x, y, z, unit_format)
+            )
+          },
+          .data[[val]], .data[[unit]], .data[[target_unit]]
+        )
+      )
+
+    # Check - any rows fail to update data
+    chk <- !is.na(dat2[[temp_val]]) & dat2[[temp_val]] == -999999
+    if (any(chk)) {
+      chk <- dat2[which(chk), ]
+      bad_row <- c(bad_row, chk$temp_row)
+    }
+  }
+
+  # Send error/warning if unable to update rows
+  if (length(bad_row) > 0) {
+    bad_row <- sort(unique(bad_row))
+
+    msg <- paste(
+      "Unable to standardize units in row. Check rows:",
+      paste(bad_row, collapse = ", ")
+    )
+
+    if (!warn_only) {
+      stop(msg)
+    }
+    warning(msg, call. = FALSE)
+
+    # Split data
+    dat3 <- dat2[dat2[["temp_row"]] %in% bad_row, ]
+    dat2 <- dat2[!dat2[["temp_row"]] %in% bad_row, ]
+  }
+
+  # Update units, values
+  for (val in value) {
+    temp_val <- paste0("temp_", val)
+
+    dat2 <- dat2 %>%
+      dplyr::mutate({{ val }} := .data[[temp_val]])
+  }
+
+  dat2 <- dat2 %>%
+    dplyr::mutate({{ unit }} := .data[[target_unit]])
+
+  # Combine data
+  if (exists("dat3")) {
+    dat2 <- dplyr::bind_rows(dat2, dat3)
+  }
+
+  dplyr::bind_rows(dat1, dat2) %>%
+    dplyr::arrange(.data$temp_row) %>% # restore original row order
+    dplyr::select(dplyr::any_of(colnames(.data))) # drop extra columns
+}

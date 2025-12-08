@@ -97,8 +97,8 @@ test_that("update_param error messages", {
 
 # test update_unit -----
 test_that("update_unit works", {
- df_out <- tst$mwr_data
- df_out$Result.Unit <- c("%", "mg/L", "mg/L", "uS/cm")
+  df_out <- tst$mwr_data
+  df_out$Result.Unit <- c("%", "mg/L", "mg/L", "uS/cm")
 
   expect_equal(
     update_unit(tst$mwr_data, "Result.Unit", "masswater", "wqx"),

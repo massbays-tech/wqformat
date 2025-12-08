@@ -236,7 +236,7 @@ rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
 fetch_unit <- function(in_unit, in_format = "wqx") {
   dat <- varnames_units %>%
     tidyr::separate_longer_delim({{ in_format }}, "|") %>%
-    dplyr::filter(.data[[in_format]] == {{ in_unit }} )
+    dplyr::filter(.data[[in_format]] == {{ in_unit }})
 
   if (nrow(dat) == 0) {
     return(NULL)

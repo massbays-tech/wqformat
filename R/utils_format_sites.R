@@ -39,7 +39,7 @@ prep_brc_sites <- function(.data) {
       )
     ) %>%
     dplyr::mutate(
-      "WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) * 0.3048
+      "WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) / 3.28084
     ) %>%
     dplyr::mutate(
       "CFR" = dplyr::case_when(
@@ -72,7 +72,7 @@ sites_to_brc <- function(.data) {
     dplyr::mutate(
       "WATER_DEPTH_FT" = dplyr::if_else(
         is.na(as.numeric(.data$WATER_DEPTH_FT)),
-        as.numeric(.data$WATER_DEPTH_M) / 0.3048,
+        as.numeric(.data$WATER_DEPTH_M) * 3.28084,
         .data$WATER_DEPTH_FT
       )
     ) %>%

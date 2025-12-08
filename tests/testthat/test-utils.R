@@ -222,3 +222,30 @@ test_that("unrepair_names works", {
     df_in
   )
 })
+
+# Test fetch_unit ----
+test_that("fetch_unit works", {
+  expect_equal(
+    fetch_unit("deg F"),
+    list(
+      target_unit = "deg C",
+      from = "(x - 32) / 1.8",
+      to = "x * 1.8 + 32"
+    )
+  )
+
+  expect_equal(
+    fetch_unit("feet", "ma_brc"),
+    list(
+      target_unit = "m",
+      from = "x / 3.28084",
+      to = "x * 3.28084"
+    )
+  )
+
+  expect_equal(
+    fetch_unit("feet"),
+    NULL
+  )
+
+})

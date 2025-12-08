@@ -2,14 +2,14 @@
 test_that("prep_brc_sites works", {
   df_in <- tst$ma_brc_sites
   # add fake depths to test unit conversion
-  df_in$WATER_DEPTH_FT <- c(NA, NA, 1, 3.28083990, NA)
+  df_in$WATER_DEPTH_FT <- c(NA, NA, 1, 3.28084, NA)
 
   df_out <- df_in
   df_out$CFR <- c(
     "Warmwater", "Coldwater", "Coldwater", "Coldwater", "Warmwater"
   )
   df_out$STATE <- "MA"
-  df_out$WATER_DEPTH_M <- c(NA, NA, 0.3048, 1, NA)
+  df_out$WATER_DEPTH_M <- c(NA, NA, 0.30479999, 1, NA)
 
   expect_equal(
     prep_brc_sites(df_in),
@@ -43,7 +43,7 @@ test_that("sites_to_brc works", {
   )
   df_out <- data.frame(
     "WATER_DEPTH_FT" = c(
-      1, 2, 3, 4, NA, 3.280839895, 32.80839895, 39.3700787402
+      1, 2, 3, 4, NA, 3.28084, 32.8084, 39.37008
     ),
     "CFR" = c("Yes", "Yes", "No", "No", "No", NA, "Yes", "No")
   )

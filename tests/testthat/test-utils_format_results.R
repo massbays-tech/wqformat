@@ -598,3 +598,44 @@ test_that("prep_me_dep works", {
     df_out
   )
 })
+
+# RI_DEM / RI_WW ----
+test_that("results_to_ridem works", {
+  df_in <- data.frame(
+    Depth = c(3.28084, 1),
+    "Depth Unit" = c("ft", "m"),
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    Depth = c(1, 1)
+  )
+
+  expect_equal(
+    results_to_ridem(df_in),
+    df_out
+  )
+
+  # Test warnings/edge case
+  df_in <- data.frame(
+    Depth = c(3.28084, 1, 100),
+    "Depth Unit" = c("ft", "m", "cm"),
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    Depth = c(1, 1, 100),
+    "Depth Unit" = c("m", "m", "cm"),
+    check.names = FALSE
+  )
+
+  expect_equal(
+    suppressWarnings(results_to_ridem(df_in)),
+    df_out
+  )
+
+  expect_warning(
+    results_to_ridem(df_in),
+    regexp = "Unable to convert all Depth values to meters. Check rows: 3"
+  )
+})

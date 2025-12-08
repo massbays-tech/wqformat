@@ -286,7 +286,7 @@ test_that("format_sites to MA_BRC updates CFR, WATER_DEPTH_FT", {
     Latitude = c(41.82897, 42.31481, 43.66218),
     Longitude = c(-71.41924, -71.03931, -70.27354),
     Group = c("Warmwater", "Warmwater", "Coldwater"),
-    Max_Depth_m = c(NA, 0.3048, 1)
+    Max_Depth_m = c(NA, 0.304799990246, 1)
   )
 
   df_brc <- suppressMessages(
@@ -300,7 +300,7 @@ test_that("format_sites to MA_BRC updates CFR, WATER_DEPTH_FT", {
 
   expect_equal(
     df_brc$WATER_DEPTH_FT,
-    c(NA, 1, 3.28083990)
+    c(NA, 1, 3.28084)
   )
 })
 

@@ -67,6 +67,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     df <- prep_me_dep_results(df)
   } else if (in_format == "me_focb") {
     df <- prep_focb_results(df, date_format)
+  } else if (in_format %in% c("ri_dem", "ri_ww")) {
+    df[["Depth Unit"]] <- "m"
   }
 
   # Update columns ----
@@ -163,6 +165,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     df <- results_to_wqx(df)
   } else if (out_format == "ma_brc") {
     df <- results_to_brc(df)
+  } else if (out_format %in% c("ri_dem", "ri_ww")) {
+    df <- results_to_ridem(df)
   }
 
   message("Done")

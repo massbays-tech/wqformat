@@ -4,7 +4,7 @@
 07||Activity Start Date,03||Activity Start Date,03||Date,02||Date of Sample,02||Date,DATE,06||SAMPLE_DATE,02||Sample Date|Date
 08||Activity Start Time,04||Activity Start Time,,03||Time,03||Time,TIME,07||SAMPLE_TIME,03||Sample Time|Time
 10||Activity Depth/Height Measure,05||Activity Depth/Height Measure,04||Depth,06||Depth,06||Depth,,22||SAMPLE_DEPTH,12||Sample Depth_m|Sample Depth m
-11||Activity Depth/Height Unit,06||Activity Depth/Height Unit,05||Depth_Unit,,,,23||SAMPLE_DEPTH_UNIT,13||Sample Depth Unit
+11||Activity Depth/Height Unit,06||Activity Depth/Height Unit,05||Depth_Unit,Depth Unit,Depth Unit,,23||SAMPLE_DEPTH_UNIT,13||Sample Depth Unit
 ,07||Activity Relative Depth Name,06||Depth_Category,,,DEPTH_CATEGORY,,
 16||Characteristic Name,08||Characteristic Name,07||Parameter,07||Parameter,07||Parameter,04||PARAMETER,10||PARAMETER_NAME,06||Parameter
 20||Result Value,09||Result Value,08||Result,08||Concentration,08||Concentration,05||RESULT,11||CONCENTRATION,07||Result

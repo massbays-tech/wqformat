@@ -216,6 +216,39 @@ rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
   return(x)
 }
 
+#' Fetch unit conversion factor and coefficient
+#'
+#' @description
+#' `fetch_unit()` is a helper function for [convert_unit()]. It finds the
+#' appropriate formulas to convert `in_unit` to and from a standard target unit.
+#'
+#' @param in_unit String. Unit name.
+#' @param in_format String. Unit format. Default value "wqx".
+#'
+#' @returns List containing three items: `unit`, `from`, and `to`. If `in_unit`
+#' can not be located in `varnames_units`, `NULL` is returned instead.
+#' * `target_unit` is a standard unit that all compatible units are converted
+#' to. (Example: `target_unit` for all length units is `m`)
+#' * `from` is the formula to convert `in_unit` to `target_unit`.
+#' * `to` is the formula to convert `target_unit` to `in_unit`
+#'
+#' @noRd
+fetch_unit <- function(in_unit, in_format = "wqx") {
+  dat <- varnames_units %>%
+    tidyr::separate_longer_delim({{ in_format }}, "|") %>%
+    dplyr::filter(.data[[in_format]] == {{ in_unit }} )
+
+  if (nrow(dat) == 0) {
+    return(NULL)
+  }
+
+  list(
+    target_unit = dat$Target_Unit[1],
+    from = dat$From_X[1],
+    to = dat$To_X[1]
+  )
+}
+
 #' Drop duplicate values from string
 #'
 #' @description

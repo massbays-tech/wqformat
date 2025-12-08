@@ -390,7 +390,6 @@ results_to_wqd <- function(.data) {
     )
 }
 
-
 #' Prepare result data from WQX
 #'
 #' @description
@@ -476,7 +475,7 @@ results_to_wqx <- function(.data) {
 #' @noRd
 prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
                              tz = "America/New_York") {
-  dat <- .data %>%
+  .data %>%
     col_to_date(
       "DATE_TIME",
       date_format = date_format,
@@ -506,7 +505,6 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
     ) %>%
     dplyr::mutate("DEPTH_CATEGORY" = "Surface") %>%
     dplyr::mutate("PROJECT_ID" = "BRC")
-  return(dat)
 }
 
 #' Results to Blackstone River Coalition
@@ -726,4 +724,54 @@ prep_me_dep_results <- function(.data) {
         .data$QC_TYPE
       )
     )
+}
+
+#' Results to RI DEM/Watershed Watch
+#'
+#' @description
+#' `results_to_wqd()` is a helper function for [format_results()] that
+#' formats result data for RI DEM and/or Watershed Watch.
+#' * Converts "Depth" to meters
+#' * Drops column "Depth Unit"
+#'
+#' @param .data Dataframe
+#'
+#' @returns Dataframe matching the format used by RI DEM and RI Watershed Watch
+#'
+#' @noRd
+results_to_ridem <- function(.data) {
+  dat <- .data %>%
+    dplyr::mutate(
+      "temp_depth" = mapply(
+        function(x, y) suppressWarnings(convert_unit(x, y, "m", "ri_dem")),
+        .data$Depth, .data[["Depth Unit"]]
+      )
+    ) %>%
+    dplyr::mutate(
+      "Depth" = dplyr::if_else(
+        .data$temp_depth == -999999,
+        .data$Depth,
+        .data$temp_depth
+      )
+    ) %>%
+    dplyr::mutate(
+      "Depth Unit" = dplyr::if_else(
+        .data$temp_depth == -999999,
+        .data[["Depth Unit"]],
+        "m"
+      )
+    ) %>%
+    dplyr::select(!"temp_depth")
+
+  chk <- is.na(dat[["Depth"]]) | dat[["Depth Unit"]] %in% c(NA, "m")
+  if (all(chk)) {
+    dat <- dplyr::select(dat, !"Depth Unit")
+  } else {
+    warning(
+      "Unable to convert all Depth values to meters. Check rows: ",
+      paste(which(!chk), collapse = ", ")
+    )
+  }
+
+  dat
 }

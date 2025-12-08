@@ -80,7 +80,25 @@ varnames_units <- readr::read_csv(
 ) %>%
   dplyr::select_if(function(x) !(all(is.na(x)))) %>%
   dplyr::mutate("wqdashboard" = .data$wqx) %>%
-  dplyr::mutate("ri_ww" = .data$ri_dem)
+  dplyr::mutate("ri_ww" = .data$ri_dem) %>%
+  dplyr::mutate(
+    "me_focb" = dplyr::if_else(
+      is.na(.data$me_focb),
+      .data$me_dep,
+      .data$me_focb
+    )
+  ) %>%
+  dplyr::mutate(
+    "To_X" = dplyr::case_when(
+      !is.na(.data$To_X) ~ .data$To_X,
+      .data$From_X == "x" ~ "x",
+      grepl("/", .data$From_X) ~ gsub("/", "*", .data$From_X),
+      grepl("\\*", .data$From_X) ~ gsub("\\*", "/", .data$From_X),
+      grepl("-", .data$From_X) ~ gsub("-", "+", .data$From_X),
+      grepl("+", .data$From_X) ~ gsub("+", "-", .data$From_X),
+      TRUE ~ .data$To_X
+    )
+  )
 
 readr::write_csv(
   varnames_units,

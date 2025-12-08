@@ -23,15 +23,16 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
   if (!chk) {
     stop("col_name not in dataframe")
   }
+
   chk <- c(is.na(old_varname), is.na(new_varname))
   if (all(chk)) {
     return(.data)
   } else if (any(chk)) {
     stop("old_varname and new_varname must not contain NA values")
-  } else if (all(old_varname == new_varname)) {
-    return(.data)
   } else if (length(old_varname) != length(new_varname)) {
     stop("old_varname and new_varname are different lengths")
+  } else if (all(old_varname == new_varname)) {
+    return(.data)
   }
 
   # Update variable names

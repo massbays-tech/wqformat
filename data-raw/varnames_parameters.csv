@@ -10,7 +10,7 @@ Conductivity|Conductance,Conductivity,,,Conductivity,,
 "Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)","Cyanobacteria (probe)|Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)",,,,,
 Depth,Depth,,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth|DEPTH
 Dissolved oxygen saturation,DO saturation|Dissolved oxygen saturation,,Dissolved Oxygen Percent Saturation - 00301,Dissolved Oxy Saturation,DO SAT|DISSOLVED OXYGEN SATURATION,DO Saturation|DO SAT|DISSOLVED OXYGEN SATURATION
-Dissolved oxygen (DO),DO|Dissolved oxygen (DO),,Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,Dissolved Oxygen|DO|DISSOLVED OXYGEN
+Dissolved oxygen (DO)|Dissolved Oxygen (DO),DO|Dissolved oxygen (DO),,Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,Dissolved Oxygen|DO|DISSOLVED OXYGEN
 Escherichia coli,E.coli|Escherichia coli,E. coli|Escherichia coli,E.coli - 31633,E. coli,,
 Enterococcus,Enterococcus,,Enterococci - 31639,,,
 Fecal Coliform,Fecal Coliform,,Fecal Coliform - 74055,,,
@@ -21,7 +21,7 @@ Microcystins,Microcystins,,,,,
 Nitrate,Nitrate,,,Nitrate,,
 Nitrate + Nitrite|Neon-21/neon-22,Nitrate + Nitrite,,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN
 Nitrite,Nitrite,,,,,
-Orthophosphate|Inorganic phosphorus|Non-apatite inorganic phosphorus|Particulate Inorganic Phosphorus|Phosphate-phosphorus,Ortho P|Orthophosphate,,"Orthophosphate, Dissolved - 00671",Orthophosphate,,
+Orthophosphate|Inorganic phosphorus|Non-apatite inorganic phosphorus|Particulate Inorganic Phosphorus|Phosphate-phosphorus,Ortho P|Orthophosphate,,"Orthophosphate, Dissolved - 00671|Phosphorus, Dissolved - 00666",Orthophosphate,,
 pH,pH,,pH - 00400,,PH,pH|PH
 Pheophytin a,Pheophytin|Pheophytin a,,,,PHAEOPHYTIN,PHAEOPHYTIN
 Phycocyanin,Phycocyanin,,,,,
@@ -62,6 +62,5 @@ Total Coliform,,,Total Coliform - 31502|Total coliform - 31502,,,
 Trichloroethylene,,,Trichloroethylene - 39180,,,
 "Wind direction, horizontal",,,,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION
 "Wind force, Beaufort scale",,,,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED
-,,,"Phosphorus, Dissolved - 00666",,,
 Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,,,,,
 Oxidation reduction potential (ORP),,,,,,

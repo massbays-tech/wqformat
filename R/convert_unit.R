@@ -112,7 +112,7 @@ standardize_units <- function(
     )
 
   # Check - any data fail to convert?
-  chk <- dat$temp_result == -999999
+  chk <- !is.na(dat$temp_result) & dat$temp_result == -999999
   if (any(chk)) {
     bad_par <- dat[which(chk), ]
     bad_par <- paste(unique(bad_par[[group]]), collapse = ", ")

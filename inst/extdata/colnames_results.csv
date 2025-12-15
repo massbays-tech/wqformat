@@ -17,7 +17,7 @@
 01||Project ID,16||Project ID,,,,PROJECT_ID,01||PROJECT/SITE,Project
 ,17||Local Record ID,,,,07||UNIQUE_ID,,
 35||Result Comment,18||Result Comment,,21||Comments,21||Comments,,29||SAMPLE_COMMENTS,
-34||Result Detection/Quantitation Limit Unit,Detection Limit Unit,12||Detection_Limit_Unit,12||Detection Limit Unit,12||Detection Limit Unit,,DETECTION_LIMIT_UNIT,Detection Limit Unit
+34||Result Detection/Quantitation Limit Unit,Quantitation Limit Unit,12||Detection_Limit_Unit,12||Detection Limit Unit,12||Detection Limit Unit,,DETECTION_LIMIT_UNIT,Detection Limit Unit
 03||Activity ID (CHILD-subset),,,,,,,
 04||Activity ID User Supplied (PARENTs),,,,,,,
 06||Activity Media Name,,,05||Sample Media,05||Sample Media,,08||SAMPLE_TYPE,Sample Type

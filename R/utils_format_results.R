@@ -89,7 +89,7 @@ prep_mwr_results <- function(.data) {
     # Final column adjustments
     dplyr::select(!"QC Reference Value") %>%
     col_to_numeric("Result Value") %>%
-    dplyr::mutate("Detection Limit Unit" = .data[["Result Unit"]])
+    dplyr::mutate("Quantitation Limit Unit" = .data[["Result Unit"]])
 }
 
 #' Add QC Reference Value to MassWateR result data
@@ -306,6 +306,18 @@ results_to_mwr <- function(.data) {
   q_over <- c("GT", "E", "EE", "AQL")
 
   dat <- .data %>%
+    standardize_units(
+      "Characteristic Name",
+      "Result Value",
+      "Result Unit",
+      "masswater"
+    ) %>%
+    standardize_units_across(
+      "Result Unit",
+      "Quantitation Limit Unit",
+      "Quantitation Limit",
+      "masswater"
+    ) %>%
     dplyr::mutate(
       "Result Value" = dplyr::case_when(
         .data[["Result Measure Qualifier"]] %in% q_under ~ "BDL",
@@ -319,24 +331,12 @@ results_to_mwr <- function(.data) {
         NA,
         .data[["Result Measure Qualifier"]]
       )
-    ) %>%
-    standardize_units(
-      "Characteristic Name",
-      "Result Value",
-      "Result Unit",
-      "masswater"
-    ) %>%
-    standardize_units_across(
-      "Result Unit",
-      "Detection Limit Unit",
-      "Detection Limit",
-      "masswater"
     )
 
-  chk <- dat[["Result Unit"]] == dat[["Detection Limit Unit"]] |
-    is.na(dat[["Detection Limit Unit"]])
+  chk <- dat[["Result Unit"]] == dat[["Quantitation Limit Unit"]] |
+    is.na(dat[["Quantitation Limit Unit"]])
   if (all(chk)) {
-    dat[["Detection Limit Unit"]] <- NULL
+    dat[["Quantitation Limit Unit"]] <- NULL
   }
 
   # Transfer duplicate samples to QC Reference Value

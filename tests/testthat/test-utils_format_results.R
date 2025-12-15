@@ -37,7 +37,7 @@ test_that("prep_mwr_results works", {
     "Project ID" = "Water Quality",
     "Local Record ID" = NA,
     "Result Comment" = c(NA, NA, "River was very full", NA, NA, NA, NA),
-    "Detection Limit Unit" = c(
+    "Quantitation Limit Unit" = c(
       "%", "%", "mg/l", "mg/l", "mg/l", "uS/cm", "uS/cm"
     ),
     check.names = FALSE

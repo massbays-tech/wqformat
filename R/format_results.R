@@ -229,8 +229,8 @@ format_mwr_results <- function(.data) {
     )
   }
 
-  if (!"Detection Limit Unit" %in% colnames(.data)) {
-    .data[["Detection Limit Unit"]] <- .data[["Result Unit"]]
+  if (!"Quantitation Limit Unit" %in% colnames(.data)) {
+    .data[["Quantitation Limit Unit"]] <- .data[["Result Unit"]]
   }
 
   # Check variables

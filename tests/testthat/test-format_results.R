@@ -203,7 +203,7 @@ test_that("format_results converts ME_FOCB to MassWateR", {
       ),
       "Invalid variables in Result Unit: BFT, DEG True"
     ),
-    "Invalid variables in Detection Limit Unit: BFT, DEG True"
+    "Invalid variables in Quantitation Limit Unit: BFT, DEG True"
   )
 
   expect_equal(

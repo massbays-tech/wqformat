@@ -262,13 +262,11 @@ fetch_unit <- function(in_unit, in_format = "wqx") {
 #'
 #' @noRd
 str_unique <- function(x, delim = ",") {
-  x <- x %>%
+  x %>%
     stringr::str_split(paste0("\\", delim)) %>%
-    sapply(trimws, USE.NAMES = FALSE) %>%
+    sapply(stringr::str_trim, USE.NAMES = FALSE) %>%
     unique() %>%
     paste(collapse = delim)
-
-  return(x)
 }
 
 #' Undo name repair for dataframe column names

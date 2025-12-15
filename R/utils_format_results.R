@@ -172,9 +172,15 @@ add_qc_ref <- function(.data) {
   chk2 <- dat_temp$n > 2
 
   if (any(chk2)) {
+    df_bad <- dat_temp[which(chk2), ]
+    bad_par <- sort(unique(df_bad[["Characteristic Name"]]))
+    bad_date <- sort(unique(df_bad[["Activity Start Date"]]))
+
     warning(
-      "More than two matching samples found. Check rows ",
-      paste(which(chk2), collapse = ", ")
+      "More than two matching samples detected, unable to add QC Reference ",
+      "Value for affected items.\n\tCheck parameters: ",
+      paste(bad_par, collapse = ", "), "\n\tCheck dates: ",
+      paste(bad_date, collapse = ", "), call. = FALSE
     )
   }
 
@@ -212,8 +218,10 @@ add_qc_ref <- function(.data) {
         na.rm = TRUE
       ),
       .groups = "drop"
-    ) %>%
-    # Edit concatenated columns to remove duplicate strings
+    )
+
+  # Edit concatenated columns to remove duplicate strings
+  dat1 <- dat1 %>%
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::if_else(
         .data[["Result Measure Qualifier"]] %in% c(NA, ""),
@@ -305,6 +313,7 @@ results_to_mwr <- function(.data) {
 
   q_over <- c("GT", "E", "EE", "AQL")
 
+  message("\tStandardizing units")
   dat <- .data %>%
     standardize_units(
       "Characteristic Name",
@@ -340,6 +349,7 @@ results_to_mwr <- function(.data) {
   }
 
   # Transfer duplicate samples to QC Reference Value
+  message("\tAdding QC Reference Value")
   dat <- add_qc_ref(dat)
 
   # Adjust formatting
@@ -413,6 +423,8 @@ results_to_wqd <- function(.data) {
     )
 }
 
+# WQX -----
+
 #' Prepare result data from WQX
 #'
 #' @description
@@ -444,8 +456,6 @@ prep_wqx_results <- function(.data) {
       )
     )
 }
-
-# WQX -----
 
 #' Results to WQX
 #'

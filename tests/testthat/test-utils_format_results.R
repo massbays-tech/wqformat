@@ -182,7 +182,7 @@ test_that("add_qc_ref works", {
   )
   expect_warning(
     add_qc_ref(df_trio),
-    regexp = "More than two matching samples found"
+    regexp = "More than two matching samples detected"
   )
 
   # Edge case 3 - concatenate selected columns (Qualifier, Record ID, Comment)
@@ -220,9 +220,7 @@ test_that("add_qc_ref works", {
   )
 
   expect_equal(
-    suppressWarnings(
-      add_qc_ref(df_in)
-    ),
+    add_qc_ref(df_in),
     df_out
   )
 })

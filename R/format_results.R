@@ -72,6 +72,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Update columns ----
+  message("\tRenaming columns")
   var_names <- fetch_var(
     colnames_results,
     in_format,
@@ -103,6 +104,7 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Update variables ----
+  message("\tUpdating variable names")
   col_sub <- fetch_var(colnames_results, "wqx", out_format)
 
   # Format dates
@@ -186,12 +188,14 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 #' under-detects
 #' * Transfers duplicate values to "QC Reference Value"
 #'
-#' @param .data Input dataframe.
+#' @param .data Input dataframe
 #'
-#' @returns Updated dataframe.
+#' @inheritParams format_results
+#'
+#' @returns Updated dataframe
 #'
 #' @export
-format_mwr_results <- function(.data) {
+format_mwr_results <- function(.data, date_format = "m/d/Y") {
   message("Formatting MassWateR result data...")
 
   # Check - repaired column names?
@@ -202,15 +206,20 @@ format_mwr_results <- function(.data) {
   }
 
   # Check columns
-  key_col <- c(
+  all_col <- c(
     "Monitoring Location ID", "Activity Type", "Activity Start Date",
     "Activity Start Time", "Activity Depth/Height Measure",
     "Activity Depth/Height Unit", "Activity Relative Depth Name",
     "Characteristic Name", "Result Value", "Result Unit", "Quantitation Limit",
     "QC Reference Value", "Result Measure Qualifier", "Result Attribute",
-    "Sample Collection Method ID", "Project ID"
+    "Sample Collection Method ID", "Project ID", "Local Record ID",
+    "Result Comment"
   )
-  bonus_col <- c("Local Record ID", "Result Comment")
+  bonus_col <- c(
+    "QC Reference Value", "Result Attribute", "Local Record ID",
+    "Result Comment"
+  )
+  key_col <- setdiff(all_col, bonus_col)
 
   chk <- key_col %in% colnames(.data)
   if (any(!chk)) {
@@ -225,7 +234,8 @@ format_mwr_results <- function(.data) {
     missing_col <- bonus_col[which(!chk)]
     .data[missing_col] <- NA
     warning(
-      "Missing suggested columns: ", paste(missing_col, collapse = ", ")
+      "Missing suggested columns: ", paste(missing_col, collapse = ", "),
+      call. = FALSE
     )
   }
 
@@ -237,7 +247,7 @@ format_mwr_results <- function(.data) {
   activity_list <- unique_var(varnames_activity, "masswater")
   param_list <- unique_var(varnames_parameters, "masswater")
   unit_list <- unique_var(varnames_units, "masswater")
-  qual_list <- unique_var(varnames_qualifiers, "wqx")
+  qual_list <- unique_var(varnames_qualifiers, "masswater")
 
   warn_invalid_var(.data, "Activity Type", activity_list)
   warn_invalid_var(.data, "Characteristic Name", param_list)
@@ -246,16 +256,16 @@ format_mwr_results <- function(.data) {
   warn_invalid_var(.data, "Result Measure Qualifier", qual_list)
 
   # Improve formatting, arrange columns
-  keep_col <- c(key_col, bonus_col)
-  drop_col <- setdiff(colnames(.data), keep_col)
+  drop_col <- setdiff(colnames(.data), all_col)
 
   if (length(drop_col) > 0) {
     message("\tRemoved ", toString(length(drop_col)), " invalid columns")
   }
 
   dat <- .data %>%
+    col_to_date("Activity Start Date") %>%
     results_to_mwr() %>% # improve formatting
-    dplyr::select(dplyr::all_of(keep_col)) # reorder columns
+    dplyr::select(dplyr::all_of(all_col)) # reorder columns
 
   message("Done")
 

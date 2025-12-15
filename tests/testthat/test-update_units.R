@@ -33,6 +33,59 @@ test_that("convert_unit error messages", {
   )
 })
 
+# Test set_units ----
+test_that("set_units works", {
+  # Test - no NA
+  df_in <- data.frame(
+    Result = c(1, 2000, 3000, 4, 5000, NA),
+    Result_Unit = c("mg/L", "ug/L", "ug/L", "mg/L", "ug/L", NA)
+  )
+
+  df_out <- data.frame(
+    Result = c(1, 2, 3, 4, 5, NA),
+    Result_Unit = "mg/L"
+  )
+
+  expect_equal(
+    set_units(
+      df_in,
+      "Result",
+      "Result_Unit",
+      "mg/L"
+    ),
+    df_out
+  )
+
+  # Check - early return
+  expect_equal(
+    set_units(
+      df_out,
+      "Result",
+      "Result_Unit",
+      "mg/L"
+    ),
+    df_out
+  )
+})
+
+
+test_that("set_units error messages", {
+  df_in <- data.frame(
+    Result = c(1, 2, 3),
+    Result_Unit = "mg/L"
+  )
+
+  expect_warning(
+    set_units(
+      df_in,
+      "Result",
+      "Result_Unit",
+      "deg C"
+    ),
+    regexp = "Unable to update Result units in 3 rows"
+  )
+})
+
 # Test standardize_units ----
 test_that("standardize_units works", {
   # Test - no NA

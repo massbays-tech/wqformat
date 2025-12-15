@@ -177,10 +177,10 @@ add_qc_ref <- function(.data) {
     bad_date <- sort(unique(df_bad[["Activity Start Date"]]))
 
     warning(
-      "More than two matching samples detected, unable to add QC Reference ",
-      "Value for affected items.\n\tCheck parameters: ",
-      paste(bad_par, collapse = ", "), "\n\tCheck dates: ",
-      paste(bad_date, collapse = ", "), call. = FALSE
+      "Unable to set QC Reference Value if more than 2 matching samples",
+      "\n\tCheck parameters: ", paste(bad_par, collapse = ", "),
+      "\n\tCheck dates: ", paste(bad_date, collapse = ", "),
+      call. = FALSE
     )
   }
 
@@ -378,25 +378,8 @@ results_to_mwr <- function(.data) {
 results_to_wqd <- function(.data) {
   # Update depth
   dat <- .data %>%
-    dplyr::mutate("temp_depth" = suppressWarnings(as.numeric(.data$Depth))) %>%
-    dplyr::mutate(
-      "Depth" = dplyr::if_else(
-        !is.na(.data$temp_depth) & !is.na(.data$Depth_Unit) &
-          .data$Depth_Unit == "ft",
-        as.character(.data$temp_depth * 0.3048),
-        as.character(.data$Depth)
-      )
-    ) %>%
-    dplyr::mutate(
-      "Depth_Unit" = dplyr::if_else(
-        !is.na(.data$temp_depth) & !is.na(.data$Depth_Unit) &
-          .data$Depth_Unit == "ft",
-        "m",
-        .data$Depth_Unit
-      )
-    ) %>%
-    col_to_numeric("Depth") %>%
-    dplyr::select(!"temp_depth")
+    col_to_numeric("Depth", silent = FALSE) %>%
+    set_units("Depth", "Depth_Unit", "m", unit_format = "wqdashboard")
 
   # Adjust detection limits
   chk <- is.na(dat$Detection_Limit_Type)
@@ -641,7 +624,7 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
 
   chk <- grepl("Sample Depth", colnames(dat))
   if (any(chk) && !"Sample Depth Unit" %in% colnames(dat)) {
-    dat <- dplyr::mutate(dat, "Sample Depth Unit" = "m")
+    dat[["Sample Depth Unit"]] <- "m"
   }
 
   if ("QC Type" %in% colnames(dat)) {
@@ -654,7 +637,7 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
         )
       )
   } else {
-    dat <- dplyr::mutate(dat, "QC Type" = "Field Measurement")
+    dat[["QC Type"]] <- "Field Measurement"
   }
 
   # Check if table is long, else make long
@@ -847,31 +830,12 @@ results_to_me_dep <- function(.data) {
 #' @noRd
 results_to_ridem <- function(.data) {
   dat <- .data %>%
-    dplyr::mutate(
-      "temp_depth" = mapply(
-        function(x, y) suppressWarnings(convert_unit(x, y, "m", "ri_dem")),
-        .data$Depth, .data[["Depth Unit"]]
-      )
-    ) %>%
-    dplyr::mutate(
-      "Depth" = dplyr::if_else(
-        .data$temp_depth == -999999,
-        .data$Depth,
-        .data$temp_depth
-      )
-    ) %>%
-    dplyr::mutate(
-      "Depth Unit" = dplyr::if_else(
-        .data$temp_depth == -999999,
-        .data[["Depth Unit"]],
-        "m"
-      )
-    ) %>%
-    dplyr::select(!"temp_depth")
+    col_to_numeric("Depth", silent = FALSE) %>%
+    set_units("Depth", "Depth Unit", "m", unit_format = "ri_dem", silent = TRUE)
 
-  chk <- is.na(dat[["Depth"]]) | dat[["Depth Unit"]] %in% c(NA, "m")
+  chk <- dat[["Depth Unit"]] == "m"
   if (all(chk)) {
-    dat <- dplyr::select(dat, !"Depth Unit")
+    dat[["Depth Unit"]] <- NULL
   } else {
     warning(
       "Unable to convert all Depth values to meters. Check rows: ",

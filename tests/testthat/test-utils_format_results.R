@@ -182,7 +182,7 @@ test_that("add_qc_ref works", {
   )
   expect_warning(
     add_qc_ref(df_trio),
-    regexp = "More than two matching samples detected"
+    regexp = "Unable to set QC Reference Value if more than 2 matching samples"
   )
 
   # Edge case 3 - concatenate selected columns (Qualifier, Record ID, Comment)
@@ -276,7 +276,7 @@ test_that("results_to_mwr works", {
   colnames(df_out) <- gsub("Depth Height", "Depth/Height", colnames(df_out))
 
   expect_equal(
-    results_to_mwr(df_in),
+    suppressMessages(results_to_mwr(df_in)),
     df_out
   )
 
@@ -290,7 +290,7 @@ test_that("results_to_mwr works", {
   df_out[["QC Reference Value"]] <- c(0.46, 7, NA, "BDL")
 
   expect_equal(
-    results_to_mwr(df_in),
+    suppressMessages(results_to_mwr(df_in)),
     df_out
   )
 })
@@ -301,7 +301,7 @@ test_that("results_to_wqd works", {
     Site_ID = "foo",
     Activity_Type = "Field Msr/Obs",
     Date = as.Date("2025-11-12"),
-    Depth = c(1, 2, 3, "foo"),
+    Depth = c(1, 2, 3, NA),
     Depth_Unit = c("m", "ft", "m", "ft"),
     Depth_Category = NA,
     Parameter = "Dissolved oxygen (DO)",
@@ -318,8 +318,8 @@ test_that("results_to_wqd works", {
   )
 
   df_out <- df_in
-  df_out$Depth <- c(1, 0.6096, 3, "foo")
-  df_out$Depth_Unit <- c("m", "m", "m", "ft")
+  df_out$Depth <- c(1, 0.60959998, 3, NA)
+  df_out$Depth_Unit <- "m"
   df_out$Lower_Detection_Limit <- c(2, 2, NA, NA)
   df_out$Upper_Detection_Limit <- c(10, NA, 10, 2)
 
@@ -332,8 +332,8 @@ test_that("results_to_wqd works", {
   df_in$Detection_Limit_Type <- NA
 
   df_out <- df_in
-  df_out$Depth <- c(1, 0.6096, 3, "foo")
-  df_out$Depth_Unit <- c("m", "m", "m", "ft")
+  df_out$Depth <- c(1, 0.60959998, 3, NA)
+  df_out$Depth_Unit <- "m"
   df_out$Detection_Limit_Type <- NULL
 
   expect_equal(

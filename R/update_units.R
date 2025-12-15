@@ -54,6 +54,91 @@ convert_unit <- function(x, old_unit, new_unit, unit_format = "wqx") {
   eval(parse(text = x))
 }
 
+#' Set units
+#'
+#' @description `set_units()` converts all units and values in target columns to
+#' the selected unit.
+#'
+#' @param .data Dataframe
+#' @param value String. Column with result values.
+#' @param unit String. Column with units.
+#' @param target_unit String. Unit to convert `value` and `unit` columns to.
+#' @param silent Boolean. If `TRUE`, returns a warning message if unable to
+#' convert units. If `FALSE`, does not return a warning.
+#'
+#' @inheritParams convert_unit
+#'
+#' @returns Updated dataframe with updated unit and result values. Rows that
+#' can not be converted to `target_unit` are left as-is and in informative
+#' warning or error message is provided.
+#'
+#' @export
+set_units <- function(
+  .data, value, unit, target_unit, unit_format = "wqx", silent = FALSE
+) {
+  dat <- .data %>%
+    dplyr::mutate(
+      {{ unit }} := dplyr::if_else(
+        is.na(.data[[value]]),
+        !!target_unit,
+        .data[[unit]]
+      )
+    )
+
+  # Filter for data with wrong units
+  dat1 <- dat %>%
+    dplyr::filter(.data[[unit]] != !!target_unit)
+
+  if (nrow(dat1) == 0) {
+    return(dat)
+  }
+
+  # Simplify data, convert units
+  dat1 <- dat1 %>%
+    dplyr::select(dplyr::all_of(c(unit, value))) %>%
+    unique() %>%
+    dplyr::mutate(
+      "temp_result" = mapply(
+        function(x, y) {
+          suppressWarnings(
+            convert_unit(x, y, target_unit, unit_format)
+          )
+        },
+        .data[[value]], .data[[unit]]
+      )
+    )
+
+  # Check - any data fail to convert?
+  chk <- !is.na(dat1$temp_result) & dat1$temp_result == -999999
+  if (any(chk) && !silent) {
+    bad_count <- length(which(chk))
+    msg <- paste("Unable to update", value, "units in", bad_count, "rows")
+    warning(msg, call. = FALSE)
+  }
+
+  # Join updated, old data
+  join_col <- c(value, unit)
+  dat <- dplyr::left_join(dat, dat1, by = join_col)
+
+  # Update units, results
+  dat %>%
+    dplyr::mutate(
+      {{ value }} := dplyr::if_else(
+        is.na(.data$temp_result) | .data$temp_result == -999999,
+        .data[[value]],
+        .data$temp_result
+      )
+    ) %>%
+    dplyr::mutate(
+      {{ unit }} := dplyr::if_else(
+        is.na(.data$temp_result) | .data$temp_result == -999999,
+        .data[[unit]],
+        !!target_unit
+      )
+    ) %>%
+    dplyr::select(!"temp_result")
+}
+
 #' Standardize units
 #'
 #' @description `standardize_units()` standardizes the unit used for each

@@ -396,7 +396,7 @@ test_that("format_results converts MA_BRC to RI_DEM", {
       "Grab"
     ),
     "Sample Media" = NA,
-    Depth = NA,
+    Depth = NA_integer_,
     Parameter = c(
       "Air Temperature", "Dissolved Oxygen Percent Saturation - 00301",
       "Dissolved Oxygen - 00300", "Nitrate", "Nitrate",
@@ -453,7 +453,7 @@ test_that("format_results converts MA_BRC to WQdashboard", {
     ),
     Date = as.Date("2004-04-10"),
     Depth = NA_integer_,
-    Depth_Unit = NA_character_,
+    Depth_Unit = "m",
     Depth_Category = "Surface",
     Parameter = c(
       "Temperature, air", "Dissolved oxygen saturation",
@@ -724,8 +724,8 @@ test_that("format_results converts MassWateR to WQdashboard", {
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
       "2021-09-12", "2021-09-12"
     ),
-    Depth = c(0.3048, 0.3048, 0.2286, NA, NA, NA, NA),
-    Depth_Unit = c("m", "m", "m", NA, NA, NA, NA),
+    Depth = c(0.30479999, 0.30479999, 0.228599993, NA, NA, NA, NA),
+    Depth_Unit = "m",
     Depth_Category = NA,
     Parameter = c(
       "Dissolved oxygen saturation", "Dissolved oxygen saturation",
@@ -775,7 +775,7 @@ test_that("format_results converts WQX to WQdashboard", {
     ),
     Date = as.Date("2017-03-01"),
     Depth = NA_integer_,
-    Depth_Unit = NA_character_,
+    Depth_Unit = "m",
     Depth_Category = NA,
     Parameter = c(
       "Orthophosphate", "Total Kjeldahl nitrogen",
@@ -988,7 +988,7 @@ test_that("format_wqd_results works", {
     Site_ID = "foo",
     Activity_Type = "Field Msr/Obs",
     Date = as.Date("2025-11-12"),
-    Depth = c(1, 2, 3, "foo"),
+    Depth = c(1, 2, 3, NA),
     Depth_Unit = c("m", "ft", "m", "ft"),
     Parameter = "Dissolved oxygen (DO)",
     Result = 8,
@@ -999,8 +999,8 @@ test_that("format_wqd_results works", {
     Site_ID = "foo",
     Activity_Type = "Field Msr/Obs",
     Date = as.Date("2025-11-12"),
-    Depth = c(1, 0.6096, 3, "foo"),
-    Depth_Unit = c("m", "m", "m", "ft"),
+    Depth = c(1, 0.609599980492801, 3, NA),
+    Depth_Unit = "m",
     Parameter = "Dissolved oxygen (DO)",
     Result = 8,
     Result_Unit = "mg/L",
@@ -1024,7 +1024,7 @@ test_that("format_wqd_results errors", {
     Site_ID = "foo",
     Activity_Type = "Field Msr/Obs",
     Date = as.Date("2025-11-12"),
-    Depth = c(1, 2, 3, "foo"),
+    Depth = c(1, 2, 3, NA),
     Depth_Unit = c("m", "ft", "m", "ft"),
     Depth_Category = NA,
     Parameter = "Dissolved oxygen (DO)",

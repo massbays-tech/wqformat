@@ -281,13 +281,15 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
 #' * Formats Date column as date
 #'
 #' @param .data Input dataframe
+#' @param categorical Boolean. Set to `TRUE` for categorical data that may be
+#' missing column "Result_Unit." Default `FALSE`.
 #'
 #' @inheritParams col_to_date
 #'
 #' @returns Updated dataframe
 #'
 #' @export
-format_wqd_results <- function(.data, date_format) {
+format_wqd_results <- function(.data, date_format, categorical = FALSE) {
   message("Formatting wqdashboard result data...")
 
   # Check columns
@@ -297,6 +299,11 @@ format_wqd_results <- function(.data, date_format) {
     "Detection_Limit_Type", "Lower_Detection_Limit", "Upper_Detection_Limit",
     "Detection_Limit_Unit", "Qualifier"
   )
+
+  if (categorical) {
+    key_col <- key_col[1:4]
+    bonus_col <- c("Result_Unit", bonus_col)
+  }
 
   chk <- key_col %in% colnames(.data)
   if (any(!chk)) {

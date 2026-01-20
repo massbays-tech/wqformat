@@ -376,10 +376,17 @@ results_to_mwr <- function(.data) {
 #'
 #' @noRd
 results_to_wqd <- function(.data) {
-  # Update depth
+  # Update depth, pH units
   dat <- .data %>%
     col_to_numeric("Depth", silent = FALSE) %>%
-    set_units("Depth", "Depth_Unit", "m", unit_format = "wqdashboard")
+    set_units("Depth", "Depth_Unit", "m", unit_format = "wqdashboard") %>%
+    dplyr::mutate(
+      "Result_Unit" = dplyr::if_else(
+        .data$Parameter == "pH" & is.na(.data$Result_Unit),
+        "None",
+        .data$Result_Unit
+      )
+    )
 
   # Adjust detection limits
   chk <- is.na(dat$Detection_Limit_Type)

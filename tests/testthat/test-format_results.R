@@ -1017,6 +1017,22 @@ test_that("format_wqd_results works", {
     ),
     df_out
   )
+
+  # Edge case - categorical data
+  df_in$Parameter <- "Wind force, Beaufort scale"
+  df_in$Result <- 6
+  df_in$Result_Unit <- NULL
+
+  df_out$Parameter <- "Wind force, Beaufort scale"
+  df_out$Result <- 6
+  df_out$Result_Unit <- NA_character_
+
+  expect_equal(
+    suppressMessages(
+      format_wqd_results(df_in, categorical = TRUE)
+    ),
+    df_out
+  )
 })
 
 test_that("format_wqd_results errors", {

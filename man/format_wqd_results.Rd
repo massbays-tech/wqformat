@@ -4,13 +4,16 @@
 \alias{format_wqd_results}
 \title{Check and improve formatting for wqdashboard result data}
 \usage{
-format_wqd_results(.data, date_format)
+format_wqd_results(.data, date_format, categorical = FALSE)
 }
 \arguments{
 \item{.data}{Input dataframe}
 
 \item{date_format}{String. Date format. Uses the same formatting as
 [lubridate::parse_date_time()]. Default value "m/d/Y".}
+
+\item{categorical}{Boolean. Set to `TRUE` for categorical data that may be
+missing column "Result_Unit." Default `FALSE`.}
 }
 \value{
 Updated dataframe

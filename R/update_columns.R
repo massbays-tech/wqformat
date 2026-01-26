@@ -216,6 +216,15 @@ col_to_numeric <- function(.data, col_name, silent = TRUE) {
     return(.data)
   }
 
+  .data <- .data %>%
+    dplyr::mutate(
+      {{ col_name }} := dplyr::if_else(
+        .data[[col_name]] %in% c("", " "),
+        NA,
+        .data[[col_name]]
+      )
+    )
+
   typ <- .data[col_name]
   chk <- !is.na(suppressWarnings(mapply(as.numeric, typ))) | is.na(typ)
 

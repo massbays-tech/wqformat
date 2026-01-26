@@ -530,7 +530,13 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
         TRUE ~ .data$PARAMETER
       )
     ) %>%
-    dplyr::mutate("DEPTH_CATEGORY" = "Surface") %>%
+    dplyr::mutate(
+      "DEPTH_CATEGORY" = dplyr::if_else(
+        .data$PARAMETER == "Water Depth",
+        NA,
+        "Surface"
+      )
+    ) %>%
     dplyr::mutate("PROJECT_ID" = "BRC")
 }
 

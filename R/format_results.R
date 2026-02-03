@@ -2,7 +2,7 @@
 #'
 #' @description Converts water quality result data between different formats.
 #'
-#' @param df Input dataframe.
+#' @param .data Input dataframe.
 #' @param in_format,out_format String. Desired input and output formats.
 #' Not case sensitive. Accepted formats:
 #'
@@ -22,14 +22,14 @@
 #'
 #' * ME_FOCB (Friends of Casco Bay)
 #' @param drop_extra_col Boolean. If `TRUE`, removes any columns that can't be
-#'    converted to `out_format`. Default `TRUE`.
+#' converted to `out_format`. Default `TRUE`.
 #'
 #' @inheritParams col_to_date
 #'
 #' @returns Updated dataframe
 #'
 #' @export
-format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
+format_results <- function(.data, in_format, out_format, date_format = "m/d/Y",
                            tz = Sys.timezone(), drop_extra_col = TRUE) {
   message("Reformatting data...")
 
@@ -49,26 +49,29 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     )
   }
 
+  # Fix common typos, entry errors
+  dat <- prep_df(.data)
+
   # Check - repaired column names?
-  chk <- grepl("\\.", colnames(df))
-  chk2 <- grepl(" ", colnames(df))
+  chk <- grepl("\\.", colnames(dat))
+  chk2 <- grepl(" ", colnames(dat))
   if (any(chk) && !any(chk2)) {
-    df <- unrepair_names(df, colnames_results[[in_format]])
+    dat <- unrepair_names(dat, colnames_results[[in_format]])
   }
 
   # Preformat data ----
   if (in_format == "masswater") {
-    df <- prep_mwr_results(df)
+    dat <- prep_mwr_results(dat)
   } else if (in_format == "wqx") {
-    df <- prep_wqx_results(df)
+    dat <- prep_wqx_results(dat)
   } else if (in_format == "ma_brc") {
-    df <- prep_brc_results(df, date_format, tz)
+    dat <- prep_brc_results(dat, date_format, tz)
   } else if (in_format == "me_dep") {
-    df <- prep_me_dep_results(df)
+    dat <- prep_me_dep_results(dat)
   } else if (in_format == "me_focb") {
-    df <- prep_focb_results(df, date_format)
+    dat <- prep_focb_results(dat, date_format)
   } else if (in_format %in% c("ri_dem", "ri_ww")) {
-    df[["Depth Unit"]] <- "m"
+    dat[["Depth Unit"]] <- "m"
   }
 
   # Update columns ----
@@ -79,25 +82,25 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     out_format,
     limit_var = TRUE
   )
-  df <- rename_col(df, var_names$old_names, var_names$new_names)
+  dat <- rename_col(dat, var_names$old_names, var_names$new_names)
 
   # Add missing columns
-  missing_col <- setdiff(var_names$keep_var, colnames(df))
+  missing_col <- setdiff(var_names$keep_var, colnames(dat))
   if (length(missing_col) > 0) {
-    df[missing_col] <- NA
+    dat[missing_col] <- NA
     message("\tAdded ", toString(length(missing_col)), " new columns")
   }
 
   # Sort columns, drop surplus if drop_extra_col is TRUE
   keep_col <- var_names$keep_var
-  drop_col <- setdiff(colnames(df), keep_col)
+  drop_col <- setdiff(colnames(dat), keep_col)
   if (length(drop_col) == 0) {
-    df <- dplyr::select(df, dplyr::all_of(keep_col))
+    dat <- dplyr::select(dat, dplyr::all_of(keep_col))
   } else if (drop_extra_col) {
-    df <- dplyr::select(df, dplyr::all_of(keep_col))
+    dat <- dplyr::select(dat, dplyr::all_of(keep_col))
     message("\tDropped ", toString(length(drop_col)), " columns")
   } else {
-    df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
+    dat <- dplyr::select(dat, dplyr::all_of(c(keep_col, drop_col)))
     message(
       "\tKept ", toString(length(drop_col)), " extra columns"
     )
@@ -110,8 +113,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   # Format dates
   for (date_col in c("Activity Start Date", "Analysis Start Date")) {
     col_name <- rename_var(date_col, col_sub$old_names, col_sub$new_names)
-    if (col_name %in% colnames(df)) {
-      df <- col_to_date(df, col_name, date_format)
+    if (col_name %in% colnames(dat)) {
+      dat <- col_to_date(dat, col_name, date_format)
     }
   }
 
@@ -119,8 +122,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   col_name <- rename_var(
     "Characteristic Name", col_sub$old_names, col_sub$new_names
   )
-  if (col_name %in% colnames(df)) {
-    df <- update_param(df, col_name, in_format, out_format)
+  if (col_name %in% colnames(dat)) {
+    dat <- update_param(dat, col_name, in_format, out_format)
   }
 
   # Rename units
@@ -131,8 +134,8 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     )
   ) {
     col_name <- rename_var(unit_col, col_sub$old_names, col_sub$new_names)
-    if (col_name %in% colnames(df)) {
-      df <- update_unit(df, col_name, in_format, out_format)
+    if (col_name %in% colnames(dat)) {
+      dat <- update_unit(dat, col_name, in_format, out_format)
     }
   }
 
@@ -140,10 +143,10 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
   col_name <- rename_var(
     "Result Measure Qualifier", col_sub$old_names, col_sub$new_names
   )
-  if (col_name %in% colnames(df)) {
+  if (col_name %in% colnames(dat)) {
     qual <- fetch_var(varnames_qualifiers, in_format, out_format)
-    df <- update_var(df, col_name, qual$old_names, qual$new_names)
-    warn_invalid_var(df, col_name, qual$keep_var)
+    dat <- update_var(dat, col_name, qual$old_names, qual$new_names)
+    warn_invalid_var(dat, col_name, qual$keep_var)
   }
 
   # Rename activity type
@@ -152,31 +155,31 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
     old_varname = col_sub$old_names,
     new_varname = col_sub$new_names
   )
-  if (col_name %in% colnames(df)) {
+  if (col_name %in% colnames(dat)) {
     atype <- fetch_var(varnames_activity, in_format, out_format)
-    df <- update_var(df, col_name, atype$old_names, atype$new_names)
-    warn_invalid_var(df, col_name, atype$keep_var)
+    dat <- update_var(dat, col_name, atype$old_names, atype$new_names)
+    warn_invalid_var(dat, col_name, atype$keep_var)
   }
 
   # Custom format changes -----
   if (out_format == "masswater") {
-    df <- results_to_mwr(df)
+    dat <- results_to_mwr(dat)
   } else if (out_format == "wqdashboard") {
-    df <- results_to_wqd(df)
+    dat <- results_to_wqd(dat)
   } else if (out_format == "wqx") {
-    df <- results_to_wqx(df)
+    dat <- results_to_wqx(dat)
   } else if (out_format == "ma_brc") {
-    df <- results_to_brc(df)
+    dat <- results_to_brc(dat)
   } else if (out_format == "me_dep") {
-    df <- results_to_me_dep(df)
+    dat <- results_to_me_dep(dat)
   } else if (out_format == "me_focb") {
-    df <- results_to_focb(df)
+    dat <- results_to_focb(dat)
   } else if (out_format %in% c("ri_dem", "ri_ww")) {
-    df <- results_to_ridem(df)
+    dat <- results_to_ridem(dat)
   }
 
   message("Done")
-  return(df)
+  dat
 }
 
 #' Check and improve formatting for MassWateR result data
@@ -198,11 +201,14 @@ format_results <- function(df, in_format, out_format, date_format = "m/d/Y",
 format_mwr_results <- function(.data, date_format = "m/d/Y") {
   message("Formatting MassWateR result data...")
 
+  # Fix common typos, entry errors
+  dat <- prep_df(.data)
+
   # Check - repaired column names?
   chk <- grepl("\\.", colnames(.data))
   if (any(chk)) {
-    colnames(.data) <- gsub("\\.", " ", colnames(.data))
-    colnames(.data) <- gsub("Depth Height", "Depth/Height", colnames(.data))
+    colnames(dat) <- gsub("\\.", " ", colnames(dat))
+    colnames(dat) <- gsub("Depth Height", "Depth/Height", colnames(dat))
   }
 
   # Check columns
@@ -221,7 +227,7 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
   )
   key_col <- setdiff(all_col, bonus_col)
 
-  chk <- key_col %in% colnames(.data)
+  chk <- key_col %in% colnames(dat)
   if (any(!chk)) {
     missing_col <- key_col[which(!chk)]
     stop(
@@ -229,18 +235,18 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
     )
   }
 
-  chk <- bonus_col %in% colnames(.data)
+  chk <- bonus_col %in% colnames(dat)
   if (any(!chk)) {
     missing_col <- bonus_col[which(!chk)]
-    .data[missing_col] <- NA
+    dat[missing_col] <- NA
     warning(
       "Missing suggested columns: ", paste(missing_col, collapse = ", "),
       call. = FALSE
     )
   }
 
-  if (!"Quantitation Limit Unit" %in% colnames(.data)) {
-    .data[["Quantitation Limit Unit"]] <- .data[["Result Unit"]]
+  if (!"Quantitation Limit Unit" %in% colnames(dat)) {
+    dat[["Quantitation Limit Unit"]] <- dat[["Result Unit"]]
   }
 
   # Check variables
@@ -249,22 +255,22 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
   unit_list <- unique_var(varnames_units, "masswater")
   qual_list <- unique_var(varnames_qualifiers, "masswater")
 
-  warn_invalid_var(.data, "Activity Type", activity_list)
-  warn_invalid_var(.data, "Characteristic Name", param_list)
-  warn_invalid_var(.data, "Result Unit", unit_list)
-  warn_invalid_var(.data, "Activity Depth/Height Unit", unit_list)
-  warn_invalid_var(.data, "Result Measure Qualifier", qual_list)
+  warn_invalid_var(dat, "Activity Type", activity_list)
+  warn_invalid_var(dat, "Characteristic Name", param_list)
+  warn_invalid_var(dat, "Result Unit", unit_list)
+  warn_invalid_var(dat, "Activity Depth/Height Unit", unit_list)
+  warn_invalid_var(dat, "Result Measure Qualifier", qual_list)
 
   # Improve formatting, arrange columns
-  drop_col <- setdiff(colnames(.data), all_col)
+  drop_col <- setdiff(colnames(dat), all_col)
 
   if (length(drop_col) > 0) {
     message("\tRemoved ", toString(length(drop_col)), " invalid columns")
   }
 
-  dat <- .data %>%
-    col_to_date("Activity Start Date") %>%
-    results_to_mwr() %>% # improve formatting
+  dat <- dat |>
+    col_to_date("Activity Start Date") |>
+    results_to_mwr() |> # improve formatting
     dplyr::select(dplyr::all_of(all_col)) # reorder columns
 
   message("Done")
@@ -291,6 +297,7 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
 #' @export
 format_wqd_results <- function(.data, date_format, categorical = FALSE) {
   message("Formatting wqdashboard result data...")
+  dat <- prep_df(.data)
 
   # Check columns
   key_col <- c("Site_ID", "Date", "Parameter", "Result", "Result_Unit")
@@ -305,7 +312,7 @@ format_wqd_results <- function(.data, date_format, categorical = FALSE) {
     bonus_col <- c("Result_Unit", bonus_col)
   }
 
-  chk <- key_col %in% colnames(.data)
+  chk <- key_col %in% colnames(dat)
   if (any(!chk)) {
     missing_col <- key_col[which(!chk)]
     stop(
@@ -313,8 +320,8 @@ format_wqd_results <- function(.data, date_format, categorical = FALSE) {
     )
   }
 
-  missing_col <- setdiff(bonus_col, colnames(.data))
-  .data[missing_col] <- NA
+  missing_col <- setdiff(bonus_col, colnames(dat))
+  dat[missing_col] <- NA
 
   # Improve formatting, standardize variables
   param <- fetch_var(varnames_parameters, "wqx", "wqx")
@@ -322,12 +329,12 @@ format_wqd_results <- function(.data, date_format, categorical = FALSE) {
   old_unit <- par_unit$old_names
   new_unit <- par_unit$new_names
 
-  dat <- .data %>%
-    col_to_date("Date", date_format) %>%
-    update_var("Parameter", param$old_names, param$new_names) %>%
-    update_var("Result_Unit", old_unit, new_unit) %>%
-    update_var("Depth_Unit", old_unit, new_unit) %>%
-    update_var("Detection_Limit_Unit", old_unit, new_unit) %>%
+  dat <- dat |>
+    col_to_date("Date", date_format) |>
+    update_var("Parameter", param$old_names, param$new_names) |>
+    update_var("Result_Unit", old_unit, new_unit) |>
+    update_var("Depth_Unit", old_unit, new_unit) |>
+    update_var("Detection_Limit_Unit", old_unit, new_unit) |>
     results_to_wqd()
 
   # Check variables

@@ -76,7 +76,7 @@ convert_unit <- function(x, old_unit, new_unit, unit_format = "wqx") {
 set_units <- function(
   .data, value, unit, target_unit, unit_format = "wqx", silent = FALSE
 ) {
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::mutate(
       {{ unit }} := dplyr::if_else(
         is.na(.data[[value]]),
@@ -86,7 +86,7 @@ set_units <- function(
     )
 
   # Filter for data with wrong units
-  dat1 <- dat %>%
+  dat1 <- dat |>
     dplyr::filter(.data[[unit]] != !!target_unit)
 
   if (nrow(dat1) == 0) {
@@ -94,9 +94,9 @@ set_units <- function(
   }
 
   # Simplify data, convert units
-  dat1 <- dat1 %>%
-    dplyr::select(dplyr::all_of(c(unit, value))) %>%
-    unique() %>%
+  dat1 <- dat1 |>
+    dplyr::select(dplyr::all_of(c(unit, value))) |>
+    unique() |>
     dplyr::mutate(
       "temp_result" = mapply(
         function(x, y) {
@@ -121,21 +121,21 @@ set_units <- function(
   dat <- dplyr::left_join(dat, dat1, by = join_col)
 
   # Update units, results
-  dat %>%
+  dat |>
     dplyr::mutate(
       {{ value }} := dplyr::if_else(
         is.na(.data$temp_result) | .data$temp_result == -999999,
         .data[[value]],
         .data$temp_result
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       {{ unit }} := dplyr::if_else(
         is.na(.data$temp_result) | .data$temp_result == -999999,
         .data[[unit]],
         !!target_unit
       )
-    ) %>%
+    ) |>
     dplyr::select(!"temp_result")
 }
 
@@ -162,20 +162,20 @@ standardize_units <- function(
   .data, group, value, unit, unit_format = "wqx", warn_only = TRUE
 ) {
   # Set var
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::filter(
       !is.na(.data[[group]]),
       !is.na(.data[[unit]])
     )
 
   # List parameters with multiple units, set target unit
-  dat_group <- dat %>%
-    dplyr::group_by(.data[[group]]) %>%
+  dat_group <- dat |>
+    dplyr::group_by(.data[[group]]) |>
     dplyr::summarize(
       "n" = length(unique(.data[[unit]])),
       "temp_unit" = dplyr::last(.data[[unit]])
-    ) %>%
-    dplyr::filter(.data$n > 1) %>%
+    ) |>
+    dplyr::filter(.data$n > 1) |>
     dplyr::select(!"n")
 
   if (nrow(dat_group) == 0) {
@@ -183,12 +183,12 @@ standardize_units <- function(
   }
 
   # Simplify data, convert units
-  dat <- dat %>%
-    dplyr::select(dplyr::all_of(c(group, unit, value))) %>%
+  dat <- dat |>
+    dplyr::select(dplyr::all_of(c(group, unit, value))) |>
     unique()
 
-  dat <- dplyr::inner_join(dat, dat_group, by = group) %>%
-    dplyr::filter(.data[[unit]] != .data$temp_unit) %>%
+  dat <- dplyr::inner_join(dat, dat_group, by = group) |>
+    dplyr::filter(.data[[unit]] != .data$temp_unit) |>
     dplyr::mutate(
       "temp_result" = mapply(
         function(x, y, z) suppressWarnings(convert_unit(x, y, z, unit_format)),
@@ -214,21 +214,21 @@ standardize_units <- function(
   dat <- dplyr::left_join(.data, dat, by = join_col)
 
   # Update units, results
-  dat <- dat %>%
+  dat <- dat |>
     dplyr::mutate(
       {{ value }} := dplyr::if_else(
         .data$temp_result == -999999 | is.na(.data$temp_unit),
         .data[[value]],
         .data$temp_result
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       {{ unit }} := dplyr::if_else(
         .data$temp_result == -999999 | is.na(.data$temp_unit),
         .data[[unit]],
         .data$temp_unit
       )
-    ) %>%
+    ) |>
     dplyr::select(!dplyr::any_of(c("temp_unit", "temp_result")))
 
   # Check - any rows missing unit?
@@ -239,14 +239,14 @@ standardize_units <- function(
   }
 
   # Patch in missing units
-  dplyr::left_join(dat, dat_group, by = group) %>%
+  dplyr::left_join(dat, dat_group, by = group) |>
     dplyr::mutate(
       {{ unit }} := dplyr::if_else(
         is.na(.data[[unit]]),
         .data$temp_unit,
         .data[[unit]]
       )
-    ) %>%
+    ) |>
     dplyr::select(!"temp_unit")
 }
 
@@ -290,7 +290,7 @@ standardize_units_across <- function(
   for (val in value) {
     temp_val <- paste0("temp_", val)
 
-    dat2 <- dat2 %>%
+    dat2 <- dat2 |>
       dplyr::mutate(
         {{ temp_val }} := mapply(
           function(x, y, z) {
@@ -333,11 +333,11 @@ standardize_units_across <- function(
   for (val in value) {
     temp_val <- paste0("temp_", val)
 
-    dat2 <- dat2 %>%
+    dat2 <- dat2 |>
       dplyr::mutate({{ val }} := .data[[temp_val]])
   }
 
-  dat2 <- dat2 %>%
+  dat2 <- dat2 |>
     dplyr::mutate({{ unit }} := .data[[target_unit]])
 
   # Combine data
@@ -345,7 +345,7 @@ standardize_units_across <- function(
     dat2 <- dplyr::bind_rows(dat2, dat3)
   }
 
-  dplyr::bind_rows(dat1, dat2) %>%
-    dplyr::arrange(.data$temp_row) %>% # restore original row order
+  dplyr::bind_rows(dat1, dat2) |>
+    dplyr::arrange(.data$temp_row) |> # restore original row order
     dplyr::select(dplyr::any_of(colnames(.data))) # drop extra columns
 }

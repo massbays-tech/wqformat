@@ -23,7 +23,6 @@ Imports:
     datasets,
     dplyr,
     lubridate,
-    magrittr,
     rlang,
     stringr,
     tidyr

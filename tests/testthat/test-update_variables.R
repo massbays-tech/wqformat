@@ -1,6 +1,6 @@
 # test update_var -----
 test_that("update_var works", {
-  df <- data.frame(
+  df_in <- data.frame(
     "species" = c("aardvark", "bittern", "chinchilla"),
     "class" = c("mammal", "bird", "mammal"),
     "numbers" = c(1, 2, 3)
@@ -20,56 +20,56 @@ test_that("update_var works", {
 
   expect_equal(
     update_var(
-      df, "species",
+      df_in, "species",
       c("aardvark", "bittern"),
       c("aardvark", "bittern")
     ),
-    df
+    df_in
   )
   expect_equal(
     update_var(
-      df, "class",
+      df_in, "class",
       c("mammal", "reptile"),
       c("Mammalia", "Reptilia")
     ),
     df2
   )
   expect_equal(
-    update_var(df, "numbers", c(1, 2), c(12, 23)),
+    update_var(df_in, "numbers", c(1, 2), c(12, 23)),
     df3
   )
 })
 
 test_that("update_var handles NA values appropriately", {
-  df <- data.frame(
+  df_in <- data.frame(
     "species" = c("aardvark", "bittern", "chinchilla"),
     "class" = c("mammal", "bird", "mammal"),
     "numbers" = c(1, 2, 3)
   )
 
   expect_equal(
-    update_var(df, "species", NA, NA),
-    df
+    update_var(df_in, "species", NA, NA),
+    df_in
   )
   expect_error(
-    update_var(df, "class", c("mammal", "bird"), c(NA, "Aves")),
+    update_var(df_in, "class", c("mammal", "bird"), c(NA, "Aves")),
     regexp = "old_varname and new_varname must not contain NA values"
   )
 })
 
 test_that("update_var sends error messages", {
-  df <- data.frame(
+  df_in <- data.frame(
     "species" = c("aardvark", "bittern", "chinchilla"),
     "class" = c("mammal", "bird", "mammal"),
     "numbers" = c(1, 2, 3)
   )
 
   expect_error(
-    update_var(df, "genus", "chinchilla", "cat"),
+    update_var(df_in, "genus", "chinchilla", "cat"),
     regexp = "col_name not in dataframe"
   )
   expect_error(
-    update_var(df, "species", c("ant", "chinchilla"), "cat"),
+    update_var(df_in, "species", c("ant", "chinchilla"), "cat"),
     regexp = "old_varname and new_varname are different lengths"
   )
 })
@@ -115,46 +115,46 @@ test_that("update_unit error messages", {
 
 # test warn_invalid_var -----
 test_that("warn_invalid_var works", {
-  df <- data.frame(
+  df_in <- data.frame(
     "col1" = c("A", "B", "C"),
     "col2" = c("D", "E", "F")
   )
   varlist <- c("A", "B", "C", "D")
 
   expect_silent(
-    warn_invalid_var(df, "col1", varlist)
+    warn_invalid_var(df_in, "col1", varlist)
   )
   expect_warning(
-    warn_invalid_var(df, "col2", varlist),
+    warn_invalid_var(df_in, "col2", varlist),
     regexp = "Invalid variables in col2: E, F"
   )
 })
 
 test_that("warn_invalid_var handles NA values appropriately", {
-  df <- data.frame(
+  df_in <- data.frame(
     "col1" = c(NA, "B", "C"),
     "col2" = c("D", NA, "F")
   )
   varlist <- c("A", "B", "C", "D")
 
   expect_silent(
-    warn_invalid_var(df, "col1", varlist)
+    warn_invalid_var(df_in, "col1", varlist)
   )
   expect_warning(
-    warn_invalid_var(df, "col2", varlist),
+    warn_invalid_var(df_in, "col2", varlist),
     regexp = "Invalid variables in col2: F"
   )
 })
 
 test_that("rename_var sends error messages", {
-  df <- data.frame(
+  df_in <- data.frame(
     "col1" = c(NA, "B", "C"),
     "col2" = c("D", NA, "F")
   )
   varlist <- c("A", "B", "C", "D")
 
   expect_error(
-    warn_invalid_var(df, "col3", varlist),
+    warn_invalid_var(df_in, "col3", varlist),
     regexp = "col_name not in dataframe"
   )
 })
@@ -167,8 +167,8 @@ test_that("state_to_abb works", {
   )
 
   expect_equal(
-    df_in %>%
-      state_to_abb("State_name") %>%
+    df_in |>
+      state_to_abb("State_name") |>
       state_to_abb("State_mix"),
     data.frame(
       "State_name" = c("RI", "MA"),
@@ -196,8 +196,8 @@ test_that("abb_to_state works", {
   )
 
   expect_equal(
-    df_in %>%
-      abb_to_state("State_abb") %>%
+    df_in |>
+      abb_to_state("State_abb") |>
       abb_to_state("State_mix"),
     data.frame(
       "State_abb" = c("Rhode Island", "Massachusetts"),

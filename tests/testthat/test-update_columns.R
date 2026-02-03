@@ -1,6 +1,6 @@
 # Test rename_col ----
 test_that("rename_col works", {
-  df <- data.frame(
+  dat <- data.frame(
     "species" = c("aardvark", "bittern", NA, NA),
     "class" = c("mammal", "bird", "mammal", NA),
     "numbers" = c(1, 2, 3, 4)
@@ -8,22 +8,22 @@ test_that("rename_col works", {
 
   # Check auto-return
   expect_equal(
-    rename_col(df, NA, NA),
-    df
+    rename_col(dat, NA, NA),
+    dat
   )
   expect_equal(
-    rename_col(df, c("species", "genus"), c("species", "genus")),
-    df
+    rename_col(dat, c("species", "genus"), c("species", "genus")),
+    dat
   )
   expect_equal(
-    rename_col(df, c("cat", "dog"), c("kitten", "puppy")),
-    df
+    rename_col(dat, c("cat", "dog"), c("kitten", "puppy")),
+    dat
   )
 
   # Check 1:1 column name conversion
   expect_equal(
     rename_col(
-      df,
+      dat,
       c("species", "genus", "numbers"),
       c("foo", "bar", "foofy")
     ),
@@ -37,7 +37,7 @@ test_that("rename_col works", {
   # Check 2:1 column name conversion
   expect_equal(
     rename_col(
-      df,
+      dat,
       c("species", "class"),
       c("foo", "foo")
     ),
@@ -50,7 +50,7 @@ test_that("rename_col works", {
   # Check overlapping 3:1 and 1:3 column name conversions
   expect_equal(
     rename_col(
-      df,
+      dat,
       c("species", "class", "numbers", "numbers", "numbers"),
       c("foo", "foo", "foo", "bar", "foofy")
     ),
@@ -63,7 +63,7 @@ test_that("rename_col works", {
 
   # Check NA handling, pipes
   expect_equal(
-    df %>%
+    dat |>
       rename_col(
         c("species", "genus", "numbers"),
         c(NA, "bar", "foofy")
@@ -77,14 +77,14 @@ test_that("rename_col works", {
 })
 
 test_that("rename_col error messages", {
-  df <- data.frame(
+  dat <- data.frame(
     "species" = c("aardvark", "bittern", NA, NA),
     "class" = c("mammal", "bird", "mammal", NA),
     "numbers" = c(1, 2, 3, 4)
   )
 
   expect_error(
-    rename_col(df, c("species", "class"), "foo"),
+    rename_col(dat, c("species", "class"), "foo"),
     regexp = "old_colnames and new_colnames are different lengths"
   )
 })
@@ -92,7 +92,7 @@ test_that("rename_col error messages", {
 # Check concat_col ----
 
 test_that("concat_col works", {
-  df <- data.frame(
+  dat <- data.frame(
     "species" = c("aardvark", "bittern", NA, NA),
     "class" = c("mammal", "bird", "mammal", NA),
     "numbers" = c(1, 2, 3, 4),
@@ -102,7 +102,7 @@ test_that("concat_col works", {
   # Test intended use
   expect_equal(
     concat_col(
-      df,
+      dat,
       c("species", "class"),
       "foo"
     ),
@@ -116,7 +116,7 @@ test_that("concat_col works", {
   )
   expect_equal(
     concat_col(
-      df,
+      dat,
       c("species", "class", "numbers"),
       "numbers"
     ),
@@ -131,7 +131,7 @@ test_that("concat_col works", {
   # Test concatenation
   expect_equal(
     concat_col(
-      df,
+      dat,
       c("class", "numbers", "numbers2"),
       "foo",
       concat = TRUE
@@ -147,8 +147,8 @@ test_that("concat_col works", {
 
   # Test edge cases, pipes
   expect_equal(
-    df %>%
-      concat_col("species", "foo") %>% # only 1 in_colnames
+    dat |>
+      concat_col("species", "foo") |> # only 1 in_colnames
       concat_col("foofy", "owl"), # invalid in_colnames
     data.frame(
       "species" = c("aardvark", "bittern", NA, NA),
@@ -176,9 +176,9 @@ test_that("col_to_numeric works", {
   )
 
   expect_equal(
-    df_in %>%
-      col_to_numeric("col1") %>%
-      col_to_numeric("col2") %>%
+    df_in |>
+      col_to_numeric("col1") |>
+      col_to_numeric("col2") |>
       col_to_numeric("col3"),
     df_out
   )
@@ -229,12 +229,12 @@ test_that("col_to_date works", {
   df_out$blank_col <- as.Date(df_out$blank_col)
 
   expect_equal(
-    df_in %>%
-      col_to_date("good_date") %>%
-      col_to_date("na_date") %>%
-      col_to_date("mdy_date") %>%
-      col_to_date("datetime", date_format = "m/d/y H:M", datetime = TRUE) %>%
-      col_to_date("ymd_date", date_format = "y/m/d") %>%
+    df_in |>
+      col_to_date("good_date") |>
+      col_to_date("na_date") |>
+      col_to_date("mdy_date") |>
+      col_to_date("datetime", date_format = "m/d/y H:M", datetime = TRUE) |>
+      col_to_date("ymd_date", date_format = "y/m/d") |>
       col_to_date("blank_col"),
     df_out
   )

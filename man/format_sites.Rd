@@ -4,10 +4,10 @@
 \alias{format_sites}
 \title{Format site metadata}
 \usage{
-format_sites(df, in_format, out_format, drop_extra_col = TRUE)
+format_sites(.data, in_format, out_format, drop_extra_col = TRUE)
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{.data}{Dataframe}
 
 \item{in_format, out_format}{String. Desired input and output formats. Not
 case sensitive. Accepted formats:

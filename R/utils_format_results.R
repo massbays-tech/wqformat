@@ -38,7 +38,7 @@ prep_mwr_results <- function(.data) {
     "Quality Control-Calibration Check"
   )
 
-  .data %>%
+  .data |>
     # Send QC Reference Value to own row
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
@@ -46,8 +46,8 @@ prep_mwr_results <- function(.data) {
         NA,
         paste0("NA|", .data[["QC Reference Value"]])
       )
-    ) %>%
-    tidyr::separate_longer_delim(dplyr::all_of("QC Reference Value"), "|") %>%
+    ) |>
+    tidyr::separate_longer_delim(dplyr::all_of("QC Reference Value"), "|") |>
     # Update new rows
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
@@ -55,14 +55,14 @@ prep_mwr_results <- function(.data) {
         NA,
         .data[["QC Reference Value"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Value" = dplyr::if_else(
         is.na(.data[["QC Reference Value"]]),
         .data[["Result Value"]],
         .data[["QC Reference Value"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Activity Type" = dplyr::if_else(
         .data[["Activity Type"]] %in% names(qc_ref) &
@@ -70,7 +70,7 @@ prep_mwr_results <- function(.data) {
         unname(qc_ref[.data[["Activity Type"]]]),
         .data[["Activity Type"]]
       )
-    ) %>%
+    ) |>
     # Update qualifiers, result value
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::case_when(
@@ -78,17 +78,17 @@ prep_mwr_results <- function(.data) {
         .data[["Result Value"]] == "AQL" ~ "GT",
         TRUE ~ .data[["Result Measure Qualifier"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Value" = dplyr::if_else(
         .data[["Result Value"]] %in% c("BDL", "AQL"),
         NA,
         .data[["Result Value"]]
       )
-    ) %>%
+    ) |>
     # Final column adjustments
-    dplyr::select(!"QC Reference Value") %>%
-    col_to_numeric("Result Value") %>%
+    dplyr::select(!"QC Reference Value") |>
+    col_to_numeric("Result Value") |>
     dplyr::mutate("Quantitation Limit Unit" = .data[["Result Unit"]])
 }
 
@@ -139,20 +139,20 @@ add_qc_ref <- function(.data) {
   # Prep duplicate data
   # - Add activity type category
   # - Sort rows with replicate samples AFTER initial samples
-  dat1 <- dat1 %>%
+  dat1 <- dat1 |>
     dplyr::mutate(
       "temp_activity" = dplyr::if_else(
         .data[["Activity Type"]] %in% names(qc_ref),
         qc_ref[.data[["Activity Type"]]],
         .data[["Activity Type"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "temp_rank" = dplyr::if_else(
         .data[["Activity Type"]] %in% names(qc_ref), 2, 1
       )
-    ) %>%
-    dplyr::arrange(.data$temp_rank) %>%
+    ) |>
+    dplyr::arrange(.data$temp_rank) |>
     dplyr::select(!"temp_rank")
 
   # Group data, check for paired data
@@ -164,8 +164,8 @@ add_qc_ref <- function(.data) {
     )
   )
 
-  dat_temp <- dat1 %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+  dat_temp <- dat1 |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) |>
     dplyr::add_count()
 
   chk <- dat_temp$n == 2
@@ -188,7 +188,7 @@ add_qc_ref <- function(.data) {
     return(.data) # no pairs found, return original data
   } else if (any(!chk)) {
     # send non-pairs to dat2
-    dat_temp <- dat1[which(!chk), ] %>%
+    dat_temp <- dat1[which(!chk), ] |>
       dplyr::select(!"temp_activity")
     dat2 <- rbind(dat2, dat_temp)
 
@@ -197,8 +197,8 @@ add_qc_ref <- function(.data) {
   }
 
   # Combine duplicate rows
-  dat1 <- dat1 %>%
-    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) %>%
+  dat1 <- dat1 |>
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_col))) |>
     dplyr::summarize(
       "Activity Type" = dplyr::first(.data[["Activity Type"]]),
       "Result Value" = stringr::str_flatten(.data[["Result Value"]], "|"),
@@ -221,7 +221,7 @@ add_qc_ref <- function(.data) {
     )
 
   # Edit concatenated columns to remove duplicate strings
-  dat1 <- dat1 %>%
+  dat1 <- dat1 |>
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::if_else(
         .data[["Result Measure Qualifier"]] %in% c(NA, ""),
@@ -232,7 +232,7 @@ add_qc_ref <- function(.data) {
           USE.NAMES = FALSE
         )
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Local Record ID" = dplyr::if_else(
         .data[["Local Record ID"]] %in% c(NA, ""),
@@ -243,7 +243,7 @@ add_qc_ref <- function(.data) {
           USE.NAMES = FALSE
         )
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Comment" = dplyr::if_else(
         .data[["Result Comment"]] %in% c(NA, ""),
@@ -254,7 +254,7 @@ add_qc_ref <- function(.data) {
           USE.NAMES = FALSE
         )
       )
-    ) %>%
+    ) |>
     # Set QC Reference Value, Result Value
     dplyr::mutate(
       "QC Reference Value" = dplyr::if_else(
@@ -262,14 +262,14 @@ add_qc_ref <- function(.data) {
         stringr::str_split_i(.data[["Result Value"]], "\\|", 2),
         .data[["QC Reference Value"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Value" = dplyr::if_else(
         grepl("\\|", .data[["Result Value"]]),
         stringr::str_split_i(.data[["Result Value"]], "\\|", 1),
         .data[["Result Value"]]
       )
-    ) %>%
+    ) |>
     # Drop extra column
     dplyr::select(!"temp_activity")
 
@@ -277,7 +277,7 @@ add_qc_ref <- function(.data) {
   dat <- rbind(dat1, dat2)
 
   # Adjust formatting
-  dat <- as.data.frame(dat) %>%
+  dat <- as.data.frame(dat) |>
     dplyr::arrange(
       .data[["Activity Start Date"]],
       .data[["Activity Start Time"]]
@@ -314,26 +314,26 @@ results_to_mwr <- function(.data) {
   q_over <- c("GT", "E", "EE", "AQL")
 
   message("\tStandardizing units")
-  dat <- .data %>%
+  dat <- .data |>
     standardize_units(
       "Characteristic Name",
       "Result Value",
       "Result Unit",
       "masswater"
-    ) %>%
+    ) |>
     standardize_units_across(
       "Result Unit",
       "Quantitation Limit Unit",
       "Quantitation Limit",
       "masswater"
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Value" = dplyr::case_when(
         .data[["Result Measure Qualifier"]] %in% q_under ~ "BDL",
         .data[["Result Measure Qualifier"]] %in% q_over ~ "AQL",
         TRUE ~ .data[["Result Value"]]
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::if_else(
         .data[["Result Measure Qualifier"]] %in% c(q_under, q_over),
@@ -353,9 +353,9 @@ results_to_mwr <- function(.data) {
   dat <- add_qc_ref(dat)
 
   # Adjust formatting
-  dat <- dat %>%
-    dplyr::select(dplyr::any_of(column_order)) %>%
-    col_to_numeric("Result Value") %>%
+  dat <- dat |>
+    dplyr::select(dplyr::any_of(column_order)) |>
+    col_to_numeric("Result Value") |>
     col_to_numeric("QC Reference Value")
 }
 
@@ -377,9 +377,9 @@ results_to_mwr <- function(.data) {
 #' @noRd
 results_to_wqd <- function(.data) {
   # Update depth, pH units
-  dat <- .data %>%
-    col_to_numeric("Depth", silent = FALSE) %>%
-    set_units("Depth", "Depth_Unit", "m", unit_format = "wqdashboard") %>%
+  dat <- .data |>
+    col_to_numeric("Depth", silent = FALSE) |>
+    set_units("Depth", "Depth_Unit", "m", unit_format = "wqdashboard") |>
     dplyr::mutate(
       "Result_Unit" = dplyr::if_else(
         .data$Parameter == "pH" & is.na(.data$Result_Unit),
@@ -395,7 +395,7 @@ results_to_wqd <- function(.data) {
     return(dat)
   }
 
-  dat %>%
+  dat |>
     dplyr::mutate(
       "Upper_Detection_Limit" = dplyr::if_else(
         grepl("upper", .data$Detection_Limit_Type, ignore.case = TRUE) &
@@ -403,7 +403,7 @@ results_to_wqd <- function(.data) {
         .data$Lower_Detection_Limit,
         .data$Upper_Detection_Limit
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Lower_Detection_Limit" = dplyr::if_else(
         grepl("upper", .data$Detection_Limit_Type, ignore.case = TRUE),
@@ -429,7 +429,7 @@ results_to_wqd <- function(.data) {
 #' @noRd
 prep_wqx_results <- function(.data) {
   # Update qualifiers
-  .data %>%
+  .data |>
     dplyr::mutate(
       "Result Measure Qualifier" = dplyr::case_when(
         !is.na(.data[["Result Measure Qualifier"]]) ~
@@ -463,7 +463,7 @@ prep_wqx_results <- function(.data) {
 #' @noRd
 results_to_wqx <- function(.data) {
   # Update Result Detection Condition
-  .data %>%
+  .data |>
     dplyr::mutate(
       "Result Detection Condition" = dplyr::case_when(
         !is.na(.data[["Result Detection Condition"]]) ~
@@ -502,15 +502,15 @@ results_to_wqx <- function(.data) {
 #' @noRd
 prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
                              tz = "America/New_York") {
-  .data %>%
+  .data |>
     col_to_date(
       "DATE_TIME",
       date_format = date_format,
       tz = tz,
       datetime = TRUE
-    ) %>%
-    dplyr::mutate("DATE" = as.Date(.data$DATE_TIME, tz = tz)) %>%
-    dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) %>%
+    ) |>
+    dplyr::mutate("DATE" = as.Date(.data$DATE_TIME, tz = tz)) |>
+    dplyr::mutate("TIME" = format(.data$DATE_TIME, "%H:%M")) |>
     dplyr::mutate(
       "ACTIVITY_TYPE" = dplyr::case_when(
         grepl("Field Blank", .data$PARAMETER, fixed = TRUE) ~ "Field Blank",
@@ -518,7 +518,7 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
         grepl("Replicate", .data$PARAMETER, fixed = TRUE) ~ "Replicate",
         TRUE ~ "Grab"
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "PARAMETER" = dplyr::case_when(
         .data$ACTIVITY_TYPE == "Field Blank" ~
@@ -529,14 +529,14 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
           gsub(" Replicate", "", .data$PARAMETER),
         TRUE ~ .data$PARAMETER
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "DEPTH_CATEGORY" = dplyr::if_else(
         .data$PARAMETER == "Water Depth",
         NA,
         "Surface"
       )
-    ) %>%
+    ) |>
     dplyr::mutate("PROJECT_ID" = "BRC")
 }
 
@@ -559,15 +559,15 @@ prep_brc_results <- function(.data, date_format = "Y-m-d H:M",
 #'
 #' @noRd
 results_to_brc <- function(.data) {
-  .data %>%
-    dplyr::mutate("DATE_TIME" = paste(.data$DATE, .data$TIME)) %>%
+  .data |>
+    dplyr::mutate("DATE_TIME" = paste(.data$DATE, .data$TIME)) |>
     dplyr::mutate(
       "PARAMETER" = dplyr::if_else(
         .data$ACTIVITY_TYPE %in% c("Field Blank", "Lab Blank", "Replicate"),
         paste(.data$PARAMETER, .data$ACTIVITY_TYPE),
         .data$PARAMETER
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "UNIQUE_ID" = dplyr::case_when(
         .data$PARAMETER == "Air Temperature" ~ "TAC",
@@ -588,14 +588,14 @@ results_to_brc <- function(.data) {
         .data$PARAMETER == "Water Temperature" ~ "TWC",
         TRUE ~ ""
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "UNIQUE_ID" = paste(
         .data$SITE_BRC_CODE, .data$DATE_TIME, .data$UNIQUE_ID,
         sep = "_"
       )
-    ) %>%
-    dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") %>%
+    ) |>
+    dplyr::relocate("DATE_TIME", .after = "SITE_BRC_CODE") |>
     dplyr::select(
       !dplyr::any_of(
         c("DATE", "TIME", "ACTIVITY_TYPE", "DEPTH_CATEGORY", "PROJECT_ID")
@@ -631,8 +631,8 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
   }
 
   # Add columns
-  dat <- .data %>%
-    dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") %>%
+  dat <- .data |>
+    dplyr::mutate("Project" = "FRIENDS OF CASCO BAY ALL SITES") |>
     dplyr::mutate("Sampled By" = "FRIENDS OF CASCO BAY")
 
   chk <- grepl("Sample Depth", colnames(dat))
@@ -641,7 +641,7 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
   }
 
   if ("QC Type" %in% colnames(dat)) {
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         "QC Type" = dplyr::if_else(
           is.na(.data[["QC Type"]]),
@@ -663,8 +663,8 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
     )
 
     # Set table to character before pivot to avoid errors from "BSV" score
-    dat <- dat %>%
-      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
+    dat <- dat |>
+      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
       tidyr::pivot_longer(
         !dplyr::any_of(keep_col),
         names_to = "Parameter",
@@ -678,14 +678,14 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
     }
 
     # Add parameters, units
-    dat <- as.data.frame(dat) %>%
+    dat <- as.data.frame(dat) |>
       dplyr::mutate(
         "Unit" = dplyr::if_else(
           tolower(.data$Parameter) == "ph",
           "STU",
           stringr::str_split_i(.data$Parameter, "_", 2)
         )
-      ) %>%
+      ) |>
       dplyr::mutate("Parameter" = stringr::str_split_i(.data$Parameter, "_", 1))
   }
 
@@ -695,9 +695,9 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
   }
 
   if (all(c("Sample Date", "Analysis Date") %in% colnames(dat))) {
-    dat <- dat %>%
-      col_to_date("Sample Date", date_format = date_format) %>%
-      col_to_date("Analysis Date", date_format = date_format) %>%
+    dat <- dat |>
+      col_to_date("Sample Date", date_format = date_format) |>
+      col_to_date("Analysis Date", date_format = date_format) |>
       dplyr::mutate(
         "temp_gap" = as.numeric(
           .data[["Analysis Date"]] - .data[["Sample Date"]]
@@ -708,14 +708,14 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
   }
 
   # Add qualifiers, Detection Limit Unit
-  dat %>%
+  dat |>
     dplyr::mutate(
       "Parameter" = dplyr::if_else(
         grepl("total nitrogen mixed forms", tolower(.data$Parameter)),
         "TN as N",
         .data$Parameter
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "Qualifier" = dplyr::case_when(
         tolower(.data$Parameter) == "chlorophyll" ~ "J",
@@ -723,8 +723,8 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
         tolower(.data$Parameter) == "tn as n" & .data$temp_gap > 28 ~ "J",
         TRUE ~ NA
       )
-    ) %>%
-    dplyr::mutate("Detection Limit Unit" = .data$Unit) %>%
+    ) |>
+    dplyr::mutate("Detection Limit Unit" = .data$Unit) |>
     dplyr::select(!"temp_gap")
 }
 
@@ -742,7 +742,7 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
 #'
 #' @noRd
 results_to_focb <- function(.data) {
-  dat <- .data %>%
+  dat <- .data |>
     standardize_units_across(
       "Unit",
       "Detection Limit Unit",
@@ -776,23 +776,23 @@ results_to_focb <- function(.data) {
 #'
 #' @noRd
 prep_me_dep_results <- function(.data) {
-  .data %>%
+  .data |>
     concat_col(
       c("LAB_QUALIFIER", "VALIDATION_QUALIFIER"),
       "LAB_QUALIFIER"
-    ) %>%
+    ) |>
     concat_col(
       c("LAB_COMMENT", "SAMPLE_COMMENTS", "VALIDATION_COMMENT"),
       "SAMPLE_COMMENTS",
       concat = TRUE
-    ) %>%
+    ) |>
     dplyr::mutate(
       "QC_TYPE" = dplyr::if_else(
         is.na(.data$QC_TYPE),
         "NOT APPLICABLE (NORMAL ENVIRONMENTAL SAMPLE)",
         .data$QC_TYPE
       )
-    ) %>%
+    ) |>
     dplyr::mutate("DETECTION_LIMIT_UNIT" = .data$PARAMETER_UNITS)
 }
 
@@ -810,7 +810,7 @@ prep_me_dep_results <- function(.data) {
 #'
 #' @noRd
 results_to_me_dep <- function(.data) {
-  dat <- .data %>%
+  dat <- .data |>
     standardize_units_across(
       "PARAMETER_UNITS",
       "DETECTION_LIMIT_UNIT",
@@ -842,8 +842,8 @@ results_to_me_dep <- function(.data) {
 #'
 #' @noRd
 results_to_ridem <- function(.data) {
-  dat <- .data %>%
-    col_to_numeric("Depth", silent = FALSE) %>%
+  dat <- .data |>
+    col_to_numeric("Depth", silent = FALSE) |>
     set_units("Depth", "Depth Unit", "m", unit_format = "ri_dem", silent = TRUE)
 
   chk <- dat[["Depth Unit"]] == "m"

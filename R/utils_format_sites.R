@@ -20,7 +20,7 @@ prep_brc_sites <- function(.data) {
     .data$WATER_DEPTH_FT <- NA
   }
 
-  .data <- .data %>%
+  .data <- .data |>
     dplyr::mutate(
       "STATE" = dplyr::case_when(
         .data$TOWN %in% c(
@@ -37,10 +37,10 @@ prep_brc_sites <- function(.data) {
         ) ~ "MA",
         TRUE ~ NA
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "WATER_DEPTH_M" = as.numeric(.data$WATER_DEPTH_FT) / 3.28084
-    ) %>%
+    ) |>
     dplyr::mutate(
       "CFR" = dplyr::case_when(
         tolower(.data$CFR) == "no" ~ "Warmwater",
@@ -68,21 +68,21 @@ prep_brc_sites <- function(.data) {
 #'
 #' @noRd
 sites_to_brc <- function(.data) {
-  .data %>%
+  .data |>
     dplyr::mutate(
       "WATER_DEPTH_FT" = dplyr::if_else(
         is.na(as.numeric(.data$WATER_DEPTH_FT)),
         as.numeric(.data$WATER_DEPTH_M) * 3.28084,
         .data$WATER_DEPTH_FT
       )
-    ) %>%
+    ) |>
     dplyr::mutate(
       "CFR" = dplyr::case_when(
         tolower(.data$CFR) == "warmwater" ~ "No",
         tolower(.data$CFR) == "coldwater" ~ "Yes",
         TRUE ~ .data$CFR
       )
-    ) %>%
+    ) |>
     dplyr::select(!dplyr::any_of(c("STATE", "WATER_DEPTH_M")))
 }
 
@@ -103,7 +103,7 @@ sites_to_brc <- function(.data) {
 #'
 #' @noRd
 sites_to_wqdashboard <- function(.data, drop_extra_col = FALSE) {
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::mutate(
       "Group" = dplyr::case_when(
         !is.na(.data$Group) ~ .data$Group,
@@ -117,5 +117,5 @@ sites_to_wqdashboard <- function(.data, drop_extra_col = FALSE) {
     dat <- dplyr::select(dat, !"Location_Type")
   }
 
-  return(dat)
+  dat
 }

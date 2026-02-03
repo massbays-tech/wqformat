@@ -36,7 +36,7 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
   }
 
   # Update variable names
-  .data %>%
+  .data |>
     dplyr::mutate(
       {{ col_name }} := sapply(
         .data[[col_name]],
@@ -120,7 +120,7 @@ update_unit <- function(.data, col_name, in_format, out_format) {
 #' `warn_invalid_var()` checks if the input column contains any variables that
 #' aren't included in `varlist`.
 #'
-#' @param df Dataframe
+#' @param dat Dataframe
 #' @param col_name String. Column name.
 #' @param varlist List. List of acceptable variable names.
 #'
@@ -129,13 +129,13 @@ update_unit <- function(.data, col_name, in_format, out_format) {
 #' @return Updated dataframe.
 #'
 #' @export
-warn_invalid_var <- function(df, col_name, varlist) {
-  chk <- col_name %in% colnames(df)
+warn_invalid_var <- function(dat, col_name, varlist) {
+  chk <- col_name %in% colnames(dat)
   if (!chk) {
     stop("col_name not in dataframe")
   }
 
-  x <- unique(df[[col_name]])
+  x <- unique(dat[[col_name]])
   y <- setdiff(x, varlist)
   y <- y[!is.na(y)]
 
@@ -174,7 +174,7 @@ state_to_abb <- function(.data, state_col) {
     )
   }
 
-  .data %>%
+  .data |>
     dplyr::mutate(
       {{ state_col }} := dplyr::if_else(
         .data[[state_col]] %in% datasets::state.name,
@@ -211,7 +211,7 @@ abb_to_state <- function(.data, state_col) {
     )
   }
 
-  .data %>%
+  .data |>
     dplyr::mutate(
       {{ state_col }} := dplyr::if_else(
         .data[[state_col]] %in% datasets::state.abb,

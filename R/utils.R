@@ -1,3 +1,31 @@
+#' Prepare dataframe
+#'
+#' @description `prep_df()` standardizes dataframe formatting by trimming
+#' whitespace and changing blank values to `NA`.
+#'
+#' @param .data Dataframe
+#'
+#' @return Updated dataframe
+#'
+#' @noRd
+prep_df <- function(.data) {
+  colnames(.data) <- trimws(colnames(.data))
+
+  .data |>
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(is.character),
+        ~ trimws(.)
+      )
+    ) |>
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::where(is.character),
+        ~ dplyr::na_if(., "")
+      )
+    )
+}
+
 #' List variable name substitutions
 #'
 #' @description
@@ -15,7 +43,7 @@
 #' the **first** column name listed in each cell.
 #' * Formatted cell example: 01||col1|col2|col3
 #'
-#' @param df Dataframe.
+#' @param dat Dataframe.
 #' @param in_format,out_format String. Column names for the input
 #' (`in_format`) and output formats (`out_format`).
 #' @param limit_var Boolean. If `TRUE`, `keep_var` only includes the first,
@@ -30,27 +58,27 @@
 #' * `keep_var` is a list of unique variables in the `out_format` column.
 #'
 #' @noRd
-fetch_var <- function(df, in_format, out_format, limit_var = FALSE) {
+fetch_var <- function(dat, in_format, out_format, limit_var = FALSE) {
   # Check input values
-  chk <- c(in_format, out_format) %in% colnames(df)
+  chk <- c(in_format, out_format) %in% colnames(dat)
   if (any(!chk)) {
     stop(
       "Invalid in_format or out_format. Acceptable values: ",
-      paste(colnames(df), collapse = ", ")
+      paste(colnames(dat), collapse = ", ")
     )
   }
 
-  chk <- is.na(df[[out_format]])
+  chk <- is.na(dat[[out_format]])
   if (all(chk)) {
     stop("out_format is blank")
   }
 
   # Trim, prep data
-  df <- df %>%
-    dplyr::select(dplyr::all_of(c(in_format, out_format))) %>%
-    dplyr::filter(!is.na(.data[[out_format]])) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) %>%
-    dplyr::arrange(.data[[out_format]]) %>%
+  dat <- dat |>
+    dplyr::select(dplyr::all_of(c(in_format, out_format))) |>
+    dplyr::filter(!is.na(.data[[out_format]])) |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+    dplyr::arrange(.data[[out_format]]) |>
     dplyr::mutate(
       {{ out_format }} := dplyr::if_else(
         grepl("||", .data[[out_format]], fixed = TRUE),
@@ -60,17 +88,17 @@ fetch_var <- function(df, in_format, out_format, limit_var = FALSE) {
     )
 
   # Set keep var
-  keep_var <- unique_var(df, out_format, limit_var = limit_var)
+  keep_var <- unique_var(dat, out_format, limit_var = limit_var)
 
   # If in_format == out_format, duplicate col, else trim/prep in_format
   if (in_format == out_format) {
     in_format <- paste0(in_format, "_1")
 
-    df <- df %>%
+    dat <- dat |>
       dplyr::mutate({{ in_format }} := .data[[out_format]])
   } else {
-    df <- df %>%
-      dplyr::filter(!is.na(.data[[in_format]])) %>%
+    dat <- dat |>
+      dplyr::filter(!is.na(.data[[in_format]])) |>
       dplyr::mutate(
         {{ in_format }} := dplyr::if_else(
           grepl("||", .data[[in_format]], fixed = TRUE),
@@ -81,7 +109,7 @@ fetch_var <- function(df, in_format, out_format, limit_var = FALSE) {
   }
 
   # Check - is dataframe empty?
-  if (nrow(df) == 0) {
+  if (nrow(dat) == 0) {
     return(
       list(
         old_names = NA,
@@ -92,24 +120,24 @@ fetch_var <- function(df, in_format, out_format, limit_var = FALSE) {
   }
 
   # Drop extra out_format vars, split extra in_format vars
-  df <- df %>%
+  dat <- dat |>
     dplyr::mutate(
       {{ out_format }} := dplyr::if_else(
         grepl("|", .data[[out_format]], fixed = TRUE),
         stringr::str_split_i(.data[[out_format]], "\\|", 1),
         .data[[out_format]]
       )
-    ) %>%
+    ) |>
     tidyr::separate_longer_delim({{ in_format }}, "|")
 
   # Drop rows where in_format == out_format
-  df <- df %>%
+  dat <- dat |>
     dplyr::filter(.data[[in_format]] != .data[[out_format]])
 
   # Save var
-  if (nrow(df) > 0) {
-    old_names <- df[[in_format]]
-    new_names <- df[[out_format]]
+  if (nrow(dat) > 0) {
+    old_names <- dat[[in_format]]
+    new_names <- dat[[out_format]]
   } else {
     old_names <- NA
     new_names <- NA
@@ -146,7 +174,7 @@ unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
   }
 
   # Tidy data
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::filter(!is.na(.data[[col_name]]))
 
   if (nrow(dat) == 0) {
@@ -156,7 +184,7 @@ unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
   if (limit_var) {
     delim2 <- paste0("\\", delim)
 
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         {{ col_name }} := dplyr::if_else(
           grepl(delim, .data[[col_name]], fixed = TRUE),
@@ -165,7 +193,7 @@ unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
         )
       )
   } else {
-    dat <- dat %>%
+    dat <- dat |>
       tidyr::separate_longer_delim({{ col_name }}, delim)
   }
 
@@ -213,7 +241,7 @@ rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
     x <- x[1]
   }
 
-  return(x)
+  x
 }
 
 #' Fetch unit conversion factor and coefficient
@@ -234,8 +262,8 @@ rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
 #'
 #' @noRd
 fetch_unit <- function(in_unit, in_format = "wqx") {
-  dat <- varnames_units %>%
-    tidyr::separate_longer_delim({{ in_format }}, "|") %>%
+  dat <- varnames_units |>
+    tidyr::separate_longer_delim({{ in_format }}, "|") |>
     dplyr::filter(.data[[in_format]] == {{ in_unit }})
 
   if (nrow(dat) == 0) {
@@ -262,10 +290,10 @@ fetch_unit <- function(in_unit, in_format = "wqx") {
 #'
 #' @noRd
 str_unique <- function(x, delim = ",") {
-  x %>%
-    stringr::str_split(paste0("\\", delim)) %>%
-    sapply(stringr::str_trim, USE.NAMES = FALSE) %>%
-    unique() %>%
+  x |>
+    stringr::str_split(paste0("\\", delim)) |>
+    sapply(stringr::str_trim, USE.NAMES = FALSE) |>
+    unique() |>
     paste(collapse = delim)
 }
 
@@ -286,8 +314,8 @@ unrepair_names <- function(.data, new_col) {
   # Define variables
   new_col <- new_col[!is.na(new_col)]
   new_col <- gsub("..\\|\\|", "", new_col)
-  new_col <- stringr::str_split(new_col, "\\|") %>%
-    unlist() %>%
+  new_col <- stringr::str_split(new_col, "\\|") |>
+    unlist() |>
     unique()
   old_col <- make.names(new_col)
 

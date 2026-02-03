@@ -5,7 +5,7 @@
 \title{Format result data}
 \usage{
 format_results(
-  df,
+  .data,
   in_format,
   out_format,
   date_format = "m/d/Y",
@@ -14,7 +14,7 @@ format_results(
 )
 }
 \arguments{
-\item{df}{Input dataframe.}
+\item{.data}{Input dataframe.}
 
 \item{in_format, out_format}{String. Desired input and output formats.
 Not case sensitive. Accepted formats:

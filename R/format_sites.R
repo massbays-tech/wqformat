@@ -2,7 +2,7 @@
 #'
 #' @description Converts water quality site metadata between different formats.
 #'
-#' @param df Input dataframe.
+#' @param .data Dataframe
 #' @param in_format,out_format String. Desired input and output formats. Not
 #' case sensitive. Accepted formats:
 #' * WQX
@@ -17,7 +17,7 @@
 #' @returns Updated dataframe.
 #'
 #' @export
-format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
+format_sites <- function(.data, in_format, out_format, drop_extra_col = TRUE) {
   message("Reformatting data...")
 
   # Check inputs ----
@@ -35,16 +35,20 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     )
   }
 
+  # Fix common typos, entry errors
+  dat <- prep_df(.data)
+
   # Check - repaired column names?
-  chk <- grepl("\\.", colnames(df))
-  chk2 <- grepl(" ", colnames(df))
+  chk <- grepl("\\.", colnames(dat))
+  chk2 <- grepl(" ", colnames(dat))
   if (any(chk) && !any(chk2)) {
-    df <- unrepair_names(df, colnames_sites[[in_format]])
+    dat <- dat |>
+      unrepair_names(colnames_sites[[in_format]])
   }
 
   # Prep data with nonstandard formats ----
   if (in_format == "ma_brc") {
-    df <- prep_brc_sites(df)
+    dat <- prep_brc_sites(dat)
   }
 
   # Update columns ----
@@ -54,12 +58,12 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
     out_format,
     limit_var = TRUE
   )
-  df <- rename_col(df, var_names$old_names, var_names$new_names)
+  dat <- rename_col(dat, var_names$old_names, var_names$new_names)
 
   # Add missing columns
-  missing_col <- setdiff(var_names$keep_var, colnames(df))
+  missing_col <- setdiff(var_names$keep_var, colnames(dat))
   if (length(missing_col) > 0) {
-    df[missing_col] <- NA
+    dat[missing_col] <- NA
     message(
       "\tAdded ", toString(length(missing_col)), " new columns: ",
       paste(missing_col, collapse = ", ")
@@ -68,14 +72,14 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   # Sort columns, drop surplus if drop_extra_col is TRUE
   keep_col <- var_names$keep_var
-  drop_col <- setdiff(colnames(df), keep_col)
+  drop_col <- setdiff(colnames(dat), keep_col)
   if (length(drop_col) == 0) {
-    df <- dplyr::select(df, dplyr::all_of(keep_col))
+    dat <- dplyr::select(dat, dplyr::all_of(keep_col))
   } else if (drop_extra_col) {
-    df <- dplyr::select(df, dplyr::all_of(keep_col))
+    dat <- dplyr::select(dat, dplyr::all_of(keep_col))
     message("\tDropped ", toString(length(drop_col)), " columns")
   } else {
-    df <- dplyr::select(df, dplyr::all_of(c(keep_col, drop_col)))
+    dat <- dplyr::select(dat, dplyr::all_of(c(keep_col, drop_col)))
     message(
       "\tKept ", toString(length(drop_col)), " extra columns"
     )
@@ -83,18 +87,18 @@ format_sites <- function(df, in_format, out_format, drop_extra_col = TRUE) {
 
   # Update variables ----
   if (out_format == "wqx") {
-    df <- state_to_abb(df, "State Code")
+    dat <- state_to_abb(dat, "State Code")
   } else if (out_format == "wqdashboard") {
-    df <- state_to_abb(df, "State")
+    dat <- state_to_abb(dat, "State")
   }
 
   # Format data with nonstandard formats ----
   if (out_format == "ma_brc") {
-    df <- sites_to_brc(df)
+    dat <- sites_to_brc(dat)
   } else if (out_format == "wqdashboard") {
-    df <- sites_to_wqdashboard(df, drop_extra_col)
+    dat <- sites_to_wqdashboard(dat, drop_extra_col)
   }
 
   message("Done")
-  return(df)
+  dat
 }

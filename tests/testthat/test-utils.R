@@ -1,6 +1,25 @@
+# Test prep_df ----
+test_that("prep_df works", {
+  df_in <- data.frame(
+    " Col1" = c(" foo ", "bar "),
+    Col2 = c("", " "),
+    check.names = FALSE
+  )
+
+  df_out <- data.frame(
+    Col1 = c("foo", "bar"),
+    Col2 = NA_character_
+  )
+
+  expect_equal(
+    prep_df(df_in),
+    df_out
+  )
+})
+
 # Test unique_var ----
 test_that("unique_var works", {
-  df <- data.frame(
+  dat <- data.frame(
     col1 = c("X|Y", "Z", "X", NA, "Y|Z"),
     col2 = c("2", "1|4", NA, "4|5", "3"),
     col3 = NA
@@ -8,34 +27,34 @@ test_that("unique_var works", {
 
   # Test basic
   expect_equal(
-    unique_var(df, "col1"),
+    unique_var(dat, "col1"),
     c("X", "Y", "Z")
   )
   expect_equal(
-    unique_var(df, "col2"),
+    unique_var(dat, "col2"),
     c("2", "1", "4", "5", "3")
   )
   expect_equal(
-    unique_var(df, "col3"),
+    unique_var(dat, "col3"),
     NA
   )
 
   # Test limit_var
   expect_equal(
-    unique_var(df, "col2", limit_var = TRUE),
+    unique_var(dat, "col2", limit_var = TRUE),
     c("2", "1", "4", "3")
   )
 
   # Test error
   expect_error(
-    unique_var(df, "col4"),
+    unique_var(dat, "col4"),
     regexp = "col_name is invalid"
   )
 })
 
 # Test fetch_var ----
 test_that("fetch_var works", {
-  df <- data.frame(
+  dat <- data.frame(
     col1 = c("01||A", "03||B|C", "D|E", "F", "02||G", NA),
     col2 = c("X|Y", "Z", "T|U", NA, "V", "W"),
     col3 = c(NA, 2, NA, NA, 5, 6),
@@ -44,7 +63,7 @@ test_that("fetch_var works", {
 
   # Basic tests
   expect_equal(
-    fetch_var(df, "col1", "col2"),
+    fetch_var(dat, "col1", "col2"),
     list(
       old_names = c("D", "E", "G", "A", "B", "C"),
       new_names = c("T", "T", "V", "X", "Z", "Z"),
@@ -52,7 +71,7 @@ test_that("fetch_var works", {
     )
   )
   expect_equal(
-    fetch_var(df, "col2", "col1"),
+    fetch_var(dat, "col2", "col1"),
     list(
       old_names = c("X", "Y", "V", "Z", "T", "U"),
       new_names = c("A", "A", "G", "B", "D", "D"),
@@ -60,7 +79,7 @@ test_that("fetch_var works", {
     )
   )
   expect_equal(
-    fetch_var(df, "col1", "col3"),
+    fetch_var(dat, "col1", "col3"),
     list(
       old_names = c("B", "C", "G"),
       new_names = c("2", "2", "5"),
@@ -69,7 +88,7 @@ test_that("fetch_var works", {
   )
   # Test limit_var
   expect_equal(
-    fetch_var(df, "col1", "col2", limit_var = TRUE),
+    fetch_var(dat, "col1", "col2", limit_var = TRUE),
     list(
       old_names = c("D", "E", "G", "A", "B", "C"),
       new_names = c("T", "T", "V", "X", "Z", "Z"),
@@ -77,7 +96,7 @@ test_that("fetch_var works", {
     )
   )
   expect_equal(
-    fetch_var(df, "col2", "col1", limit_var = TRUE),
+    fetch_var(dat, "col2", "col1", limit_var = TRUE),
     list(
       old_names = c("X", "Y", "V", "Z", "T", "U"),
       new_names = c("A", "A", "G", "B", "D", "D"),
@@ -86,7 +105,7 @@ test_that("fetch_var works", {
   )
   # Test edge case - same in_format, out_format
   expect_equal(
-    fetch_var(df, "col3", "col3"),
+    fetch_var(dat, "col3", "col3"),
     list(
       old_names = NA,
       new_names = NA,
@@ -94,7 +113,7 @@ test_that("fetch_var works", {
     )
   )
   expect_equal(
-    fetch_var(df, "col2", "col2"),
+    fetch_var(dat, "col2", "col2"),
     list(
       old_names = c("U", "Y"),
       new_names = c("T", "X"),
@@ -103,7 +122,7 @@ test_that("fetch_var works", {
   )
   # Test edge case - no matches
   expect_equal(
-    fetch_var(df, "col4", "col3"),
+    fetch_var(dat, "col4", "col3"),
     list(
       old_names = NA,
       new_names = NA,
@@ -113,17 +132,17 @@ test_that("fetch_var works", {
 })
 
 test_that("fetch_var error messages", {
-  df <- data.frame(
+  dat <- data.frame(
     col1 = c(1, NA, 2, 3, 5, 6),
     col2 = NA
   )
 
   expect_error(
-    fetch_var(df, "col1", "col3"),
+    fetch_var(dat, "col1", "col3"),
     regexp = "Invalid in_format or out_format"
   )
   expect_error(
-    fetch_var(df, "col1", "col2"),
+    fetch_var(dat, "col1", "col2"),
     regexp = "out_format is blank"
   )
 })

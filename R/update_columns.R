@@ -26,9 +26,9 @@ rename_col <- function(.data, old_colnames, new_colnames) {
   dat_colnames <- data.frame(
     old_name = old_colnames,
     new_name = new_colnames
-  ) %>%
-    dplyr::filter(!is.na(.data$old_name)) %>%
-    dplyr::filter(!is.na(.data$new_name)) %>%
+  ) |>
+    dplyr::filter(!is.na(.data$old_name)) |>
+    dplyr::filter(!is.na(.data$new_name)) |>
     dplyr::filter(.data$old_name %in% colnames(dat))
 
   if (nrow(dat_colnames) == 0) {
@@ -140,13 +140,13 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
     return(.data)
   }
 
-  dat <- .data %>%
+  dat <- .data |>
     tidyr::unite(
       {{ out_colname }},
       dplyr::any_of(in_colnames),
       sep = "|",
       remove = FALSE
-    ) %>%
+    ) |>
     dplyr::mutate(
       {{ out_colname }} := gsub(
         "NA\\|", "", .data[[out_colname]]
@@ -154,33 +154,33 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
     )
 
   if (concat) {
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         {{ out_colname }} := gsub(
           "\\|NA", "", .data[[out_colname]]
         )
-      ) %>%
+      ) |>
       dplyr::mutate(
         {{ out_colname }} := sapply(
           .data[[out_colname]],
           function(x) str_unique(x, "|"),
           USE.NAMES = FALSE
         )
-      ) %>%
+      ) |>
       dplyr::mutate(
         {{ out_colname }} := gsub(
           "\\|", "; ", .data[[out_colname]]
         )
       )
   } else {
-    dat <- dat %>%
+    dat <- dat |>
       dplyr::mutate(
         {{ out_colname }} :=
           stringr::str_split_i(.data[[out_colname]], "\\|", 1)
       )
   }
 
-  dat <- dat %>%
+  dat |>
     dplyr::mutate(
       {{ out_colname }} := dplyr::if_else(
         .data[[out_colname]] == "NA",
@@ -188,8 +188,6 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
         .data[[out_colname]]
       )
     )
-
-  return(dat)
 }
 
 #' Convert column to numeric format
@@ -216,7 +214,7 @@ col_to_numeric <- function(.data, col_name, silent = TRUE) {
     return(.data)
   }
 
-  .data <- .data %>%
+  .data <- .data |>
     dplyr::mutate(
       {{ col_name }} := dplyr::if_else(
         .data[[col_name]] %in% c("", " "),
@@ -237,7 +235,7 @@ col_to_numeric <- function(.data, col_name, silent = TRUE) {
     )
   }
 
-  return(.data)
+  .data
 }
 
 #' Convert column to date or datetime format
@@ -294,7 +292,7 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
 
   chk <- is.na(.data[[date_col]])
 
-  dat <- .data %>%
+  dat <- .data |>
     dplyr::mutate(
       {{ date_col }} := lubridate::parse_date_time(
         as.character(.data[[date_col]]),
@@ -325,5 +323,5 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
     )
   }
 
-  return(dat)
+  dat
 }

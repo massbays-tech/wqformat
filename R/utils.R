@@ -9,13 +9,13 @@
 #'
 #' @noRd
 prep_df <- function(.data) {
-  colnames(.data) <- trimws(colnames(.data))
+  colnames(.data) <- stringr::str_trim(colnames(.data))
 
   .data |>
     dplyr::mutate(
       dplyr::across(
         dplyr::where(is.character),
-        ~ trimws(.)
+        ~ stringr::str_trim(.)
       )
     ) |>
     dplyr::mutate(

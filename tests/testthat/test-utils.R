@@ -3,12 +3,14 @@ test_that("prep_df works", {
   df_in <- data.frame(
     " Col1" = c(" foo ", "bar "),
     Col2 = c("", " "),
+    Col3 = c("niño", "garçon"),
     check.names = FALSE
   )
 
   df_out <- data.frame(
     Col1 = c("foo", "bar"),
-    Col2 = NA_character_
+    Col2 = NA_character_,
+    Col3 = c("niño", "garçon")
   )
 
   expect_equal(

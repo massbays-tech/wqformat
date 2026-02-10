@@ -457,7 +457,7 @@ test_that("format_results converts MA_BRC to WQdashboard", {
     Depth_Category = "Surface",
     Parameter = c(
       "Temperature, air", "Dissolved oxygen saturation",
-      "Dissolved oxygen (DO)", "Nitrate", "Nitrate", "Orthophosphate",
+      "Dissolved oxygen", "Nitrate", "Nitrate", "Orthophosphate",
       "Orthophosphate", "Turbidity", "Temperature, water"
     ),
     Result = c(7, 65, 7.8, 0.4, 0.4, 0.38, 0.36, 0.55, 7),

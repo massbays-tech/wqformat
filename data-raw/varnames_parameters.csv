@@ -29,7 +29,7 @@ Phycocyanin (probe),Phycocyanin (probe),,,,,
 Particulate organic carbon,POC|Particulate organic carbon,,,,,
 "Organic phosphorus|Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic",,,,,
 Salinity,Salinity,,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity|SALINITY|SALINITY (FROM SODIUM)
-"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth",,Secchi Depth - 00069,,SECCHI,Secchi|SECCHI
+"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth","Secchi disk depth|Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI
 Silicate,Silicate,,,,,
 Specific conductance,Sp Conductance|Specific conductance,,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095",,,
 Sulfate,Sulfate,,Sulfate as SO4 - 00945,,,

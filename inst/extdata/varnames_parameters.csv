@@ -29,7 +29,7 @@ Phycocyanin (probe),Phycocyanin (probe),Phycocyanin (probe),,,,,
 Particulate organic carbon,POC|Particulate organic carbon,Particulate organic carbon,,,,,
 "Organic phosphorus|Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic","Organic phosphorus|Phosphorus, Particulate Organic",,,,,
 Salinity,Salinity,Salinity,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity|SALINITY|SALINITY (FROM SODIUM),"Salinity, (ppt) - 00480"
-"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth","Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI,Secchi Depth - 00069
+"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth","Secchi disk depth|Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI,Secchi Depth - 00069
 Silicate,Silicate,Silicate,,,,,
 Specific conductance,Sp Conductance|Specific conductance,Specific conductance,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095",,,,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095"
 Sulfate,Sulfate,Sulfate,Sulfate as SO4 - 00945,,,,Sulfate as SO4 - 00945

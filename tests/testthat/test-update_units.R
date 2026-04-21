@@ -241,6 +241,7 @@ test_that("standardize_units_across works", {
 })
 
 test_that("standardize_units_across error messages", {
+  # Invalid units
   df_in <- data.frame(
     Result_Unit = c("mg/L", "mg/L", "deg C", "deg C"),
     Lower_Detection_Limit = c(NA, 2, 2, 32),
@@ -267,5 +268,39 @@ test_that("standardize_units_across error messages", {
       warn_only = FALSE
     ),
     regexp = "Unable to standardize units in row"
+  )
+
+  # Invalid value
+  df_in <- data.frame(
+    Result_Unit = "mg/L",
+    Lower_Detection_Limit = c(NA, 2, 2, 32),
+    Upper_Detection_Limit = c("A", NA, 10000, 212),
+    Detection_Limit_Unit = "ug/L"
+  )
+
+  msg <- paste(
+    "Unable to standardize units.",
+    "Upper_Detection_Limit includes non-numeric values."
+  )
+
+  expect_warning(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit")
+    ),
+    regexp = msg
+  )
+
+  expect_error(
+    standardize_units_across(
+      df_in,
+      "Result_Unit",
+      "Detection_Limit_Unit",
+      c("Lower_Detection_Limit", "Upper_Detection_Limit"),
+      warn_only = FALSE
+    ),
+    regexp = msg
   )
 })

@@ -262,7 +262,7 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
   warn_invalid_var(dat, "Result Measure Qualifier", qual_list)
 
   # Improve formatting, arrange columns
-  drop_col <- setdiff(colnames(dat), all_col)
+  drop_col <- setdiff(colnames(dat), c(all_col, "Quantitation Limit Unit"))
 
   if (length(drop_col) > 0) {
     message("\tRemoved ", toString(length(drop_col)), " invalid columns")

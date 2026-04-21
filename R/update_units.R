@@ -279,6 +279,24 @@ standardize_units_across <- function(
     return(.data)
   }
 
+  # Prep data
+  for (val in value) {
+    dat <- col_to_numeric(.data, val)
+
+    if (!is.numeric(dat[[val]])) {
+      msg <- paste(
+        "Unable to standardize units.", val, "includes non-numeric values."
+      )
+
+      if (!warn_only) {
+        stop(msg)
+      }
+
+      warning(msg, call. = FALSE)
+      return(.data)
+    }
+  }
+
   # Split data according to whether it needs to be updated
   dat <- dplyr::mutate(.data, "temp_row" = dplyr::row_number())
 
@@ -313,11 +331,13 @@ standardize_units_across <- function(
   # Send error/warning if unable to update rows
   if (length(bad_row) > 0) {
     bad_row <- sort(unique(bad_row))
+    msg <- "Unable to standardize units in"
 
-    msg <- paste(
-      "Unable to standardize units in row. Check rows:",
-      paste(bad_row, collapse = ", ")
-    )
+    if (length(bad_row) > 20) {
+      msg <- paste(msg, length(bad_row), "rows")
+    } else {
+      msg <- paste(msg, "row. Check rows:", paste(bad_row, collapse = ", "))
+    }
 
     if (!warn_only) {
       stop(msg)

@@ -126,7 +126,7 @@ test_that("warn_invalid_var works", {
   )
   expect_warning(
     warn_invalid_var(df_in, "col2", varlist),
-    regexp = "Invalid variables in col2: E, F"
+    regexp = "Invalid variables in col2: E; F"
   )
 })
 

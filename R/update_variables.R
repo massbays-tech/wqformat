@@ -141,7 +141,7 @@ warn_invalid_var <- function(dat, col_name, varlist) {
 
   if (length(y) > 0) {
     warning(
-      "Invalid variables in ", col_name, ": ", paste(y, collapse = ", "),
+      "Invalid variables in ", col_name, ": ", paste(y, collapse = "; "),
       call. = FALSE
     )
   }

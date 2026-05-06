@@ -198,12 +198,12 @@ test_that("format_results converts ME_FOCB to MassWateR", {
         ),
         paste(
           "Invalid variables in Characteristic Name:",
-          "Cloud Cover, Wind Speed, Wind Direction"
+          "Cloud Cover; Wind Speed; Wind Direction"
         )
       ),
-      "Invalid variables in Result Unit: BFT, DEG True"
+      "Invalid variables in Result Unit: BFT; DEG True"
     ),
-    "Invalid variables in Quantitation Limit Unit: BFT, DEG True"
+    "Invalid variables in Quantitation Limit Unit: BFT; DEG True"
   )
 
   expect_equal(
@@ -438,7 +438,7 @@ test_that("format_results converts MA_BRC to RI_DEM", {
         date_format = "Y-m-d H:M"
       )
     ),
-    regexp = "Invalid variables in Parameter: Air Temperature, Nitrate"
+    regexp = "Invalid variables in Parameter: Air Temperature; Nitrate"
   )
 })
 
@@ -487,7 +487,7 @@ test_that("format_results converts MA_BRC to WQdashboard", {
 # Test RHODE ISLAND ----
 test_that("format_results converts RI_WW to RI_DEM and vice versa", {
   df_ww <- data.frame(
-    "WW ID" = "WW066",
+    "Station Name" = "WW066",
     "Date of Sample" = "5/7/2021",
     Time = "12:28:00 PM",
     "Sample Type" = c("Replicate", "Grab", "Grab"),

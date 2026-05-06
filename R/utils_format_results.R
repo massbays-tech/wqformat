@@ -178,8 +178,8 @@ add_qc_ref <- function(.data) {
 
     warning(
       "Unable to set QC Reference Value if more than 2 matching samples",
-      "\n\tCheck parameters: ", paste(bad_par, collapse = ", "),
-      "\n\tCheck dates: ", paste(bad_date, collapse = ", "),
+      "* Check parameters: ", paste(bad_par, collapse = "; "),
+      "* Check dates: ", paste(bad_date, collapse = "; "),
       call. = FALSE
     )
   }

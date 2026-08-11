@@ -858,9 +858,9 @@ test_that("format_mwr_results works", {
     "Activity Type" = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control Sample-Lab Duplicate",
       "Quality Control-Calibration Check",
-      "Quality Control-Calibration Check Buffer"
+      "Quality Control-Calibration Check"
     ),
     "Activity Start Date" = c(
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",
@@ -932,9 +932,9 @@ test_that("format_mwr_results errors", {
     "Activity Type" = c(
       "Field Msr/Obs", "Quality Control Field Replicate Msr/Obs",
       "Sample-Routine", "Quality Control Sample-Lab Duplicate",
-      "Quality Control Sample-Lab Duplicate 2",
+      "Quality Control Sample-Lab Duplicate",
       "Quality Control-Calibration Check",
-      "Quality Control-Calibration Check Buffer"
+      "Quality Control-Calibration Check"
     ),
     "Activity Start Date" = c(
       "2021-06-13", "2021-06-13", "2021-08-15", "2021-05-16", "2021-05-16",

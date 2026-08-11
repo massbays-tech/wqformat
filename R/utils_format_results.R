@@ -172,15 +172,11 @@ add_qc_ref <- function(.data) {
   chk2 <- dat_temp$n > 2
 
   if (any(chk2)) {
-    df_bad <- dat_temp[which(chk2), ]
-    bad_par <- sort(unique(df_bad[["Characteristic Name"]]))
-    bad_date <- sort(unique(df_bad[["Activity Start Date"]]))
+    bad_rows <- which(chk2)
 
     warning(
-      "Unable to set QC Reference Value if more than 2 matching samples",
-      "* Check parameters: ", paste(bad_par, collapse = "; "),
-      "* Check dates: ", paste(bad_date, collapse = "; "),
-      call. = FALSE
+      "Unable to set QC Reference Value if more than 2 matching samples.",
+      "Check row(s):", paste(bad_rows, collapse = ", "), call. = FALSE
     )
   }
 
@@ -350,7 +346,14 @@ results_to_mwr <- function(.data) {
 
   # Transfer duplicate samples to QC Reference Value
   message("\tAdding QC Reference Value")
-  dat <- add_qc_ref(dat)
+  dat <- add_qc_ref(dat) |>
+    dplyr::mutate(
+      "Activity Type" = dplyr::if_else(
+        .data[["Activity Type"]] == "Quality Control Field Replicate Msr/Obs",
+        "Field Msr/Obs",
+        .data[["Activity Type"]]
+      )
+    )
 
   # Adjust formatting
   dat <- dat |>

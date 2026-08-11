@@ -19,5 +19,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Mariel Sorlien \email{msorlien@nbep.org} (\href{https://orcid.org/0000-0001-7102-2918}{ORCID})
 
+Authors:
+\itemize{
+  \item Mariel Sorlien \email{msorlien@nbep.org} (\href{https://orcid.org/0000-0001-7102-2918}{ORCID})
+}
+
 }
 \keyword{internal}

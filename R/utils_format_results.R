@@ -176,7 +176,8 @@ add_qc_ref <- function(.data) {
 
     warning(
       "Unable to set QC Reference Value if more than 2 matching samples.",
-      "Check row(s):", paste(bad_rows, collapse = ", "), call. = FALSE
+      "Check row(s):", paste(bad_rows, collapse = ", "),
+      call. = FALSE
     )
   }
 

@@ -305,38 +305,66 @@ str_unique <- function(x, delim = ",") {
 #' [format_mwr_results()].
 #'
 #' @param .data Dataframe
-#' @param new_col List of unrepaired column names.
+#' @param col_list List of unrepaired column names.
 #'
 #' @returns Dataframe with updated column names.
 #'
 #' @noRd
-unrepair_names <- function(.data, new_col) {
-  # Define variables
-  new_col <- new_col[!is.na(new_col)]
-  new_col <- gsub("..\\|\\|", "", new_col)
-  new_col <- stringr::str_split(new_col, "\\|") |>
+unrepair_names <- function(.data, col_list) {
+  # List column substitutions
+  col_list <- col_list[!is.na(col_list)]
+  col_list <- gsub("..\\|\\|", "", col_list)
+  col_list <- stringr::str_split(col_list, "\\|") |>
     unlist() |>
     unique()
+  new_col <- col_list
   old_col <- make.names(new_col)
 
-  # Drop instances where no changes are made
-  chk <- new_col == old_col
-  if (any(chk)) {
-    old_col <- old_col[which(!chk)]
-    new_col <- new_col[which(!chk)]
+  # Check - names repaired?
+  chk <- !grepl("\\.", colnames(.data))
+  chk2 <- grepl(" ", colnames(.data))
+  if (all(chk) || any(chk2)) {
+    check_recognize_file(.data, col_list)
+    return(.data)
   }
 
-  # Drop ambiguous name repair
-  chk <- duplicated(old_col) | duplicated(old_col, fromLast = TRUE)
+  # Drop ambiguous name repair, instances where no changes made
+  chk <- duplicated(old_col) | duplicated(old_col, fromLast = TRUE) |
+    new_col == old_col
   if (any(chk)) {
     old_col <- old_col[which(!chk)]
     new_col <- new_col[which(!chk)]
   }
 
   if (length(old_col) == 0) {
+    check_recognize_file(.data, col_list)
     return(.data)
   }
 
   # Rename columns
-  rename_col(.data, old_col, new_col)
+  rename_col(.data, old_col, new_col) |>
+    check_recognize_file(col_list)
+}
+
+#' Check correct file was uploaded
+#'
+#' @description
+#' `check_recognize_file()` checks if it recognizes any column names. If none of
+#' the column names match, returns an error message.
+#'
+#' @param .data Dataframe
+#' @param col_list List of expected column names.
+#'
+#' @returns If recognizes any column names, returns `.data`, else returns error
+#' message.
+#'
+#' @noRd
+check_recognize_file <- function(.data, col_list) {
+  chk <- colnames(.data) %in% col_list
+
+  if (!any(chk)) {
+    stop("No column names recognized. Are you sure this is the right file?")
+  }
+
+  .data
 }

@@ -50,14 +50,8 @@ format_results <- function(.data, in_format, out_format, date_format = "m/d/Y",
   }
 
   # Fix common typos, entry errors
-  dat <- prep_df(.data)
-
-  # Check - repaired column names?
-  chk <- grepl("\\.", colnames(dat))
-  chk2 <- grepl(" ", colnames(dat))
-  if (any(chk) && !any(chk2)) {
-    dat <- unrepair_names(dat, colnames_results[[in_format]])
-  }
+  dat <- prep_df(.data) |>
+    unrepair_names(colnames_results[[in_format]])
 
   # Preformat data ----
   if (in_format == "masswater") {
@@ -116,6 +110,14 @@ format_results <- function(.data, in_format, out_format, date_format = "m/d/Y",
     if (col_name %in% colnames(dat)) {
       dat <- col_to_date(dat, col_name, date_format)
     }
+  }
+
+  # Format time - catches error where excel formats time as datetime
+  col_name <- rename_var(
+    "Activity Start Time", col_sub$old_names, col_sub$new_names
+  )
+  if (col_name %in% colnames(dat)) {
+    dat <- col_to_time(dat, col_name)
   }
 
   # Rename parameters
@@ -270,6 +272,7 @@ format_mwr_results <- function(.data, date_format = "m/d/Y") {
 
   dat <- dat |>
     col_to_date("Activity Start Date") |>
+    col_to_time("Activity Start Time") |>
     results_to_mwr() |> # improve formatting
     dplyr::select(dplyr::all_of(all_col)) # reorder columns
 

@@ -201,7 +201,7 @@ concat_col <- function(.data, in_colnames, out_colname, concat = FALSE) {
 #' @param silent Boolean. If TRUE, does not provide warning if unable to set
 #' column to numeric. If FALSE, provides error message. Default TRUE.
 #'
-#' @seealso [col_to_date]
+#' @seealso [col_to_date, col_to_time]
 #'
 #' @returns
 #' If all values are numeric, converts column to numeric and returns dataframe.
@@ -252,7 +252,7 @@ col_to_numeric <- function(.data, col_name, silent = TRUE) {
 #' @param datetime Boolean. If `TRUE`, returns column in datetime format. If
 #' `FALSE`, returns column in date format. Default `FALSE`.
 #'
-#' @seealso [col_to_numeric]
+#' @seealso [col_to_numeric, col_to_time]
 #'
 #' @return
 #' Converts column to date or datetime and returns dataframe
@@ -321,6 +321,39 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
       paste(rws, collapse = ", "),
       call. = FALSE
     )
+  }
+
+  dat
+}
+
+
+#' Convert datetime column to time
+#'
+#' @description
+#' `col_to_time` converts a datetime column to a string column containing the
+#' time.
+#'
+#' @param .data Dataframe.
+#' @param time_col String. Name of time column.
+#'
+#' @seealso [col_to_numeric, col_to_date]
+#'
+#' @return
+#' Converts column to HH:MM string and returns dataframe
+#'
+#' @export
+col_to_time <- function(.data, time_col) {
+  if (!time_col %in% colnames(.data)) {
+    stop(time_col, " is not a valid column")
+  }
+
+  dat <- .data
+
+  if (lubridate::is.POSIXct(dat[[time_col]])) {
+    dat <- dat |>
+      dplyr::mutate(
+        !!time_col := format(as.POSIXct(.data[[time_col]]), "%H:%M")
+      )
   }
 
   dat

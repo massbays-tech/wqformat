@@ -24,5 +24,5 @@ If all values in column are numbers, `col_to_numeric()` converts column type
 to numeric.
 }
 \seealso{
-[col_to_date]
+[col_to_date, col_to_time]
 }

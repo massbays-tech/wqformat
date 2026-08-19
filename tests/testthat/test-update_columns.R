@@ -268,3 +268,29 @@ test_that("col_to_date error messages", {
     regexp = "Date format is missing"
   )
 })
+
+# Test col_to_time() ----
+test_that("col_to_time works", {
+  df_in <- data.frame(
+    "time" = c("2022-03-01 10:30", NA, "2023-04-18 8:20", "24-09-26 15:50")
+  )
+  df_in$time <- lubridate::ymd_hm(df_in$time, tz = Sys.timezone())
+
+  df_out <- data.frame(
+    "time" = c("10:30", NA, "08:20", "15:50")
+  )
+
+  expect_equal(col_to_time(df_in, "time"), df_out)
+})
+
+test_that("col_to_time error messages", {
+  df_in <- data.frame(
+    "time" = c("2022-03-01 10:30", NA, "2023-04-18 8:20", "24-09-26 15:50")
+  )
+
+  # Check error messages
+  expect_error(
+    col_to_time(df_in, "foo"),
+    regexp = "foo is not a valid column"
+  )
+})

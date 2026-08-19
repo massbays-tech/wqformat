@@ -33,5 +33,5 @@ Converts column to date or datetime and returns dataframe
 `col_to_date` converts column to date or datetime format.
 }
 \seealso{
-[col_to_numeric]
+[col_to_numeric, col_to_time]
 }

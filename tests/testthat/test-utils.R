@@ -212,6 +212,24 @@ test_that("str_unique works", {
   )
 })
 
+# Test check_recognize_file ----
+test_that("check_recognize_file works", {
+  df_in <- data.frame(
+    "foo_bar" = c(1, 2, 3),
+    "foofy" = c("a", "b", "c")
+  )
+
+  expect_equal(
+    check_recognize_file(df_in, c("foo_bar", "superb_owl")),
+    df_in
+  )
+
+  expect_error(
+    check_recognize_file(df_in, c("foo bar", "superb owl")),
+    regexp = "No column names recognized. Are you sure this is the right file?"
+  )
+})
+
 # Test unrepair_names ----
 test_that("unrepair_names works", {
   df_in <- data.frame(
@@ -240,6 +258,15 @@ test_that("unrepair_names works", {
 
   expect_equal(
     unrepair_names(df_in, c("foo bar", "foo/bar", "superb_owl")),
+    df_in
+  )
+
+  df_in <- data.frame(
+    "foo_bar" = c(1, 2, 3),
+    "superb_owl" = "yes"
+  )
+  expect_equal(
+    unrepair_names(df_in, c("foo_bar", "superb owl")),
     df_in
   )
 })

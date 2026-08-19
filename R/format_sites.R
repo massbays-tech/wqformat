@@ -36,15 +36,8 @@ format_sites <- function(.data, in_format, out_format, drop_extra_col = TRUE) {
   }
 
   # Fix common typos, entry errors
-  dat <- prep_df(.data)
-
-  # Check - repaired column names?
-  chk <- grepl("\\.", colnames(dat))
-  chk2 <- grepl(" ", colnames(dat))
-  if (any(chk) && !any(chk2)) {
-    dat <- dat |>
-      unrepair_names(colnames_sites[[in_format]])
-  }
+  dat <- prep_df(.data) |>
+    unrepair_names(colnames_sites[[in_format]])
 
   # Prep data with nonstandard formats ----
   if (in_format == "ma_brc") {

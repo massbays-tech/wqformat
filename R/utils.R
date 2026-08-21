@@ -11,6 +11,14 @@
 prep_df <- function(.data) {
   colnames(.data) <- stringr::str_trim(colnames(.data))
 
+  chk <- duplicated(colnames(.data))
+  if (any(chk)) {
+    stop(
+      "All column names must be unique. ",
+      "Two or more columns have the same name, please rename columns."
+    )
+  }
+
   .data |>
     dplyr::mutate(
       dplyr::across(

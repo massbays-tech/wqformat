@@ -19,6 +19,20 @@ test_that("prep_df works", {
   )
 })
 
+test_that("prep_df error messages", {
+  df_in <- data.frame(
+    " Col1" = c(" foo ", "bar "),
+    Col2 = c("", " "),
+    Col2 = c("niño", "garçon"),
+    check.names = FALSE
+  )
+
+  expect_error(
+    prep_df(df_in),
+    regexp = "All column names must be unique."
+  )
+})
+
 # Test unique_var ----
 test_that("unique_var works", {
   dat <- data.frame(

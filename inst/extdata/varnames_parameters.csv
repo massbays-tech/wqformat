@@ -41,26 +41,26 @@ Total Kjeldahl nitrogen|Total Kjeldahl nitrogen (Organic N & NH3)|Kjeldahl nitro
 Total suspended solids,TSS|Total suspended solids,Total suspended solids,TSS - 00530,,,,TSS - 00530
 Turbidity,Turbidity,Turbidity,Turbidity - 00070|Turbidity - 00076,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY,Turbidity - 00070|Turbidity - 00076
 "Temperature, water","Water Temp|Temperature, water","Temperature, water",Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMP|TEMPERATURE,Temperature - 00011
-"1,1,1-Trichloroethane",,"1,1,1-Trichloroethane","1,1,1 Trichloroethane - 34506",,,,"1,1,1 Trichloroethane - 34506"
-"1,2-Dichlorobenzene-d4",,"1,2-Dichlorobenzene-d4","1,2 Dichlorobenzene - 34536",,,,"1,2 Dichlorobenzene - 34536"
-"1,4-Dichlorobenzene-d4",,"1,4-Dichlorobenzene-d4","1,4 Dichlorobenzene - 34571",,,,"1,4 Dichlorobenzene - 34571"
-Alkalinity,,Alkalinity,Alkalinity - 00410,,,,Alkalinity - 00410
-Benzene,,Benzene,Benzene - 34030,,,,Benzene - 34030
-Calcium,,Calcium,"Calcium, Dissolved - 00915",,,,"Calcium, Dissolved - 00915"
-Chloroform,,Chloroform,Chloroform - 32106,,,,Chloroform - 32106
-"Chlorophyll a, corrected for pheophytin",,"Chlorophyll a, corrected for pheophytin","Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209",,CHL-A-PH|CHLOROPHYLL A - PHAEOPHYTIN,CHL-A-PH|CHLOROPHYLL A - PHAEOPHYTIN,"Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209"
-Cloud cover,,Cloud cover,,,CLOUD COVER,Cloud Cover|CLOUD COVER,
-Ethylbenzene,,Ethylbenzene,Ethylbenzene - 34371,,,,Ethylbenzene - 34371
-Ethylene glycol,,Ethylene glycol,"Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075|Ethylene Glycol, water, unfiltered, recoverable - 91075",,,,"Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075|Ethylene Glycol, water, unfiltered, recoverable - 91075"
-Magnesium,,Magnesium,Magnesium - 00927,,,,Magnesium - 00927
-Methylene Chloride,,Methylene Chloride,Methylene Chloride - 34423,,,,Methylene Chloride - 34423
-Propylene glycol,,Propylene glycol,"Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080|Propylene Glycol, water, unfiltered, recoverable - 91080",,,,"Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080|Propylene Glycol, water, unfiltered, recoverable - 91080"
-Sodium,,Sodium,"Sodium, Dissolved as NA - 00930",,,,"Sodium, Dissolved as NA - 00930"
-Tetrachloroethylene,,Tetrachloroethylene,Tetrachloroethylene - 34475,,,,Tetrachloroethylene - 34475
-Toluene,,Toluene,Toluene - 34010,,,,Toluene - 34010
-Total Coliform,,Total Coliform,Total Coliform - 31502|Total coliform - 31502,,,,Total Coliform - 31502|Total coliform - 31502
-Trichloroethylene,,Trichloroethylene,Trichloroethylene - 39180,,,,Trichloroethylene - 39180
-"Wind direction, horizontal",,"Wind direction, horizontal",,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION,
-"Wind force, Beaufort scale",,"Wind force, Beaufort scale",,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED,
-Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,,,,
-Oxidation reduction potential (ORP),,Oxidation reduction potential|Oxidation reduction potential (ORP),,,,,
+"1,1,1-Trichloroethane","1,1,1-Trichloroethane","1,1,1-Trichloroethane","1,1,1 Trichloroethane - 34506",,,,"1,1,1 Trichloroethane - 34506"
+"1,2-Dichlorobenzene-d4","1,2-Dichlorobenzene-d4","1,2-Dichlorobenzene-d4","1,2 Dichlorobenzene - 34536",,,,"1,2 Dichlorobenzene - 34536"
+"1,4-Dichlorobenzene-d4","1,4-Dichlorobenzene-d4","1,4-Dichlorobenzene-d4","1,4 Dichlorobenzene - 34571",,,,"1,4 Dichlorobenzene - 34571"
+Alkalinity,Alkalinity,Alkalinity,Alkalinity - 00410,,,,Alkalinity - 00410
+Benzene,Benzene,Benzene,Benzene - 34030,,,,Benzene - 34030
+Calcium,Calcium,Calcium,"Calcium, Dissolved - 00915",,,,"Calcium, Dissolved - 00915"
+Chloroform,Chloroform,Chloroform,Chloroform - 32106,,,,Chloroform - 32106
+"Chlorophyll a, corrected for pheophytin","Chlorophyll a, corrected for pheophytin","Chlorophyll a, corrected for pheophytin","Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209",,CHL-A-PH|CHLOROPHYLL A - PHAEOPHYTIN,CHL-A-PH|CHLOROPHYLL A - PHAEOPHYTIN,"Chlorophyll a, water, fluorometric method, corrected for pheophytin - 32209"
+Cloud cover,Cloud cover,Cloud cover,,,CLOUD COVER,Cloud Cover|CLOUD COVER,
+Ethylbenzene,Ethylbenzene,Ethylbenzene,Ethylbenzene - 34371,,,,Ethylbenzene - 34371
+Ethylene glycol,Ethylene glycol,Ethylene glycol,"Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075|Ethylene Glycol, water, unfiltered, recoverable - 91075",,,,"Ethylene Glycol, water, unfiltered, recoverable, mg/l - 91075|Ethylene Glycol, water, unfiltered, recoverable - 91075"
+Magnesium,Magnesium,Magnesium,Magnesium - 00927,,,,Magnesium - 00927
+Methylene Chloride,Methylene Chloride,Methylene Chloride,Methylene Chloride - 34423,,,,Methylene Chloride - 34423
+Propylene glycol,Propylene glycol,Propylene glycol,"Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080|Propylene Glycol, water, unfiltered, recoverable - 91080",,,,"Propylene Glycol, water, unfiltered, recoverable, mg/l - 91080|Propylene Glycol, water, unfiltered, recoverable - 91080"
+Sodium,Sodium,Sodium,"Sodium, Dissolved as NA - 00930",,,,"Sodium, Dissolved as NA - 00930"
+Tetrachloroethylene,Tetrachloroethylene,Tetrachloroethylene,Tetrachloroethylene - 34475,,,,Tetrachloroethylene - 34475
+Toluene,Toluene,Toluene,Toluene - 34010,,,,Toluene - 34010
+Total Coliform,Total Coliform,Total Coliform,Total Coliform - 31502|Total coliform - 31502,,,,Total Coliform - 31502|Total coliform - 31502
+Trichloroethylene,Trichloroethylene,Trichloroethylene,Trichloroethylene - 39180,,,,Trichloroethylene - 39180
+"Wind direction, horizontal","Wind direction, horizontal","Wind direction, horizontal",,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION,
+"Wind force, Beaufort scale","Wind force, Beaufort scale","Wind force, Beaufort scale",,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED,
+Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,,,,
+Oxidation reduction potential (ORP),Oxidation reduction potential (ORP),Oxidation reduction potential|Oxidation reduction potential (ORP),,,,,

@@ -21,7 +21,14 @@ varnames_activity <- readr::read_csv(
 ) |>
   dplyr::select_if(function(x) !(all(is.na(x)))) |>
   dplyr::mutate("wqdashboard" = .data$wqx) |>
-  dplyr::mutate("ri_ww" = .data$ri_dem)
+  dplyr::mutate("ri_ww" = .data$ri_dem) |>
+  dplyr::mutate(
+    "masswater" = dplyr::if_else(
+      is.na(.data$masswater),
+      .data$wqx,
+      .data$masswater
+    )
+  )
 
 readr::write_csv(
   varnames_activity,
@@ -40,6 +47,13 @@ varnames_parameters <- readr::read_csv(
       is.na(.data$wqdashboard),
       .data$wqx,
       .data$wqdashboard
+    )
+  ) |>
+  dplyr::mutate(
+    "masswater" = dplyr::if_else(
+      is.na(.data$masswater),
+      .data$wqx,
+      .data$masswater
     )
   )
 
@@ -86,6 +100,13 @@ varnames_units <- readr::read_csv(
       is.na(.data$me_focb),
       .data$me_dep,
       .data$me_focb
+    )
+  ) |>
+  dplyr::mutate(
+    "masswater" = dplyr::if_else(
+      is.na(.data$masswater),
+      .data$wqx,
+      .data$masswater
     )
   ) |>
   dplyr::mutate(

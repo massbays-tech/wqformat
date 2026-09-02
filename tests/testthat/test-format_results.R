@@ -167,16 +167,17 @@ test_that("format_results converts ME_FOCB to MassWateR", {
     "Activity Depth/Height Unit" = NA,
     "Activity Relative Depth Name" = NA,
     "Characteristic Name" = c(
-      "Cloud Cover", "Wind Speed", "Wind Direction", "Depth", "Secchi Depth",
-      "Cloud Cover", "Wind Speed", "Wind Direction", "Depth", "Secchi Depth",
-      "Cloud Cover", "Wind Speed", "Wind Direction"
+      "Cloud cover", "Wind force, Beaufort scale", "Wind direction, horizontal",
+      "Depth", "Secchi Depth", "Cloud cover", "Wind force, Beaufort scale",
+      "Wind direction, horizontal", "Depth", "Secchi Depth", "Cloud cover",
+      "Wind force, Beaufort scale", "Wind direction, horizontal"
     ),
     "Result Value" = c(
       25, 1, 160, 9.5, 2.7, 0, 1, 45, 0.8, "AQL", 75, 3, 180
     ),
     "Result Unit" = c(
-      "%", "BFT", "DEG True", "m", "m", "%", "BFT", "DEG True", "m", "m", "%",
-      "BFT", "DEG True"
+      "%", "beaufort", "Deg", "m", "m", "%", "beaufort", "Deg", "m", "m", "%",
+      "beaufort", "Deg"
     ),
     "Quantitation Limit" = NA,
     "QC Reference Value" = NA_integer_,
@@ -190,27 +191,9 @@ test_that("format_results converts ME_FOCB to MassWateR", {
   )
   df_mwr1[["Activity Start Date"]] <- as.Date(df_mwr1[["Activity Start Date"]])
 
-  expect_warning(
-    expect_warning(
-      expect_warning(
-        suppressMessages(
-          format_results(tst$me_focb_data1, "ME_FOCB", "MassWateR")
-        ),
-        paste(
-          "Invalid variables in Characteristic Name:",
-          "Cloud Cover; Wind Speed; Wind Direction"
-        )
-      ),
-      "Invalid variables in Result Unit: BFT; DEG True"
-    ),
-    "Invalid variables in Quantitation Limit Unit: BFT; DEG True"
-  )
-
   expect_equal(
-    suppressWarnings(
-      suppressMessages(
-        format_results(tst$me_focb_data1, "ME_FOCB", "MassWateR")
-      )
+    suppressMessages(
+      format_results(tst$me_focb_data1, "ME_FOCB", "MassWateR")
     ),
     df_mwr1
   )

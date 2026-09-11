@@ -20,8 +20,8 @@ varnames_activity <- readr::read_csv(
   show_col_types = FALSE
 ) |>
   dplyr::select_if(function(x) !(all(is.na(x)))) |>
-  dplyr::mutate("wqdashboard" = .data$wqx) |>
-  dplyr::mutate("ri_ww" = .data$ri_dem) |>
+  dplyr::mutate("wqdashboard" = .data$wqx, .after ="masswater") |>
+  dplyr::mutate("ri_ww" = .data$ri_dem, .after = "ri_dem") |>
   dplyr::mutate(
     "masswater" = dplyr::if_else(
       is.na(.data$masswater),
@@ -41,7 +41,7 @@ varnames_parameters <- readr::read_csv(
   show_col_types = FALSE
 ) |>
   dplyr::select_if(function(x) !(all(is.na(x)))) |>
-  dplyr::mutate("ri_ww" = .data$ri_dem) |>
+  dplyr::mutate("ri_ww" = .data$ri_dem, .after = "ri_dem") |>
   dplyr::mutate(
     "wqdashboard" = dplyr::if_else(
       is.na(.data$wqdashboard),
@@ -75,9 +75,8 @@ varnames_qualifiers <- readr::read_csv(
       .data$masswater
     )
   ) |>
-  dplyr::mutate("wqdashboard" = .data$wqx) |>
-  dplyr::mutate("ri_ww" = .data$ri_dem) |>
-  dplyr::relocate("Description", .after = "ri_ww")
+  dplyr::mutate("wqdashboard" = .data$wqx, .after = "masswater") |>
+  dplyr::mutate("ri_ww" = .data$ri_dem, .after = "ri_dem")
 
 readr::write_csv(
   varnames_qualifiers,
@@ -93,8 +92,8 @@ varnames_units <- readr::read_csv(
   show_col_types = FALSE
 ) |>
   dplyr::select_if(function(x) !(all(is.na(x)))) |>
-  dplyr::mutate("wqdashboard" = .data$wqx) |>
-  dplyr::mutate("ri_ww" = .data$ri_dem) |>
+  dplyr::mutate("wqdashboard" = .data$wqx, .after = "masswater") |>
+  dplyr::mutate("ri_ww" = .data$ri_dem, .after = "ri_dem") |>
   dplyr::mutate(
     "me_focb" = dplyr::if_else(
       is.na(.data$me_focb),

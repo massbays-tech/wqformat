@@ -68,5 +68,17 @@ tst <- list(
       package = "wqformat"
     ),
     na.strings = c("NA", "NaN", "", " ")
+  ),
+  # Watershed Watch (URI) site, result data
+  ri_ww_sites = read.csv(
+    system.file("extdata/example_data/ri_ww_sites.csv", package = "wqformat"),
+    na.strings = c("NA", "NaN", "", " ")
+  ),
+  ri_ww_data = read.csv(
+    system.file(
+      "extdata/example_data/ri_ww_results.csv",
+      package = "wqformat"
+    ),
+    na.strings = c("NA", "NaN", "", " ")
   )
 )

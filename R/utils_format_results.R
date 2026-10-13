@@ -345,6 +345,20 @@ results_to_mwr <- function(.data) {
     dat[["Quantitation Limit Unit"]] <- NULL
   }
 
+  message('\tSetting relative depth to "Surface" for depth/height samples')
+  surface_params <- c(
+    "Depth", "Secchi Depth", "Depth, Secchi disk depth", "Gage", "Height, gage",
+    "Air Temp", "Temperature, air"
+  )
+
+  chk <- is.na(dat$`Activity Depth/Height Measure`) &
+    is.na(dat$`Activity Relative Depth Name`) &
+    dat$`Characteristic Name` %in% surface_params
+
+  if (any(chk)) {
+    dat[which(chk), "Activity Relative Depth Name"] <- "Surface"
+  }
+
   # Transfer duplicate samples to QC Reference Value
   message("\tAdding QC Reference Value")
   dat <- add_qc_ref(dat) |>

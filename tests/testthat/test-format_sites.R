@@ -89,71 +89,65 @@ test_that("format_sites converts MA_BRC to wqdashboard", {
 })
 
 # Rhode Island ----
-test_that("format_sites converts RI_WW", {
-  df_test <- data.frame(
-    WW_StaNumb = c(1, 2),
-    WW_Station = c("WW001", "WW002"),
-    WBID = c("RI0008040L-01", "RI0008040L-01"),
-    WB_Type = c("Reservoir", "Lake or Pond"),
-    Site_DESCR = c("Alton Pond", "Barber Pond"),
-    PARKING_ACCESS = NA,
-    Town = c("Hopkinton", "South Kingstown"),
-    BorderTown = c("Richmond, Hopkinton", NA),
-    COUNTY = "WASHINGTON",
+test_that("format_sites converts RI_WW to MassWateR", {
+  df_mwr <- data.frame(
+    "Monitoring Location ID" = c("WW260", "WW261", "WW262", "WW263", "WW265"),
+    "Monitoring Location Name" = c(
+      "Green Hill Pond - In Pond (center)", "Green Hill Pond - Indigo Point",
+      "Green Hill Pond - Sea Lea (Allen Cove)", "Green Hill Pond - Teal Road",
+      "Ninigret Pond - Crawford Dock"
+    ),
+    "Monitoring Location Latitude" = c(
+      41.370716, 41.374138, 41.369175, 41.37732, 41.347473
+    ),
+    "Monitoring Location Longitude" = c(
+      -71.615082, -71.618774, -71.625053, -71.609808, -71.697365
+    ),
+    "Location Group" = NA,
+    check.names = FALSE
+  )
+
+  expect_equal(
+    suppressMessages(
+      format_sites(tst$ri_ww_sites, "RI_WW", "MassWateR")
+    ),
+    df_mwr
+  )
+})
+
+test_that("format_sites converts RI_WW to wqdashboard", {
+  df_wqd <- data.frame(
+    Site_ID = c("WW260", "WW261", "WW262", "WW263", "WW265"),
+    Site_Name = c(
+      "Green Hill Pond - In Pond (center)", "Green Hill Pond - Indigo Point",
+      "Green Hill Pond - Sea Lea (Allen Cove)", "Green Hill Pond - Teal Road",
+      "Ninigret Pond - Crawford Dock"
+    ),
+    Latitude = c(41.370716, 41.374138, 41.369175, 41.37732, 41.347473),
+    Longitude = c(-71.615082, -71.618774, -71.625053, -71.609808, -71.697365),
+    Town = c(
+      "South Kingstown", "South Kingstown", "Charlestown", "South Kingstown",
+      "Charlestown"
+    ),
     State = "RI",
-    LAT_DD = c(41.438171, 41.504129),
-    LON_DD = c(-71.721642, -71.564271),
-    ProjID = 12,
-    Year_added = 1988,
-    Active = c(2022, 2018),
-    Status = c("Active", "Not Active"),
-    DepthCode = c("S", "D"),
-    MaxDepth_m = c(4.2, 4.6),
-    PublicAcce = "Yes",
-    LakeAcreag = c(99.7, 28.5),
-    sq__meter = NA,
-    HUC_8 = "01090005",
-    HUC_10 = c("0109000501", "0109000502"),
-    HUC_12 = c("010900050102", "010900050204"),
-    HUC_10_NAME = c("Wood River", "Upper Pawcatuck River"),
-    HUC_12_NAME = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
-    Image = NA,
-    elevation_Feet = c(46.9, 114.8),
-    elevation_meters = c(14.3, 35.0),
-    Ord_Id = "WPWA"
+    Watershed = c(
+      "Point Judith Harbor of Refuge-Block Island Sound",
+      "Point Judith Harbor of Refuge-Block Island Sound",
+      "Ninigret Pond-Frontal Block Island Sound",
+      "Point Judith Harbor of Refuge-Block Island Sound",
+      "Ninigret Pond-Frontal Block Island Sound"
+    ),
+    Group = NA_character_,
+    Max_Surface_Depth_m = NA,
+    Max_Midwater_Depth_m = NA,
+    Max_Depth_m = NA
   )
 
   expect_equal(
     suppressMessages(
-      format_sites(df_test, "RI_WW", "MassWateR")
+      format_sites(tst$ri_ww_sites, "RI_WW", "WQdashboard")
     ),
-    data.frame(
-      "Monitoring Location ID" = c("WW001", "WW002"),
-      "Monitoring Location Name" = c("Alton Pond", "Barber Pond"),
-      "Monitoring Location Latitude" = c(41.438171, 41.504129),
-      "Monitoring Location Longitude" = c(-71.721642, -71.564271),
-      "Location Group" = NA,
-      check.names = FALSE
-    )
-  )
-
-  expect_equal(
-    suppressMessages(
-      format_sites(df_test, "RI_WW", "WQdashboard")
-    ),
-    data.frame(
-      Site_ID = c("WW001", "WW002"),
-      Site_Name = c("Alton Pond", "Barber Pond"),
-      Latitude = c(41.438171, 41.504129),
-      Longitude = c(-71.721642, -71.564271),
-      Town = c("Hopkinton", "South Kingstown"),
-      State = "RI",
-      Watershed = c("Lower Wood River", "Usquepaug River-Pawcatuck River"),
-      Group = NA_character_,
-      Max_Surface_Depth_m = NA,
-      Max_Midwater_Depth_m = NA,
-      Max_Depth_m = c(4.2, 4.6)
-    )
+    df_wqd
   )
 })
 

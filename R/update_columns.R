@@ -267,7 +267,7 @@ col_to_date <- function(.data, date_col, date_format = "m/d/Y",
   chk <- inherits(.data[[date_col]], c("Date", "POSIXt"))
   if (chk) {
     if (!datetime) {
-      .data[[date_col]] = as.Date(.data[[date_col]])
+      .data[[date_col]] <- as.Date(.data[[date_col]])
     }
 
     return(.data)

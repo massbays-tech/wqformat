@@ -693,15 +693,19 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
       col_to_numeric("Result")
 
     # Add parameters, units
+    # Note: parameters are all caps to help catch typos/variation
     dat <- as.data.frame(dat) |>
+      dplyr::mutate("Unit" = stringr::str_split_i(.data$Parameter, "_", 2)) |>
+      dplyr::mutate(
+        "Parameter" = toupper(stringr::str_split_i(.data$Parameter, "_", 1))
+      ) |>
       dplyr::mutate(
         "Unit" = dplyr::if_else(
-          tolower(.data$Parameter) == "ph",
+          is.na(.data$Unit) & .data$Parameter == "PH",
           "STU",
-          stringr::str_split_i(.data$Parameter, "_", 2)
+          .data$Unit
         )
-      ) |>
-      dplyr::mutate("Parameter" = stringr::str_split_i(.data$Parameter, "_", 1))
+      )
   }
 
   # Calc gap between Sample Date & Analysis Date

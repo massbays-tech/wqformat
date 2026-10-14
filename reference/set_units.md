@@ -1,0 +1,45 @@
+# Set units
+
+\`set_units()\` converts all units and values in target columns to the
+selected unit.
+
+## Usage
+
+``` r
+set_units(.data, value, unit, target_unit, unit_format = "wqx", silent = FALSE)
+```
+
+## Arguments
+
+- .data:
+
+  Dataframe
+
+- value:
+
+  String. Column with result values.
+
+- unit:
+
+  String. Column with units.
+
+- target_unit:
+
+  String. Unit to convert \`value\` and \`unit\` columns to.
+
+- unit_format:
+
+  String. Format used for units. Not case sensitive. Accepted values:
+  WQX, MassWateR, wqdashboard, RI_WW, RI_DEM, MA_BRC, ME_DEP, ME_FOCB.
+  Default wqx.
+
+- silent:
+
+  Boolean. If \`TRUE\`, returns a warning message if unable to convert
+  units. If \`FALSE\`, does not return a warning.
+
+## Value
+
+Updated dataframe with updated unit and result values. Rows that can not
+be converted to \`target_unit\` are left as-is and in informative
+warning or error message is provided.

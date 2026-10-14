@@ -1,0 +1,48 @@
+# Concatenate Columns
+
+\`concat_col()\` combines values from multiple columns. \* If \`concat\`
+is \`TRUE\`, the output column will include the concatenated data from
+all the input columns. \* If \`concat\` is \`FALSE\`, the output column
+will contain the first non-\`NA\` value from the input columns.
+
+## Usage
+
+``` r
+concat_col(.data, in_colnames, out_colname, concat = FALSE)
+```
+
+## Arguments
+
+- .data:
+
+  Dataframe.
+
+- in_colnames:
+
+  List. Input column names. \* Columns will be assessed in the order
+  they are listed \* The first non-\`NA\` value will be transferred to
+  \`out_colname\` \* If all columns contain \`NA\` values, then the
+  value for \`out_colname\` value will also be \`NA\`.
+
+- out_colname:
+
+  String. Name of column to transfer values to. \* Will create new
+  column if \`out_colname\` is missing from dataframe.
+
+- concat:
+
+  Boolean. If \`TRUE\`, the values for the input columns will be
+  concatenated and saved in the output column. If \`FALSE\`, only the
+  first non-\`NA\` value will be saved in the output column. Default
+  \`FALSE\`.
+
+## Value
+
+Updated dataframe. \* If \`concat\` is \`TRUE\`, the output column will
+include the concatenated data from all the input columns. \* If
+\`concat\` is \`FALSE\`, the output column will contain the first
+non-\`NA\` value from the input columns.
+
+## See also
+
+\[rename_col\]

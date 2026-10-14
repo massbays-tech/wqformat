@@ -9,7 +9,7 @@ cfm,cfm,,,,,cfs,x / 60,
 cfs|ft3/sec,cfs,cfs,,,,cfs,x,
 cfu/100mL|cfu/100ml|#col/100mL|#col/100ml,cfu/100ml,CFU/100ml|CFU/100mL|CFU/100,,,,cfu/100mL,x,
 cm,cm,,,,,m,x / 100,
-deg C,deg C,C|c,C,DEG C,Deg C|DEG C,deg C,x,
+deg C,deg C,C|c,C,DEG C,Deg C|DEG C|C,deg C,x,
 deg F,deg F,F|f,,,,deg C,(x - 32) / 1.8,x * 1.8 + 32
 FAU,FAU,,,,,FAU,x,
 FBU,FBU,,,,,FBU,x,

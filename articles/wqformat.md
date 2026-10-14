@@ -47,18 +47,20 @@ to format water quality results and
 to format site metadata. These functions will update column names,
 update variable names, and standardize units.
 
-| Format                     | Code        | Water Quality Results | Site Metadata |
-|----------------------------|-------------|:---------------------:|:-------------:|
-| Blackstone River Coalition | MA_BRC      |           x           |       x       |
-| Friends of Casco Bay       | ME_FOCB     |           x           |       x       |
-| Maine DEP                  | ME_DEP      |           x           |               |
-| MassWateR                  | MassWateR   |           x           |       x       |
-| Rhode Island DEM           | RI_DEM      |           x           |               |
-| URI Watershed Watch        | RI_WW       |           x           |       x       |
-| wqdashboard                | wqdashboard |           x           |       x       |
-| WQX                        | WQX         |           x           |       x       |
+| Format                     | Code        | Water Quality Data |
+|----------------------------|-------------|--------------------|
+| Blackstone River Coalition | MA_BRC      | Sites, Results     |
+| Friends of Casco Bay       | ME_FOCB     | Sites, Results     |
+| Maine DEP                  | ME_DEP      | Results only       |
+| MassWateR                  | MassWateR   | Sites, Results     |
+| Rhode Island DEM           | RI_DEM      | Results only       |
+| URI Watershed Watch        | RI_WW       | Sites, Results     |
+| wqdashboard                | wqdashboard | Sites, Results     |
+| WQX                        | WQX         | Sites, Results     |
 
-Accepted Formats {.table}
+Accepted formats. Water quality result data is supported for all
+formats, however site data is not supported for Maine DEP or Rhode
+Island DEM. {.table}
 
 To format result data for MassWateR or WQdashboard, you may use
 [`format_mwr_results()`](https://massbays-tech.github.io/wqformat/reference/format_mwr_results.md)

@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-The wqformat R package converts water quality data to several different formats. It is primarily designed to format water quality data for [MassWateR](https://massbays-tech.github.io/MassWateR/) and wqdashboard, but it can be used for [custom conversions](#custom) as well.
+The wqformat R package converts water quality data to several different formats. It is primarily designed to format water quality data for [MassWateR](https://massbays-tech.github.io/MassWateR/) and [WQdashboard](https://nbep.github.io/WQdashboard/index.html), but it can convert data to [other formats](#standard) as well.
 
 The package is created in collaboration with the [Massachusetts Bays National Estuary Partnership](https://massbays.org/) with funding from an EPA Exchange Network Grant (Grant No. ).
 
@@ -30,7 +30,7 @@ library(wqformat)
 
 ## Data Inputs
 
-wqformat accepts two types of data: **water quality results** and **site metadata**. Before using wqformat, double check all column names and variables for typos or other errors; wqformat provides informative error messages, but will not work correctly if things are misspelled.
+wqformat accepts two types of data: **water quality results** and **site metadata**. Before using wqformat, please double check that all columns and variables are spelled correctly; wqformat provides informative error messages, but will not work correctly if things are misspelled.
 
 wqformat will:
 
@@ -40,13 +40,10 @@ wqformat will:
 wqformat will not:
 
 -   Check for QAQC errors
--   Add data to empty columns \*
-
-\* Exception: `format_results()` and `format_sites()` fill out several empty columns for select conversions
 
 ## Converting Standard Formats {#standard}
 
-By default, wqformat accepts eight different formats, listed below. Converting data between accepted formats is a simple process: use `format_results()` to format water quality results and `format_sites()` to format site metadata.
+By default, wqformat accepts eight different formats, listed below. Converting data between accepted formats is a simple process: use `format_results()` to format water quality results and `format_sites()` to format site metadata. These functions will update column names, update variable names, and standardize units. 
 
 | Format                     | Code        | Water Quality Results | Site Metadata |
 |---------------------|-----------------|:---------------:|:---------------:|
@@ -61,18 +58,26 @@ By default, wqformat accepts eight different formats, listed below. Converting d
 
 : Accepted Formats
 
+To format result data for MassWateR or WQdashboard, you may use `format_mwr_results()` or `format_wqd_results()` respectively.
+
 ## Converting Custom Formats {#custom}
 
 wqformat includes a series of helper functions to convert data to or from a custom format.
 
 ### Update Columns
 
-To adjust column names, use `rename_col()` and `concat_col()`.
+To adjust column names, use `rename_col()` or `concat_col()`.
 
-To change a column type, use `col_to_numeric()` or `col_to_date()`.
+To change a column type, use `col_to_numeric()`, `col_to_date()`, or `col_to_time()`.
 
 ### Update Variables
 
-To update the variables in a column, use `update_var()`. To check for typos or other errors, use `warn_invalid_var()`.
+To update the variables within a column, use `update_var()`. To check for typos or other errors, use `warn_invalid_var()`.
 
 If a column contains state names, use `state_to_abb()` or `abb_to_state()` to format all states as abbreviations or full names respectively.
+
+### Update Units
+
+To convert all values in a column to a unit of your choice, use `set_units()`. 
+
+To standardize units within a parameter type or other group, use `standardize_units()` or `standardize_units_across()`. 

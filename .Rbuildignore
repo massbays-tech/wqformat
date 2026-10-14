@@ -7,3 +7,6 @@ notes
 ^codecov\.yml$
 .lintr
 .xlsx
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

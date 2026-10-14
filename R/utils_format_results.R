@@ -679,21 +679,18 @@ prep_focb_results <- function(.data, date_format = "m/d/y") {
       "Sample Depth m", "Sample Depth Unit", "Project", "Sampled By",
       "Sample Type", "QC Type"
     )
+    pivot_col <- setdiff(colnames(dat), keep_col)
 
     # Set table to character before pivot to avoid errors from "BSV" score
     dat <- dat |>
-      dplyr::mutate(dplyr::across(dplyr::everything(), as.character)) |>
+      dplyr::mutate(dplyr::across(dplyr::any_of(pivot_col), as.character)) |>
       tidyr::pivot_longer(
         !dplyr::any_of(keep_col),
         names_to = "Parameter",
         values_to = "Result",
         values_drop_na = TRUE
-      )
-
-    # Return columns to numeric...
-    for (field in colnames(dat)) {
-      dat <- col_to_numeric(dat, field)
-    }
+      ) |>
+      col_to_numeric("Result")
 
     # Add parameters, units
     dat <- as.data.frame(dat) |>

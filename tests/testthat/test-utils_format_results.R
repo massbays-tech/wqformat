@@ -461,9 +461,9 @@ test_that("prep_focb_results works", {
     "Sampled By" = "FRIENDS OF CASCO BAY",
     "QC Type" = "Field Measurement",
     Parameter = c(
-      "CLOUD COVER", "WIND SPEED", "WIND DIRECTION", "WATER DEPTH", "SECCHI",
-      "CLOUD COVER", "WIND SPEED", "WIND DIRECTION", "WATER DEPTH", "SECCHI",
-      "CLOUD COVER", "WIND SPEED", "WIND DIRECTION"
+      "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
+      "Cloud Cover", "Wind Speed", "Wind Direction", "Water Depth", "Secchi",
+      "Cloud Cover", "Wind Speed", "Wind Direction"
     ),
     Result = c(
       25, 1, 160, 9.5, 2.7, 0, 1, 45, 0.8, "BSV", 75, 3, 180
@@ -503,11 +503,11 @@ test_that("prep_focb_results works", {
     "Sample Depth Unit" = "m",
     "QC Type" = "Field Measurement",
     Parameter = c(
-      "TEMPERATURE", "SALINITY", "DISSOLVED OXYGEN", "DO SATURATION", "PH",
-      "CHLOROPHYLL", "TURBIDITY", "TEMPERATURE", "SALINITY", "DISSOLVED OXYGEN",
-      "DO SATURATION", "PH", "CHLOROPHYLL", "TURBIDITY", "TEMPERATURE",
-      "SALINITY", "DISSOLVED OXYGEN", "DO SATURATION", "PH", "CHLOROPHYLL",
-      "TURBIDITY"
+      "Temperature", "Salinity", "Dissolved Oxygen", "DO Saturation", "pH",
+      "Chlorophyll", "Turbidity", "Temperature", "Salinity", "Dissolved Oxygen",
+      "DO Saturation", "pH", "Chlorophyll", "Turbidity", "Temperature",
+      "Salinity", "Dissolved Oxygen", "DO Saturation", "pH", "Chlorophyll",
+      "Turbidity"
     ),
     Result = c(
       12.7, 31, 7.3, 83.7, 7.93, 2.3, 1.1, 12.7, 31, 7.3, 83.4, 7.93, 2.5, 1.1,

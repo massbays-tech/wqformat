@@ -8,9 +8,9 @@ Chloride,Chloride,,Chloride - 00940,,,
 Conductivity|Conductance,Conductivity,,,Conductivity,,
 "Algae, blue-green (phylum cyanophyta) density","Cyanobacteria (lab)|Algae, blue-green (phylum cyanophyta) density",,,,,
 "Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)","Cyanobacteria (probe)|Chlorophyll a (probe) concentration, Cyanobacteria (bluegreen)",,,,,
-Depth,Depth,,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth|WATER DEPTH|DEPTH
-Dissolved oxygen saturation,DO saturation|Dissolved oxygen saturation,,Dissolved Oxygen Percent Saturation - 00301,Dissolved Oxy Saturation,DO SAT|DISSOLVED OXYGEN SATURATION,DO Saturation|DO SATURATION|DO SAT|DISSOLVED OXYGEN SATURATION
-Dissolved oxygen (DO)|Dissolved Oxygen (DO),DO|Dissolved oxygen (DO),Dissolved oxygen|Dissolved oxygen (DO)|Dissolved Oxygen (DO),Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,Dissolved Oxygen|DISSOLVED OXYGEN|DO
+Depth,Depth,,"Depth to bottom from water surface at sampling location, meters - 82903",Water Depth,DEPTH,Water Depth|DEPTH
+Dissolved oxygen saturation,DO saturation|Dissolved oxygen saturation,,Dissolved Oxygen Percent Saturation - 00301,Dissolved Oxy Saturation,DO SAT|DISSOLVED OXYGEN SATURATION,DO Saturation|DO sat|DO SAT|DISSOLVED OXYGEN SATURATION
+Dissolved oxygen (DO)|Dissolved Oxygen (DO),DO|Dissolved oxygen (DO),Dissolved oxygen|Dissolved oxygen (DO)|Dissolved Oxygen (DO),Dissolved Oxygen - 00300,Dissolved Oxygen,DO|DISSOLVED OXYGEN,Dissolved Oxygen|DO|DISSOLVED OXYGEN
 Escherichia coli,E.coli|Escherichia coli,E. coli|Escherichia coli,E.coli - 31633,E. coli,,
 Enterococcus,Enterococcus,,Enterococci - 31639,,,
 Fecal Coliform,Fecal Coliform,,Fecal Coliform - 74055,,,
@@ -19,7 +19,7 @@ Flow,Flow,,Flow - 50050,,,
 Metals,Metals,,,,,
 Microcystins,Microcystins,,,,,
 Nitrate,Nitrate,,,Nitrate,,
-Nitrate + Nitrite|Neon-21/neon-22,Nitrate + Nitrite,,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,NITRATE + NITRITE AS NITROGEN|NO3 + NO2 AS N
+Nitrate + Nitrite|Neon-21/neon-22,Nitrate + Nitrite,,"Nitrate + Nitrite, Dissolved - 00631",,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN,NO3 + NO2 AS N|NITRATE + NITRITE AS NITROGEN
 Nitrite,Nitrite,,,,,
 Orthophosphate|Inorganic phosphorus|Non-apatite inorganic phosphorus|Particulate Inorganic Phosphorus|Phosphate-phosphorus,Ortho P|Orthophosphate,,"Orthophosphate, Dissolved - 00671|Phosphorus, Dissolved - 00666",Orthophosphate,,
 pH,pH,,pH - 00400,,PH,pH|PH
@@ -28,8 +28,8 @@ Phycocyanin,Phycocyanin,,,,,
 Phycocyanin (probe),Phycocyanin (probe),,,,,
 Particulate organic carbon,POC|Particulate organic carbon,,,,,
 "Organic phosphorus|Phosphorus, Particulate Organic","POP|Phosphorus, Particulate Organic",,,,,
-Salinity,Salinity,,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity|SALINITY|SAL|SALINITY (FROM SODIUM)
-"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth","Secchi disk depth|Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI|SECCHI DEPTH
+Salinity,Salinity,,"Salinity, (ppt) - 00480",,SALINITY|SALINITY (FROM SODIUM),Salinity|SALINITY|SALINITY (FROM SODIUM)
+"Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears","Secchi Depth|Depth, Secchi disk depth","Secchi disk depth|Depth, Secchi disk depth|Depth, Secchi disk depth disappears|Depth, Secchi disk depth reappears",Secchi Depth - 00069,,SECCHI,Secchi|SECCHI
 Silicate,Silicate,,,,,
 Specific conductance,Sp Conductance|Specific conductance,,"Specific Conductance, water, unfiltered, microsiemens per centimeter at 25° C - 00095",,,
 Sulfate,Sulfate,,Sulfate as SO4 - 00945,,,
@@ -39,8 +39,8 @@ Total Kjeldahl nitrogen|Total Kjeldahl nitrogen (Organic N & NH3)|Kjeldahl nitro
 "Total Nitrogen, mixed forms|Nitrogen|Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)|Total Nitrogen, mixed forms (NH3), (NH4), organic, (NO2) and (NO3)","TN|PON|TDN|Total Nitrogen, mixed forms",,"Nitrogen, Total (unfiltered) - 00600",,"TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN","TN as N|TN AS N|TOTAL NITROGEN MIXED FORMS (NH3, NH4, ORGANIC, NO2, AND NO3) AS NITROGEN"
 "Total Phosphorus, mixed forms|Phosphates (orthophosphate plus condensed and polyphosphates)|Phosphorus|Total Particulate Phosphorus","TP|TDP|Total Phosphorus, mixed forms",,"Phosphorus, Total - 00665",,,
 Total suspended solids,TSS|Total suspended solids,,TSS - 00530,,,
-Turbidity,Turbidity,,Turbidity - 00070|Turbidity - 00076,Turbidity,TUR|TURBIDITY,Turbidity|TURBIDITY|TUR
-"Temperature, water","Water Temp|Temperature, water",,Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMPERATURE|TEMP
+Turbidity,Turbidity,,Turbidity - 00070|Turbidity - 00076,Turbidity,TUR|TURBIDITY,Turbidity|TUR|TURBIDITY
+"Temperature, water","Water Temp|Temperature, water",,Temperature - 00011,Water Temperature,TEMP|TEMPERATURE,Temperature|TEMP|TEMPERATURE
 "1,1,1-Trichloroethane",,,"1,1,1 Trichloroethane - 34506",,,
 "1,2-Dichlorobenzene-d4",,,"1,2 Dichlorobenzene - 34536",,,
 "1,4-Dichlorobenzene-d4",,,"1,4 Dichlorobenzene - 34571",,,
@@ -60,8 +60,8 @@ Toluene,,,Toluene - 34010,,,
 Total Coliform,,,Total Coliform - 31502|Total coliform - 31502,,,
 Trichloroethylene,,,Trichloroethylene - 39180,,,
 Cloud cover,,,,,CLOUD COVER,Cloud Cover|CLOUD COVER
-"Wind direction, horizontal",,,,,WDIR|WIND DIRECTION,Wind Direction|WIND DIRECTION|WDIR
-"Wind force, Beaufort scale",,,,,WSPD|WIND SPEED,Wind Speed|WIND SPEED|WSPD
+"Wind direction, horizontal",,,,,WDIR|WIND DIRECTION,Wind Direction|WDIR|WIND DIRECTION
+"Wind force, Beaufort scale",,,,,WSPD|WIND SPEED,Wind Speed|WSPD|WIND SPEED
 Macroinvertebrates,,,,,,
 Nitrogen/Phosphorus molar ratio|Dissolved Inorganic Nitrogen/Total Phosphorus ratio|Dissolved inorganic nitrogen/soluble reactive phosphorus ratio|Molar ratio of nitrate (plus nitrite) and orthophosphate|Total Nitrogen/Total Phosphorus Ratio (TN:TP),,,,,,
 Oxidation reduction potential (ORP),,Oxidation reduction potential|Oxidation reduction potential (ORP),,,,

@@ -12,6 +12,7 @@ The goal of wqformat is to provide simple R functions to convert common water qu
 Useful links:
 \itemize{
   \item \url{https://github.com/massbays-tech/wqformat}
+  \item \url{https://massbays-tech.github.io/wqformat/}
   \item Report bugs at \url{https://github.com/massbays-tech/wqformat/issues}
 }
 

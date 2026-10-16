@@ -174,6 +174,26 @@ test_that("rename_var works", {
     11
   )
 
+  # Test case sensitive
+  expect_equal(
+    rename_var(
+      "Dog",
+      c("cat", "dog"),
+      c("kitten", "puppy"),
+      case_sensitive=FALSE
+    ),
+    "puppy"
+  )
+  expect_equal(
+    rename_var(
+      "Dog",
+      c("cat", "dog"),
+      c("kitten", "puppy"),
+      case_sensitive=TRUE
+    ),
+    "Dog"
+  )
+
   # Test multiple out values
   in_list <- c("cat", "dog", "cat")
   out_list <- c("kitten", "puppy", "kitty")

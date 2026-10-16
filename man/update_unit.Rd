@@ -4,7 +4,7 @@
 \alias{update_unit}
 \title{Rename units}
 \usage{
-update_unit(.data, col_name, in_format, out_format)
+update_unit(.data, col_name, in_format, out_format, case_sensitive = TRUE)
 }
 \arguments{
 \item{.data}{Dataframe}
@@ -29,6 +29,9 @@ Not case sensitive. Accepted formats:
 * ME_DEP (Maine DEP)
 
 * ME_FOCB (Friends of Casco Bay)}
+
+\item{case_sensitive}{Boolean. If `TRUE`, `old_varname` is case sensitive.
+Default `TRUE`.}
 }
 \value{
 Dataframe with updated units in target column

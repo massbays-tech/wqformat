@@ -4,7 +4,7 @@
 \alias{update_var}
 \title{Rename all variables in column}
 \usage{
-update_var(.data, col_name, old_varname, new_varname)
+update_var(.data, col_name, old_varname, new_varname, case_sensitive = FALSE)
 }
 \arguments{
 \item{.data}{Dataframe}
@@ -14,6 +14,9 @@ update_var(.data, col_name, old_varname, new_varname)
 \item{old_varname, new_varname}{List. List old variable names in `old_varname`
 and new variable names in `new_varname`. `old_varname` and `new_varname` are
 a paired list, therefor they must be the same length and in the same order.}
+
+\item{case_sensitive}{Boolean. If `TRUE`, `old_varname` is case sensitive.
+Default `FALSE`.}
 }
 \value{
 Dataframe with updated variables in target column. If no

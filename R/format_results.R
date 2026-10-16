@@ -335,9 +335,11 @@ format_wqd_results <- function(.data, date_format, categorical = FALSE) {
   dat <- dat |>
     col_to_date("Date", date_format) |>
     update_var("Parameter", param$old_names, param$new_names) |>
-    update_var("Result_Unit", old_unit, new_unit) |>
-    update_var("Depth_Unit", old_unit, new_unit) |>
-    update_var("Detection_Limit_Unit", old_unit, new_unit) |>
+    update_var("Result_Unit", old_unit, new_unit, case_sensitive = TRUE) |>
+    update_var("Depth_Unit", old_unit, new_unit, case_sensitive = TRUE) |>
+    update_var(
+      "Detection_Limit_Unit", old_unit, new_unit, case_sensitive = TRUE
+    ) |>
     results_to_wqd()
 
   # Check variables

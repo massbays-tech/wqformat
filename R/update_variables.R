@@ -10,6 +10,8 @@
 #' @param old_varname,new_varname List. List old variable names in `old_varname`
 #' and new variable names in `new_varname`. `old_varname` and `new_varname` are
 #' a paired list, therefor they must be the same length and in the same order.
+#' @param case_sensitive Boolean. If `TRUE`, `old_varname` is case sensitive.
+#' Default `FALSE`.
 #'
 #' @seealso [update_param], [update_unit], [warn_invalid_var]
 #'
@@ -17,7 +19,9 @@
 #' substitutions found, returns original dataframe.
 #'
 #' @export
-update_var <- function(.data, col_name, old_varname, new_varname) {
+update_var <- function(
+  .data, col_name, old_varname, new_varname, case_sensitive = FALSE
+) {
   # Check inputs
   chk <- col_name %in% colnames(.data)
   if (!chk) {
@@ -40,7 +44,9 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
     dplyr::mutate(
       {{ col_name }} := sapply(
         .data[[col_name]],
-        function(x) rename_var(x, old_varname, new_varname),
+        function(x) rename_var(
+          x, old_varname, new_varname, case_sensitive = case_sensitive
+        ),
         USE.NAMES = FALSE
       )
     )
@@ -61,7 +67,9 @@ update_var <- function(.data, col_name, old_varname, new_varname) {
 #' @return Dataframe with updated parameters in target column
 #'
 #' @export
-update_param <- function(.data, col_name, in_format, out_format) {
+update_param <- function(
+  .data, col_name, in_format, out_format, case_sensitive = FALSE
+) {
   # Check inputs
   chk <- col_name %in% colnames(.data)
   if (!chk) {
@@ -74,7 +82,10 @@ update_param <- function(.data, col_name, in_format, out_format) {
     tolower(in_format),
     tolower(out_format)
   )
-  dat <- update_var(.data, col_name, param$old_names, param$new_names)
+  dat <- update_var(
+    .data, col_name, param$old_names, param$new_names,
+    case_sensitive = case_sensitive
+  )
   warn_invalid_var(dat, col_name, param$keep_var)
 
   dat
@@ -86,6 +97,8 @@ update_param <- function(.data, col_name, in_format, out_format) {
 #' `update_unit()` converts units in target column to new format.
 #'
 #' @param .data Dataframe
+#' @param case_sensitive Boolean. If `TRUE`, `old_varname` is case sensitive.
+#' Default `TRUE`.
 #'
 #' @inheritParams update_var
 #' @inheritParams format_results
@@ -95,7 +108,9 @@ update_param <- function(.data, col_name, in_format, out_format) {
 #' @return Dataframe with updated units in target column
 #'
 #' @export
-update_unit <- function(.data, col_name, in_format, out_format) {
+update_unit <- function(
+  .data, col_name, in_format, out_format, case_sensitive = TRUE
+) {
   # Check inputs
   chk <- col_name %in% colnames(.data)
   if (!chk) {
@@ -108,7 +123,13 @@ update_unit <- function(.data, col_name, in_format, out_format) {
     tolower(in_format),
     tolower(out_format)
   )
-  dat <- update_var(.data, col_name, unit_list$old_names, unit_list$new_names)
+  dat <- update_var(
+    .data,
+    col_name,
+    unit_list$old_names,
+    unit_list$new_names,
+    case_sensitive = case_sensitive
+  )
   warn_invalid_var(dat, col_name, unit_list$keep_var)
 
   dat

@@ -222,6 +222,8 @@ unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
 #' a paired list, therefor they must be the same length and in the same order.
 #' @param multiple Boolean. If `TRUE`, will return all matches for
 #' `in_var`. If `FALSE`, only returns the first match. Default `FALSE`.
+#' @param case_sensitive Boolean. If `TRUE`, `in_var` is case sensitive.
+#' Default `FALSE`.
 #'
 #' @seealso [update_var]
 #'
@@ -229,20 +231,25 @@ unique_var <- function(.data, col_name, delim = "|", limit_var = FALSE) {
 #' Otherwise returns input variable.
 #'
 #' @noRd
-rename_var <- function(in_var, old_varname, new_varname, multiple = FALSE) {
-  if (!in_var %in% old_varname) {
+rename_var <- function(
+  in_var, old_varname, new_varname, multiple = FALSE, case_sensitive = FALSE
+) {
+  x <- if (case_sensitive) in_var else tolower(in_var)
+  old_var <- if (case_sensitive) old_varname else tolower(old_varname)
+
+  if (!x %in% old_var) {
     return(in_var)
   }
 
-  chk <- c(is.na(old_varname), is.na(new_varname))
+  chk <- c(is.na(old_var), is.na(new_varname))
   if (any(chk)) {
     stop("old_varname and new_varname must not contain NA values")
   } else if (length(old_varname) != length(new_varname)) {
     stop("old_varname and new_varname must be the same length")
   }
 
-  names(new_varname) <- old_varname
-  x <- new_varname[names(new_varname) == in_var]
+  names(new_varname) <- old_var
+  x <- new_varname[names(new_varname) == x]
   names(x) <- NULL
 
   if (!multiple && length(x) > 1) {

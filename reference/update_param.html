@@ -40,7 +40,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_param</span><span class="op">(</span><span class="va">.data</span>, <span class="va">col_name</span>, <span class="va">in_format</span>, <span class="va">out_format</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_param</span><span class="op">(</span><span class="va">.data</span>, <span class="va">col_name</span>, <span class="va">in_format</span>, <span class="va">out_format</span>, case_sensitive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,6 +66,11 @@ Not case sensitive. Accepted formats:</p>
 <p>* MA_BRC (Blackstone River Coalition)</p>
 <p>* ME_DEP (Maine DEP)</p>
 <p>* ME_FOCB (Friends of Casco Bay)</p></dd>
+
+
+<dt id="arg-case-sensitive">case_sensitive<a class="anchor" aria-label="anchor" href="#arg-case-sensitive"></a></dt>
+<dd><p>Boolean. If `TRUE`, `old_varname` is case sensitive.
+Default `FALSE`.</p></dd>
 
 </dl></div>
     <div class="section level2">

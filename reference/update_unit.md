@@ -5,7 +5,7 @@
 ## Usage
 
 ``` r
-update_unit(.data, col_name, in_format, out_format)
+update_unit(.data, col_name, in_format, out_format, case_sensitive = TRUE)
 ```
 
 ## Arguments
@@ -38,6 +38,11 @@ update_unit(.data, col_name, in_format, out_format)
   \* ME_DEP (Maine DEP)
 
   \* ME_FOCB (Friends of Casco Bay)
+
+- case_sensitive:
+
+  Boolean. If \`TRUE\`, \`old_varname\` is case sensitive. Default
+  \`TRUE\`.
 
 ## Value
 

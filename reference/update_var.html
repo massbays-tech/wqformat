@@ -46,7 +46,7 @@ column. If no match found, leaves old variable name.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_var</span><span class="op">(</span><span class="va">.data</span>, <span class="va">col_name</span>, <span class="va">old_varname</span>, <span class="va">new_varname</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">update_var</span><span class="op">(</span><span class="va">.data</span>, <span class="va">col_name</span>, <span class="va">old_varname</span>, <span class="va">new_varname</span>, case_sensitive <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -65,6 +65,11 @@ column. If no match found, leaves old variable name.</p>
 <dd><p>List. List old variable names in `old_varname`
 and new variable names in `new_varname`. `old_varname` and `new_varname` are
 a paired list, therefor they must be the same length and in the same order.</p></dd>
+
+
+<dt id="arg-case-sensitive">case_sensitive<a class="anchor" aria-label="anchor" href="#arg-case-sensitive"></a></dt>
+<dd><p>Boolean. If `TRUE`, `old_varname` is case sensitive.
+Default `FALSE`.</p></dd>
 
 </dl></div>
     <div class="section level2">

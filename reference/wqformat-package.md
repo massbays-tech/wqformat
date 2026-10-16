@@ -10,6 +10,8 @@ Useful links:
 
 - <https://github.com/massbays-tech/wqformat>
 
+- <https://massbays-tech.github.io/wqformat/>
+
 - Report bugs at <https://github.com/massbays-tech/wqformat/issues>
 
 ## Author

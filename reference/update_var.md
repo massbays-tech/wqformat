@@ -7,7 +7,7 @@ input column. If no match found, leaves old variable name.
 ## Usage
 
 ``` r
-update_var(.data, col_name, old_varname, new_varname)
+update_var(.data, col_name, old_varname, new_varname, case_sensitive = FALSE)
 ```
 
 ## Arguments
@@ -26,6 +26,11 @@ update_var(.data, col_name, old_varname, new_varname)
   names in \`new_varname\`. \`old_varname\` and \`new_varname\` are a
   paired list, therefor they must be the same length and in the same
   order.
+
+- case_sensitive:
+
+  Boolean. If \`TRUE\`, \`old_varname\` is case sensitive. Default
+  \`FALSE\`.
 
 ## Value
 
